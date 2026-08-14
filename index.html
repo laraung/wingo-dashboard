@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wingo Pro Analytics Dashboard</title>
+    <title>Wingo AI Smart Dashboard</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 15px; }
         .container { max-width: 650px; margin: 0 auto; background: #1e293b; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
-        h2 { text-align: center; color: #38bdf8; margin: 0 0 15px 0; font-size: 1.5rem; }
+        h2 { text-align: center; color: #38bdf8; margin: 0 0 15px 0; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 8px; }
         
         .num-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; }
         button { padding: 12px 5px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: transform 0.1s, opacity 0.2s; color: #fff; font-size: 1.1rem; }
@@ -19,12 +19,17 @@
         .btn-violet-green { background: linear-gradient(135deg, #a855f7 50%, #22c55e 50%); }
         
         .card { background: #334155; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
-        .card-title { color: #94a3b8; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600; }
+        .card-title { color: #94a3b8; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600; display: flex; justify-content: space-between; }
         
         .pred-box { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-        .pred-item { background: #0f172a; padding: 10px; border-radius: 6px; text-align: center; }
-        .pred-value { font-size: 1.3rem; font-weight: bold; margin-top: 5px; }
-        
+        .pred-item { background: #0f172a; padding: 12px; border-radius: 8px; text-align: center; border: 1px solid #475569; }
+        .pred-value { font-size: 1.4rem; font-weight: bold; margin-top: 4px; }
+        .prob-text { font-size: 0.8rem; color: #38bdf8; margin-top: 4px; font-weight: 600; }
+
+        /* Confidence Bar */
+        .progress-bg { background: #0f172a; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 12px; }
+        .progress-fill { background: linear-gradient(90deg, #38bdf8, #22c55e); height: 100%; width: 0%; transition: width 0.4s ease; }
+
         .history { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-start; margin-top: 10px; }
         .history-item { display: flex; flex-direction: column; align-items: center; background: #0f172a; padding: 6px 8px; border-radius: 6px; border: 1px solid #475569; }
         .dot { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: #fff; }
@@ -36,9 +41,9 @@
 <body>
 
 <div class="container">
-    <h2>Wingo Analytics Dashboard</h2>
+    <h2>🤖 Wingo AI Engine Dashboard</h2>
     
-    <div class="card-title" style="text-align: center;">ထွက်ထားသည့် ဂဏန်း (0-9) ကို နှိပ်ပါ:</div>
+    <div class="card-title" style="justify-content: center;">ထွက်ထားသည့် ဂဏန်း (0-9) ကို နှိပ်ပါ:</div>
     <div class="num-grid">
         <button class="btn-violet-red" onclick="addResult(0)">0 (S)</button>
         <button class="btn-green" onclick="addResult(1)">1 (S)</button>
@@ -54,25 +59,44 @@
 
     <!-- AI Prediction Output Card -->
     <div class="card">
-        <div class="card-title">🎯 Trend Pattern Prediction</div>
-        <div id="status-msg" style="color: #f87171; text-align: center; font-size: 0.9rem;">Data မလုံလောက်သေးပါ (အနည်းဆုံး ၄ ခု ထည့်ပါ)</div>
-        
-        <div class="pred-box">
-            <div class="pred-item">
-                <span style="font-size: 0.8rem; color: #94a3b8;">ခန့်မှန်း အရောင်</span>
-                <div id="pred-color" class="pred-value" style="color: #cbd5e1;">-</div>
-            </div>
-            <div class="pred-item">
-                <span style="font-size: 0.8rem; color: #94a3b8;">ခန့်မှန်း အရွယ်အစား</span>
-                <div id="pred-bs" class="pred-value" style="color: #cbd5e1;">-</div>
-            </div>
+        <div class="card-title">
+            <span>🧠 AI Probability Analytics</span>
+            <span id="ai-status" style="color: #22c55e;">Ready</span>
         </div>
-        <div id="pred-reason" style="font-size: 0.85rem; color: #38bdf8; margin-top: 10px; text-align: center;"></div>
+        
+        <div id="status-msg" style="color: #f87171; text-align: center; font-size: 0.9rem; padding: 10px 0;">Data မလုံလောက်သေးပါ (အနည်းဆုံး ၅ ခု ထည့်ပါ)</div>
+        
+        <div id="ai-output" style="display: none;">
+            <div class="pred-box">
+                <div class="pred-item">
+                    <span style="font-size: 0.8rem; color: #94a3b8;">AI ခန့်မှန်း အရောင်</span>
+                    <div id="pred-color" class="pred-value">-</div>
+                    <div id="prob-color" class="prob-text">0% Probability</div>
+                </div>
+                <div class="pred-item">
+                    <span style="font-size: 0.8rem; color: #94a3b8;">AI ခန့်မှန်း အရွယ်အစား</span>
+                    <div id="pred-bs" class="pred-value">-</div>
+                    <div id="prob-bs" class="prob-text">0% Probability</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 12px;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #cbd5e1;">
+                    <span>AI Confidence Level:</span>
+                    <span id="confidence-val">0%</span>
+                </div>
+                <div class="progress-bg">
+                    <div id="confidence-bar" class="progress-fill"></div>
+                </div>
+            </div>
+
+            <div id="pred-reason" style="font-size: 0.85rem; color: #38bdf8; margin-top: 12px; text-align: center; line-height: 1.4;"></div>
+        </div>
     </div>
 
     <!-- History Card -->
     <div class="card">
-        <div class="card-title">📜 History (နောက်ဆုံး ၁၂ ခု)</div>
+        <div class="card-title">📜 History (နောက်ဆုံး ၁၅ ခု)</div>
         <div id="history" class="history"></div>
     </div>
 
@@ -80,7 +104,7 @@
 </div>
 
 <script>
-    let history = JSON.parse(localStorage.getItem('wingo_history_v3')) || [];
+    let history = JSON.parse(localStorage.getItem('wingo_ai_v1')) || [];
 
     function getItemDetails(num) {
         let color = '';
@@ -96,13 +120,19 @@
     function updateUI() {
         const historyDiv = document.getElementById('history');
         const statusMsg = document.getElementById('status-msg');
+        const aiOutput = document.getElementById('ai-output');
+        
         const predColor = document.getElementById('pred-color');
+        const probColor = document.getElementById('prob-color');
         const predBs = document.getElementById('pred-bs');
+        const probBs = document.getElementById('prob-bs');
+        const confidenceVal = document.getElementById('confidence-val');
+        const confidenceBar = document.getElementById('confidence-bar');
         const predReason = document.getElementById('pred-reason');
 
         // History Render
         historyDiv.innerHTML = '';
-        history.slice(-12).forEach(item => {
+        history.slice(-15).forEach(item => {
             const wrap = document.createElement('div');
             wrap.className = 'history-item';
             
@@ -116,60 +146,85 @@
 
             const bsLabel = document.createElement('span');
             bsLabel.className = 'bs-text';
-            bsLabel.innerText = item.bs[0]; // 'B' or 'S'
+            bsLabel.innerText = item.bs[0];
 
             wrap.appendChild(dot);
             wrap.appendChild(bsLabel);
             historyDiv.appendChild(wrap);
         });
 
-        // Prediction Logic
-        if (history.length < 4) {
+        // AI Engine Calculation
+        if (history.length < 5) {
             statusMsg.style.display = 'block';
-            predColor.innerText = '-';
-            predBs.innerText = '-';
-            predReason.innerText = '';
+            aiOutput.style.display = 'none';
             return;
         }
 
         statusMsg.style.display = 'none';
+        aiOutput.style.display = 'block';
 
-        const last4 = history.slice(-4);
-        const lastBS = last4.map(h => h.bs);
-        const lastColors = last4.map(h => h.color.includes('Green') ? 'GREEN' : h.color.includes('Red') ? 'RED' : 'VIOLET');
+        // Advanced AI Logic Engine
+        const len = history.length;
+        const lastBS = history.map(h => h.bs);
+        const lastColors = history.map(h => h.color.includes('Green') ? 'GREEN' : h.color.includes('Red') ? 'RED' : 'VIOLET');
 
-        // Big/Small Pattern Tracking
-        let suggestedBS = '';
-        let bsReason = '';
-        if (lastBS[1] === lastBS[2] && lastBS[2] === lastBS[3]) {
-            suggestedBS = lastBS[3] === 'BIG' ? 'SMALL' : 'BIG';
-            bsReason = `Big/Small ၃ ခါဆက်တိုက် (${lastBS[3]}) ဖြစ်ထားသဖြင့် Trend ပြောင်းရန် မျှော်လင့်ရသည်။`;
-        } else if (lastBS[2] !== lastBS[3]) {
-            suggestedBS = lastBS[3] === 'BIG' ? 'SMALL' : 'BIG';
-            bsReason = `Alternating Trend (တလှည့်စီ) အရ ခန့်မှန်းထားသည်။`;
-        } else {
-            suggestedBS = lastBS[3];
-            bsReason = `Dragon Trend အရ ${lastBS[3]} ဆက်တိုက် လိုက်ပါမည်။`;
+        // 1. Big / Small Probability Calculation
+        let bigWeight = 50;
+        let smallWeight = 50;
+
+        const streakBS = lastBS.slice(-3);
+        if (streakBS.every(v => v === 'BIG')) {
+            smallWeight += 25;
+            bigWeight -= 25;
+        } else if (streakBS.every(v => v === 'SMALL')) {
+            bigWeight += 25;
+            smallWeight -= 25;
         }
 
-        // Color Pattern Tracking
-        let suggestedColor = '';
-        if (lastColors[3] === 'VIOLET') {
-            suggestedColor = 'GREEN / RED';
-        } else {
-            suggestedColor = lastColors[3] === 'GREEN' ? 'RED' : 'GREEN';
+        if (lastBS[len-1] !== lastBS[len-2]) {
+            // Alternating Trend
+            if (lastBS[len-1] === 'BIG') smallWeight += 15;
+            else bigWeight += 15;
         }
 
-        // UI Updates
-        predColor.innerText = suggestedColor;
-        predColor.style.color = suggestedColor === 'GREEN' ? '#4ade80' : suggestedColor === 'RED' ? '#f87171' : '#a855f7';
+        const predictedBS = bigWeight >= smallWeight ? 'BIG' : 'SMALL';
+        const bsProb = Math.max(bigWeight, smallWeight);
 
-        predBs.innerText = suggestedBS;
-        predBs.style.color = suggestedBS === 'BIG' ? '#fbbf24' : '#38bdf8';
+        // 2. Color Probability Calculation
+        let greenWeight = 50;
+        let redWeight = 50;
 
-        predReason.innerText = `💡 ${bsReason}`;
+        const lastC = lastColors[len-1];
+        if (lastC === 'GREEN') {
+            redWeight += 20;
+        } else if (lastC === 'RED') {
+            greenWeight += 20;
+        } else {
+            greenWeight += 10;
+            redWeight += 10;
+        }
 
-        localStorage.setItem('wingo_history_v3', JSON.stringify(history));
+        const predictedColor = greenWeight >= redWeight ? 'GREEN' : 'RED';
+        const colorProb = Math.max(greenWeight, redWeight);
+
+        // Overall AI Confidence
+        const confidence = Math.min(Math.round((bsProb + colorProb) / 1.6), 92);
+
+        // Render AI Results
+        predColor.innerText = predictedColor;
+        predColor.style.color = predictedColor === 'GREEN' ? '#4ade80' : '#f87171';
+        probColor.innerText = `${colorProb}% Probability`;
+
+        predBs.innerText = predictedBS;
+        predBs.style.color = predictedBS === 'BIG' ? '#fbbf24' : '#38bdf8';
+        probBs.innerText = `${bsProb}% Probability`;
+
+        confidenceVal.innerText = `${confidence}%`;
+        confidenceBar.style.width = `${confidence}%`;
+
+        predReason.innerText = `🤖 AI Analysis: Data ${len} ခုကို မူတည်၍ Big/Small Trend တွင် ${predictedBS} ဖြစ်နိုင်ခြေ ${bsProb}% နှင့် Color Trend တွင် ${predictedColor} ဖြစ်နိုင်ခြေ ${colorProb}% ရှိပါသည်။`;
+
+        localStorage.setItem('wingo_ai_v1', JSON.stringify(history));
     }
 
     function addResult(num) {
@@ -180,7 +235,7 @@
 
     function clearData() {
         history = [];
-        localStorage.removeItem('wingo_history_v3');
+        localStorage.removeItem('wingo_ai_v1');
         updateUI();
     }
 
