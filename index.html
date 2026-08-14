@@ -3,47 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wingo Trend Dashboard</title>
+    <title>Wingo Trend Dashboard (Color + Number)</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 20px; }
         .container { max-width: 600px; margin: 0 auto; background: #1e293b; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         h2 { text-align: center; color: #38bdf8; margin-top: 0; }
+        
+        .num-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; }
         .btn-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        button { flex: 1; padding: 12px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; transition: opacity 0.2s; }
-        button:hover { opacity: 0.8; }
-        .btn-green { background: #22c55e; color: #fff; }
-        .btn-red { background: #ef4444; color: #fff; }
-        .btn-violet { background: #a855f7; color: #fff; }
+        
+        button { padding: 12px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; transition: opacity 0.2s; color: #fff; font-size: 1.1rem; }
+        button:hover { opacity: 0.8; transform: scale(0.98); }
+        
+        .btn-green { background: #22c55e; }
+        .btn-red { background: #ef4444; }
+        .btn-violet { background: #a855f7; }
+        /* 0 နှင့် 5 အတွက် အရောင်စပ်များ */
+        .btn-violet-red { background: linear-gradient(135deg, #a855f7 50%, #ef4444 50%); }
+        .btn-violet-green { background: linear-gradient(135deg, #a855f7 50%, #22c55e 50%); }
+        
         .card { background: #334155; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
-        .prediction { font-size: 1.2rem; font-weight: bold; }
+        .prediction { font-size: 1.1rem; font-weight: bold; line-height: 1.5; }
         .history { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
-        .dot { width: 24px; height: 24px; border-radius: 50%; display: inline-block; font-size: 10px; line-height: 24px; font-weight: bold; }
-        .bg-green { background: #22c55e; }
-        .bg-red { background: #ef4444; }
-        .bg-violet { background: #a855f7; }
-        .clear-btn { background: #64748b; color: white; width: 100%; margin-top: 10px; }
+        
+        .dot { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        
+        .clear-btn { background: #64748b; color: white; width: 100%; margin-top: 10px; font-size: 1rem; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Wingo Trend Analyzer</h2>
+    <h2>Wingo Pro Analyzer</h2>
     
-    <p style="text-align:center; font-size: 0.9rem; color: #94a3b8;">ထွက်ထားသည့် အရောင်ကို အစဉ်လိုက် နှိပ်ပါ:</p>
+    <p style="text-align:center; font-size: 0.9rem; color: #94a3b8; margin-bottom: 10px;">ထွက်ထားသည့် <strong>ဂဏန်း</strong> ကို ရွေးချယ်ပါ:</p>
     
+    <!-- ဂဏန်းခလုတ်များ (0 မှ 9 အထိ) -->
+    <div class="num-grid">
+        <button class="btn-violet-red" onclick="addResult('0', 'Violet-Red')">0</button>
+        <button class="btn-green" onclick="addResult('1', 'Green')">1</button>
+        <button class="btn-red" onclick="addResult('2', 'Red')">2</button>
+        <button class="btn-green" onclick="addResult('3', 'Green')">3</button>
+        <button class="btn-red" onclick="addResult('4', 'Red')">4</button>
+        <button class="btn-violet-green" onclick="addResult('5', 'Violet-Green')">5</button>
+        <button class="btn-red" onclick="addResult('6', 'Red')">6</button>
+        <button class="btn-green" onclick="addResult('7', 'Green')">7</button>
+        <button class="btn-red" onclick="addResult('8', 'Red')">8</button>
+        <button class="btn-green" onclick="addResult('9', 'Green')">9</button>
+    </div>
+
+    <p style="text-align:center; font-size: 0.8rem; color: #94a3b8;">(သို့မဟုတ်) အရောင်သီးသန့် ထည့်ရန်</p>
+    <!-- အရောင်ခလုတ်များ -->
     <div class="btn-group">
-        <button class="btn-green" onclick="addResult('Green')">Green</button>
-        <button class="btn-red" onclick="addResult('Red')">Red</button>
-        <button class="btn-violet" onclick="addResult('Violet')">Violet</button>
+        <button class="btn-green" onclick="addResult('G', 'Green')">Green</button>
+        <button class="btn-red" onclick="addResult('R', 'Red')">Red</button>
+        <button class="btn-violet" onclick="addResult('V', 'Violet')">Violet</button>
     </div>
 
     <div class="card">
-        <div>Trend Analysis / Next Predict:</div>
+        <div style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 5px;">Trend Analysis / Next Predict:</div>
         <div id="prediction" class="prediction" style="color: #f87171;">Data မလုံလောက်သေးပါ (အနည်းဆုံး ၃ ခုထည့်ပါ)</div>
     </div>
 
     <div class="card">
-        <div>ထည့်သွင်းထားသော History (နောက်ဆုံး ၁၀ ခု):</div>
+        <div style="color: #94a3b8; font-size: 0.9rem;">ထည့်သွင်းထားသော History (နောက်ဆုံး ၁၅ ခု):</div>
         <div id="history" class="history"></div>
     </div>
 
@@ -51,56 +74,62 @@
 </div>
 
 <script>
-    let history = JSON.parse(localStorage.getItem('wingo_history')) || [];
+    // LocalStorage name changed to avoid conflict with previous version
+    let history = JSON.parse(localStorage.getItem('wingo_history_v2')) || [];
 
     function updateUI() {
         const historyDiv = document.getElementById('history');
         const predDiv = document.getElementById('prediction');
         
-        // History Display
+        // Render History Dots
         historyDiv.innerHTML = '';
-        history.slice(-10).forEach(item => {
+        history.slice(-15).forEach(item => {
             const dot = document.createElement('div');
-            dot.className = `dot bg-${item.toLowerCase()}`;
-            dot.innerText = item[0];
+            dot.className = 'dot';
+            
+            if (item.color === 'Green') dot.style.background = '#22c55e';
+            else if (item.color === 'Red') dot.style.background = '#ef4444';
+            else if (item.color === 'Violet') dot.style.background = '#a855f7';
+            else if (item.color === 'Violet-Red') dot.style.background = 'linear-gradient(135deg, #a855f7 50%, #ef4444 50%)';
+            else if (item.color === 'Violet-Green') dot.style.background = 'linear-gradient(135deg, #a855f7 50%, #22c55e 50%)';
+            
+            dot.innerText = item.val;
             historyDiv.appendChild(dot);
         });
 
-        // Basic Pattern Logic Analysis
+        // Basic Pattern Logic
         if (history.length < 3) {
             predDiv.innerText = "Data မလုံလောက်သေးပါ (အနည်းဆုံး ၃ ခုထည့်ပါ)";
             predDiv.style.color = "#f87171";
             return;
         }
 
-        const last3 = history.slice(-3).join('-');
-        
-        // Simple Probability Rules based on patterns
-        if (history.slice(-1)[0] === 'Violet') {
-            predDiv.innerText = "Next Trend: Green သို့မဟုတ် Red (Violet ပြီးနောက် Pattern ပြောင်းလေ့ရှိ)";
+        const getBaseColor = (c) => c.includes('Red') ? 'Red' : c.includes('Green') ? 'Green' : 'Violet';
+        const lastColors = history.slice(-3).map(h => getBaseColor(h.color));
+
+        if (lastColors[2] === 'Violet' || history[history.length-1].color.includes('Violet')) {
+            predDiv.innerText = "🚨 Next Trend: 'ခရမ်း' ထွက်ပြီးနောက် Pattern ပြောင်းလေ့ရှိသည်။ (Red သို့ Green သတိထားကစားပါ)";
             predDiv.style.color = "#a855f7";
-        } else if (history.slice(-2).every(val => val === history.slice(-1)[0])) {
-            const sameColor = history.slice(-1)[0];
-            predDiv.innerText = `Streak Trend: ${sameColor} ဆက်ထွက်နိုင်ခြေ သို့မဟုတ် Opposite ပြောင်းနိုင်ခြေ 50/50`;
-            predDiv.style.color = sameColor === 'Green' ? '#4ade80' : '#f87171';
+        } else if (lastColors[0] === lastColors[1] && lastColors[1] === lastColors[2]) {
+            predDiv.innerText = `🔥 Streak Pattern: '${lastColors[2]}' ဆက်တိုက်ထွက်နေသည်။ ပုံမှန်အားဖြင့် ၄/၅ ခါမြောက်တွင် ပြောင်းလေ့ရှိသည်။`;
+            predDiv.style.color = lastColors[2] === 'Green' ? '#4ade80' : '#f87171';
         } else {
-            const lastColor = history.slice(-1)[0];
-            const nextSuggested = lastColor === 'Green' ? 'Red' : 'Green';
-            predDiv.innerText = `Suggested Trend: ${nextSuggested} (Alternating Pattern)`;
+            const nextSuggested = lastColors[2] === 'Green' ? 'Red' : 'Green';
+            predDiv.innerText = `📊 Suggested Color: '${nextSuggested}' (Alternating Trend အရ)`;
             predDiv.style.color = "#38bdf8";
         }
         
-        localStorage.setItem('wingo_history', JSON.stringify(history));
+        localStorage.setItem('wingo_history_v2', JSON.stringify(history));
     }
 
-    function addResult(color) {
-        history.push(color);
+    function addResult(val, color) {
+        history.push({val, color});
         updateUI();
     }
 
     function clearData() {
         history = [];
-        localStorage.removeItem('wingo_history');
+        localStorage.removeItem('wingo_history_v2');
         updateUI();
     }
 
