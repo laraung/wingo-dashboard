@@ -1,72 +1,78 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wingo Trend Dashboard (Color + Number)</title>
+    <title>Wingo Pro Analytics Dashboard</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background: #1e293b; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        h2 { text-align: center; color: #38bdf8; margin-top: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 15px; }
+        .container { max-width: 650px; margin: 0 auto; background: #1e293b; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+        h2 { text-align: center; color: #38bdf8; margin: 0 0 15px 0; font-size: 1.5rem; }
         
         .num-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; }
-        .btn-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        
-        button { padding: 12px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; transition: opacity 0.2s; color: #fff; font-size: 1.1rem; }
-        button:hover { opacity: 0.8; transform: scale(0.98); }
+        button { padding: 12px 5px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: transform 0.1s, opacity 0.2s; color: #fff; font-size: 1.1rem; }
+        button:active { transform: scale(0.95); }
         
         .btn-green { background: #22c55e; }
         .btn-red { background: #ef4444; }
-        .btn-violet { background: #a855f7; }
-        /* 0 နှင့် 5 အတွက် အရောင်စပ်များ */
         .btn-violet-red { background: linear-gradient(135deg, #a855f7 50%, #ef4444 50%); }
         .btn-violet-green { background: linear-gradient(135deg, #a855f7 50%, #22c55e 50%); }
         
-        .card { background: #334155; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
-        .prediction { font-size: 1.1rem; font-weight: bold; line-height: 1.5; }
-        .history { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+        .card { background: #334155; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
+        .card-title { color: #94a3b8; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600; }
         
-        .dot { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .pred-box { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .pred-item { background: #0f172a; padding: 10px; border-radius: 6px; text-align: center; }
+        .pred-value { font-size: 1.3rem; font-weight: bold; margin-top: 5px; }
         
-        .clear-btn { background: #64748b; color: white; width: 100%; margin-top: 10px; font-size: 1rem; }
+        .history { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-start; margin-top: 10px; }
+        .history-item { display: flex; flex-direction: column; align-items: center; background: #0f172a; padding: 6px 8px; border-radius: 6px; border: 1px solid #475569; }
+        .dot { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: #fff; }
+        .bs-text { font-size: 10px; margin-top: 4px; color: #cbd5e1; font-weight: bold; }
+        
+        .clear-btn { background: #64748b; color: white; width: 100%; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Wingo Pro Analyzer</h2>
+    <h2>Wingo Analytics Dashboard</h2>
     
-    <p style="text-align:center; font-size: 0.9rem; color: #94a3b8; margin-bottom: 10px;">ထွက်ထားသည့် <strong>ဂဏန်း</strong> ကို ရွေးချယ်ပါ:</p>
-    
-    <!-- ဂဏန်းခလုတ်များ (0 မှ 9 အထိ) -->
+    <div class="card-title" style="text-align: center;">ထွက်ထားသည့် ဂဏန်း (0-9) ကို နှိပ်ပါ:</div>
     <div class="num-grid">
-        <button class="btn-violet-red" onclick="addResult('0', 'Violet-Red')">0</button>
-        <button class="btn-green" onclick="addResult('1', 'Green')">1</button>
-        <button class="btn-red" onclick="addResult('2', 'Red')">2</button>
-        <button class="btn-green" onclick="addResult('3', 'Green')">3</button>
-        <button class="btn-red" onclick="addResult('4', 'Red')">4</button>
-        <button class="btn-violet-green" onclick="addResult('5', 'Violet-Green')">5</button>
-        <button class="btn-red" onclick="addResult('6', 'Red')">6</button>
-        <button class="btn-green" onclick="addResult('7', 'Green')">7</button>
-        <button class="btn-red" onclick="addResult('8', 'Red')">8</button>
-        <button class="btn-green" onclick="addResult('9', 'Green')">9</button>
+        <button class="btn-violet-red" onclick="addResult(0)">0 (S)</button>
+        <button class="btn-green" onclick="addResult(1)">1 (S)</button>
+        <button class="btn-red" onclick="addResult(2)">2 (S)</button>
+        <button class="btn-green" onclick="addResult(3)">3 (S)</button>
+        <button class="btn-red" onclick="addResult(4)">4 (S)</button>
+        <button class="btn-violet-green" onclick="addResult(5)">5 (B)</button>
+        <button class="btn-red" onclick="addResult(6)">6 (B)</button>
+        <button class="btn-green" onclick="addResult(7)">7 (B)</button>
+        <button class="btn-red" onclick="addResult(8)">8 (B)</button>
+        <button class="btn-green" onclick="addResult(9)">9 (B)</button>
     </div>
 
-    <p style="text-align:center; font-size: 0.8rem; color: #94a3b8;">(သို့မဟုတ်) အရောင်သီးသန့် ထည့်ရန်</p>
-    <!-- အရောင်ခလုတ်များ -->
-    <div class="btn-group">
-        <button class="btn-green" onclick="addResult('G', 'Green')">Green</button>
-        <button class="btn-red" onclick="addResult('R', 'Red')">Red</button>
-        <button class="btn-violet" onclick="addResult('V', 'Violet')">Violet</button>
-    </div>
-
+    <!-- AI Prediction Output Card -->
     <div class="card">
-        <div style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 5px;">Trend Analysis / Next Predict:</div>
-        <div id="prediction" class="prediction" style="color: #f87171;">Data မလုံလောက်သေးပါ (အနည်းဆုံး ၃ ခုထည့်ပါ)</div>
+        <div class="card-title">🎯 Trend Pattern Prediction</div>
+        <div id="status-msg" style="color: #f87171; text-align: center; font-size: 0.9rem;">Data မလုံလောက်သေးပါ (အနည်းဆုံး ၄ ခု ထည့်ပါ)</div>
+        
+        <div class="pred-box">
+            <div class="pred-item">
+                <span style="font-size: 0.8rem; color: #94a3b8;">ခန့်မှန်း အရောင်</span>
+                <div id="pred-color" class="pred-value" style="color: #cbd5e1;">-</div>
+            </div>
+            <div class="pred-item">
+                <span style="font-size: 0.8rem; color: #94a3b8;">ခန့်မှန်း အရွယ်အစား</span>
+                <div id="pred-bs" class="pred-value" style="color: #cbd5e1;">-</div>
+            </div>
+        </div>
+        <div id="pred-reason" style="font-size: 0.85rem; color: #38bdf8; margin-top: 10px; text-align: center;"></div>
     </div>
 
+    <!-- History Card -->
     <div class="card">
-        <div style="color: #94a3b8; font-size: 0.9rem;">ထည့်သွင်းထားသော History (နောက်ဆုံး ၁၅ ခု):</div>
+        <div class="card-title">📜 History (နောက်ဆုံး ၁၂ ခု)</div>
         <div id="history" class="history"></div>
     </div>
 
@@ -74,62 +80,107 @@
 </div>
 
 <script>
-    // LocalStorage name changed to avoid conflict with previous version
-    let history = JSON.parse(localStorage.getItem('wingo_history_v2')) || [];
+    let history = JSON.parse(localStorage.getItem('wingo_history_v3')) || [];
+
+    function getItemDetails(num) {
+        let color = '';
+        if (num === 0) color = 'Violet-Red';
+        else if (num === 5) color = 'Violet-Green';
+        else if ([1, 3, 7, 9].includes(num)) color = 'Green';
+        else color = 'Red';
+
+        const bs = num >= 5 ? 'BIG' : 'SMALL';
+        return { num, color, bs };
+    }
 
     function updateUI() {
         const historyDiv = document.getElementById('history');
-        const predDiv = document.getElementById('prediction');
-        
-        // Render History Dots
+        const statusMsg = document.getElementById('status-msg');
+        const predColor = document.getElementById('pred-color');
+        const predBs = document.getElementById('pred-bs');
+        const predReason = document.getElementById('pred-reason');
+
+        // History Render
         historyDiv.innerHTML = '';
-        history.slice(-15).forEach(item => {
+        history.slice(-12).forEach(item => {
+            const wrap = document.createElement('div');
+            wrap.className = 'history-item';
+            
             const dot = document.createElement('div');
             dot.className = 'dot';
-            
             if (item.color === 'Green') dot.style.background = '#22c55e';
             else if (item.color === 'Red') dot.style.background = '#ef4444';
-            else if (item.color === 'Violet') dot.style.background = '#a855f7';
             else if (item.color === 'Violet-Red') dot.style.background = 'linear-gradient(135deg, #a855f7 50%, #ef4444 50%)';
             else if (item.color === 'Violet-Green') dot.style.background = 'linear-gradient(135deg, #a855f7 50%, #22c55e 50%)';
-            
-            dot.innerText = item.val;
-            historyDiv.appendChild(dot);
+            dot.innerText = item.num;
+
+            const bsLabel = document.createElement('span');
+            bsLabel.className = 'bs-text';
+            bsLabel.innerText = item.bs[0]; // 'B' or 'S'
+
+            wrap.appendChild(dot);
+            wrap.appendChild(bsLabel);
+            historyDiv.appendChild(wrap);
         });
 
-        // Basic Pattern Logic
-        if (history.length < 3) {
-            predDiv.innerText = "Data မလုံလောက်သေးပါ (အနည်းဆုံး ၃ ခုထည့်ပါ)";
-            predDiv.style.color = "#f87171";
+        // Prediction Logic
+        if (history.length < 4) {
+            statusMsg.style.display = 'block';
+            predColor.innerText = '-';
+            predBs.innerText = '-';
+            predReason.innerText = '';
             return;
         }
 
-        const getBaseColor = (c) => c.includes('Red') ? 'Red' : c.includes('Green') ? 'Green' : 'Violet';
-        const lastColors = history.slice(-3).map(h => getBaseColor(h.color));
+        statusMsg.style.display = 'none';
 
-        if (lastColors[2] === 'Violet' || history[history.length-1].color.includes('Violet')) {
-            predDiv.innerText = "🚨 Next Trend: 'ခရမ်း' ထွက်ပြီးနောက် Pattern ပြောင်းလေ့ရှိသည်။ (Red သို့ Green သတိထားကစားပါ)";
-            predDiv.style.color = "#a855f7";
-        } else if (lastColors[0] === lastColors[1] && lastColors[1] === lastColors[2]) {
-            predDiv.innerText = `🔥 Streak Pattern: '${lastColors[2]}' ဆက်တိုက်ထွက်နေသည်။ ပုံမှန်အားဖြင့် ၄/၅ ခါမြောက်တွင် ပြောင်းလေ့ရှိသည်။`;
-            predDiv.style.color = lastColors[2] === 'Green' ? '#4ade80' : '#f87171';
+        const last4 = history.slice(-4);
+        const lastBS = last4.map(h => h.bs);
+        const lastColors = last4.map(h => h.color.includes('Green') ? 'GREEN' : h.color.includes('Red') ? 'RED' : 'VIOLET');
+
+        // Big/Small Pattern Tracking
+        let suggestedBS = '';
+        let bsReason = '';
+        if (lastBS[1] === lastBS[2] && lastBS[2] === lastBS[3]) {
+            suggestedBS = lastBS[3] === 'BIG' ? 'SMALL' : 'BIG';
+            bsReason = `Big/Small ၃ ခါဆက်တိုက် (${lastBS[3]}) ဖြစ်ထားသဖြင့် Trend ပြောင်းရန် မျှော်လင့်ရသည်။`;
+        } else if (lastBS[2] !== lastBS[3]) {
+            suggestedBS = lastBS[3] === 'BIG' ? 'SMALL' : 'BIG';
+            bsReason = `Alternating Trend (တလှည့်စီ) အရ ခန့်မှန်းထားသည်။`;
         } else {
-            const nextSuggested = lastColors[2] === 'Green' ? 'Red' : 'Green';
-            predDiv.innerText = `📊 Suggested Color: '${nextSuggested}' (Alternating Trend အရ)`;
-            predDiv.style.color = "#38bdf8";
+            suggestedBS = lastBS[3];
+            bsReason = `Dragon Trend အရ ${lastBS[3]} ဆက်တိုက် လိုက်ပါမည်။`;
         }
-        
-        localStorage.setItem('wingo_history_v2', JSON.stringify(history));
+
+        // Color Pattern Tracking
+        let suggestedColor = '';
+        if (lastColors[3] === 'VIOLET') {
+            suggestedColor = 'GREEN / RED';
+        } else {
+            suggestedColor = lastColors[3] === 'GREEN' ? 'RED' : 'GREEN';
+        }
+
+        // UI Updates
+        predColor.innerText = suggestedColor;
+        predColor.style.color = suggestedColor === 'GREEN' ? '#4ade80' : suggestedColor === 'RED' ? '#f87171' : '#a855f7';
+
+        predBs.innerText = suggestedBS;
+        predBs.style.color = suggestedBS === 'BIG' ? '#fbbf24' : '#38bdf8';
+
+        predReason.innerText = `💡 ${bsReason}`;
+
+        localStorage.setItem('wingo_history_v3', JSON.stringify(history));
     }
 
-    function addResult(val, color) {
-        history.push({val, color});
+    function addResult(num) {
+        const item = getItemDetails(num);
+        history.push(item);
         updateUI();
     }
 
     function clearData() {
         history = [];
-        localStorage.removeItem('wingo_history_v2');
+        localStorage.removeItem('wingo_history_v3');
         updateUI();
     }
 
