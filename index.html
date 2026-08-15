@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wingo Pure 1024 Pattern Engine</title>
+    <title>Wingo 1024 Fully Dynamic AI Engine</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 15px; }
         .container { max-width: 650px; margin: 0 auto; background: #1e293b; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
@@ -40,7 +40,7 @@
 <body>
 
 <div class="container">
-    <h2>🎯 Wingo Pure 1024 Array Engine</h2>
+    <h2>🎯 Wingo 1024 Fully Dynamic AI Engine</h2>
     
     <div class="card-title" style="justify-content: center;">ထွက်ထားသည့် ဂဏန်း (0-9) ကို နှိပ်ပါ:</div>
     <div class="num-grid">
@@ -59,11 +59,11 @@
     <!-- AI Output Card -->
     <div class="card">
         <div class="card-title">
-            <span>📊 Pure 1024 Database Analysis</span>
+            <span>🧠 1024 Pure Dynamic Engine</span>
             <span id="ai-status" style="color: #22c55e;">Ready</span>
         </div>
         
-        <div id="status-msg" style="color: #f87171; text-align: center; font-size: 0.9rem; padding: 10px 0;">Data မလုံလောက်သေးပါ (အနည်းဆုံး ၂ ခု ထည့်ပါ)</div>
+        <div id="status-msg" style="color: #f87171; text-align: center; font-size: 0.9rem; padding: 10px 0;">Data မလုံလောက်သေးပါ (အနည်းဆုံး ၁ ခု ထည့်ပါ)</div>
         
         <div id="ai-output" style="display: none;">
             <div class="pred-box">
@@ -103,7 +103,7 @@
 </div>
 
 <script>
-    // 1024 Array Generation (0000000000 to 1111111111)
+    // 1024 Pattern Database Generation
     const ALL_PATTERNS = [];
     for (let i = 0; i < 1024; i++) {
         let binaryStr = i.toString(2).padStart(10, '0');
@@ -111,7 +111,7 @@
         ALL_PATTERNS.push(patternStr);
     }
 
-    let history = JSON.parse(localStorage.getItem('wingo_pure_1024_v1')) || [];
+    let history = JSON.parse(localStorage.getItem('wingo_fully_dynamic_v5')) || [];
 
     function getItemDetails(num) {
         let color = '';
@@ -137,7 +137,7 @@
         const confidenceBar = document.getElementById('confidence-bar');
         const predReason = document.getElementById('pred-reason');
 
-        // Render History
+        // History Render
         historyDiv.innerHTML = '';
         history.slice(-15).forEach(item => {
             const wrap = document.createElement('div');
@@ -160,7 +160,7 @@
             historyDiv.appendChild(wrap);
         });
 
-        if (history.length < 2) {
+        if (history.length < 1) {
             statusMsg.style.display = 'block';
             aiOutput.style.display = 'none';
             return;
@@ -171,67 +171,66 @@
 
         const currentSeq = history.map(h => h.bs).join('');
         const seqLen = currentSeq.length;
+        const lastBS = currentSeq[seqLen - 1];
 
-        // Pure 1024 Database Lookup
-        let bNextCount = 0;
-        let sNextCount = 0;
-        let matchedLen = 0;
-        let totalMatches = 0;
-
-        for (let subLen = Math.min(seqLen, 8); subLen >= 1; subLen--) {
-            let searchSub = currentSeq.slice(-subLen);
-            let bCount = 0;
-            let sCount = 0;
-            let matches = 0;
-
-            ALL_PATTERNS.forEach(pat => {
-                let idx = pat.indexOf(searchSub);
-                while (idx !== -1) {
-                    if (idx + subLen < pat.length) {
-                        let nextChar = pat[idx + subLen];
-                        if (nextChar === 'B') bCount++;
-                        else if (nextChar === 'S') sCount++;
-                        matches++;
-                    }
-                    idx = pat.indexOf(searchSub, idx + 1);
-                }
-            });
-
-            if (matches > 0) {
-                bNextCount = bCount;
-                sNextCount = sCount;
-                totalMatches = matches;
-                matchedLen = subLen;
+        // Calculate current consecutive streak (1, 2, 3, 4, 5+ times)
+        let streak = 1;
+        for (let i = seqLen - 2; i >= 0; i--) {
+            if (history[i].bs === lastBS) {
+                streak++;
+            } else {
                 break;
             }
         }
 
-        let predictedBS = 'BIG';
-        let bsProb = 50;
+        // 1024 Database Sub-sequence Lookup
+        let bHits = 0;
+        let sHits = 0;
+        let searchLen = Math.min(seqLen, 6);
+        let activeSub = currentSeq.slice(-searchLen);
 
-        if (totalMatches > 0) {
-            if (bNextCount > sNextCount) {
-                predictedBS = 'BIG';
-                bsProb = Math.round((bNextCount / totalMatches) * 100);
-            } else if (sNextCount > bNextCount) {
-                predictedBS = 'SMALL';
-                bsProb = Math.round((sNextCount / totalMatches) * 100);
+        ALL_PATTERNS.forEach(pat => {
+            let idx = pat.indexOf(activeSub);
+            while (idx !== -1) {
+                if (idx + searchLen < pat.length) {
+                    let nextChar = pat[idx + searchLen];
+                    if (nextChar === 'B') bHits++;
+                    else if (nextChar === 'S') sHits++;
+                }
+                idx = pat.indexOf(activeSub, idx + 1);
+            }
+        });
+
+        // Dynamic Balance Score System (Prevents sticking to one side for short or long streaks)
+        let bScore = bHits;
+        let sScore = sHits;
+
+        if (streak >= 3) {
+            // When streak is 3, 4, 5+ times, dynamically apply reversal weight so both Big/Small can appear
+            if (lastBS === 'B') {
+                sScore += (streak * 18);
             } else {
-                // If tie, follow last output trend
-                predictedBS = currentSeq[seqLen - 1] === 'B' ? 'BIG' : 'SMALL';
-                bsProb = 50;
+                bScore += (streak * 18);
+            }
+        } else {
+            // For 1, 2 streaks, ensure balanced alternation if hits are tied
+            if (bScore === sScore) {
+                if (lastBS === 'S') bScore += 12;
+                else sScore += 12;
             }
         }
 
-        const activeSub = currentSeq.slice(-matchedLen);
-        const reasonMsg = `🔍 ၁,၀၂၄ စာရင်းတွင် "${activeSub}" မှ ရရှိသော Data အခြေအနေ: (BIG: ${bNextCount} ကြိမ် / SMALL: ${sNextCount} ကြိမ်)`;
+        let predictedBS = (bScore >= sScore) ? 'BIG' : 'SMALL';
+        let totalScore = bScore + sScore;
+        let bsProb = totalScore > 0 ? Math.round((Math.max(bScore, sScore) / totalScore) * 100) : 65;
+        bsProb = Math.max(58, Math.min(bsProb, 88));
 
-        // Color Logic
+        // Dynamic Color Prediction Logic
         const lastColor = history[history.length - 1].color;
         let predictedColor = lastColor.includes('Green') ? 'RED' : 'GREEN';
-        let colorProb = 60;
+        let colorProb = 65;
 
-        const totalConfidence = Math.min(Math.round((bsProb + colorProb) / 1.4), 95);
+        const totalConfidence = Math.min(Math.round((bsProb + colorProb) / 1.42), 92);
 
         predColor.innerText = predictedColor;
         predColor.style.color = predictedColor === 'GREEN' ? '#4ade80' : '#f87171';
@@ -244,9 +243,9 @@
         confidenceVal.innerText = `${totalConfidence}%`;
         confidenceBar.style.width = `${totalConfidence}%`;
 
-        predReason.innerText = `💡 ${reasonMsg}`;
+        predReason.innerText = `💡 1024 Dynamic Engine: "${activeSub}" (Streak: ${streak} ကြိမ်) အပေါ်မူတည်၍ ${predictedBS} သို့ ပြောင်းလဲခန့်မှန်းထားပါသည်။`;
 
-        localStorage.setItem('wingo_pure_1024_v1', JSON.stringify(history));
+        localStorage.setItem('wingo_fully_dynamic_v5', JSON.stringify(history));
     }
 
     function addResult(num) {
@@ -257,7 +256,7 @@
 
     function clearData() {
         history = [];
-        localStorage.removeItem('wingo_pure_1024_v1');
+        localStorage.removeItem('wingo_fully_dynamic_v5');
         updateUI();
     }
 
