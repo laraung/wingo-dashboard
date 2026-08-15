@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wingo Dragon AI Dashboard</title>
+    <title>Wingo Smart Dynamic AI Dashboard</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 15px; }
         .container { max-width: 650px; margin: 0 auto; background: #1e293b; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
@@ -40,7 +40,7 @@
 <body>
 
 <div class="container">
-    <h2>🐉 Wingo Dragon AI Dashboard</h2>
+    <h2>🎯 Wingo Smart AI Dashboard</h2>
     
     <div class="card-title" style="justify-content: center;">ထွက်ထားသည့် ဂဏန်း (0-9) ကို နှိပ်ပါ:</div>
     <div class="num-grid">
@@ -59,8 +59,8 @@
     <!-- AI Prediction Output Card -->
     <div class="card">
         <div class="card-title">
-            <span>🧠 Smart Pattern Analytics</span>
-            <span id="ai-status" style="color: #22c55e;">Dragon Detector Active</span>
+            <span>🧠 Dynamic Pattern Analytics</span>
+            <span id="ai-status" style="color: #22c55e;">Active</span>
         </div>
         
         <div id="status-msg" style="color: #f87171; text-align: center; font-size: 0.9rem; padding: 10px 0;">Data မလုံလောက်သေးပါ (အနည်းဆုံး ၅ ခု ထည့်ပါ)</div>
@@ -103,7 +103,7 @@
 </div>
 
 <script>
-    let history = JSON.parse(localStorage.getItem('wingo_dragon_v1')) || [];
+    let history = JSON.parse(localStorage.getItem('wingo_dynamic_v1')) || [];
 
     function getItemDetails(num) {
         let color = '';
@@ -165,7 +165,7 @@
         const lastBS = history.map(h => h.bs);
         const lastColors = history.map(h => h.color.includes('Green') ? 'GREEN' : h.color.includes('Red') ? 'RED' : 'VIOLET');
 
-        // Dragon & Streak Detection Logic
+        // Check Streak Count
         let streakCount = 1;
         for (let i = len - 2; i >= 0; i--) {
             if (lastBS[i] === lastBS[len - 1]) streakCount++;
@@ -176,27 +176,34 @@
         let bsProb = 50;
         let bsReason = '';
 
-        // Dragon Detection Rule (၃ ခါ နှင့် အထက် ဆက်တိုက်ထွက်ရင် Dragon အဖြစ် သတ်မှတ်ပြီး ထိုအတိုင်း ဆက်လိုက်ခိုင်းမည်)
-        if (streakCount >= 3) {
-            predictedBS = lastBS[len - 1]; // Trend အတိုင်း ဆက်လိုက်မည်
-            bsProb = Math.min(65 + (streakCount * 4), 92); // Streak ရှည်လေ ရာခိုင်နှုန်း တက်လေ
-            bsReason = `🐉 Dragon Trend detected (${streakCount} ခါဆက်တိုက် ${predictedBS} ထွက်နေသည်) - Trend အတိုင်း ဆက်လိုက်ပါ။`;
+        // Dynamic Prediction Rules
+        if (streakCount >= 4) {
+            // တန်းရှည် ၄ ခါနှင့် အထက်ရောက်လျှင် Break ဖြစ်နိုင်ခြေ (ပြောင်းထွက်နိုင်ခြေ) ကို တွက်ချက်ခြင်း
+            const oppositeBS = lastBS[len - 1] === 'BIG' ? 'SMALL' : 'BIG';
+            predictedBS = oppositeBS;
+            bsProb = Math.min(60 + (streakCount * 3), 85);
+            bsReason = `⚠️ ${streakCount} ကြိမ် ဆက်တိုက် ${lastBS[len-1]} ထွက်ထားသဖြင့် Pattern အကေ့/အပြောင်း (${oppositeBS}) ကို သတိထားပါ။`;
+        } else if (streakCount === 2 || streakCount === 3) {
+            // ၂ ခါ သို့ ၃ ခါ ထွက်ထားချိန်တွင် Trend အတိုင်း ဆက်သွားနိုင်ခြေ ပိုများခြင်း
+            predictedBS = lastBS[len - 1];
+            bsProb = 65;
+            bsReason = `📈 Trend အဟုန်အတိုင်း ${predictedBS} ဆက်လက်ထွက်နိုင်ခြေ ရှိပါသည်။`;
         } else if (lastBS[len-1] !== lastBS[len-2] && lastBS[len-2] !== lastBS[len-3]) {
-            // Ping-Pong (Alternating) Pattern
+            // Alternating Trend (တလှည့်စီ)
             predictedBS = lastBS[len-1] === 'BIG' ? 'SMALL' : 'BIG';
-            bsProb = 75;
-            bsReason = `🔄 Alternating Pattern (တလှည့်စီ) ပေါ်နေသဖြင့် ${predictedBS} သို့ ခန့်မှန်းသည်။`;
+            bsProb = 70;
+            bsReason = `🔄 Alternating Pattern (တလှည့်စီ) အရ ${predictedBS} ခန့်မှန်းထားသည်။`;
         } else {
             predictedBS = lastBS[len-1] === 'BIG' ? 'SMALL' : 'BIG';
-            bsProb = 60;
-            bsReason = `📊 Normal Trend အရ ${predictedBS} ဖြစ်နိုင်ခြေ ပိုများသည်။`;
+            bsProb = 55;
+            bsReason = `📊 Normal Trend balance အရ ${predictedBS} ဖြစ်နိုင်ခြေရှိသည်။`;
         }
 
         // Color Logic
         let predictedColor = lastColors[len-1] === 'GREEN' ? 'RED' : 'GREEN';
-        let colorProb = 68;
+        let colorProb = 65;
 
-        const confidence = Math.min(Math.round((bsProb + colorProb) / 1.5), 95);
+        const confidence = Math.min(Math.round((bsProb + colorProb) / 1.5), 90);
 
         predColor.innerText = predictedColor;
         predColor.style.color = predictedColor === 'GREEN' ? '#4ade80' : '#f87171';
@@ -211,18 +218,20 @@
 
         predReason.innerText = `💡 ${bsReason}`;
 
-        localStorage.setItem('wingo_dragon_v1', JSON.stringify(history));
+        localStorage.setItem('wingo_dynamic_v1', JSON.stringify(history));
     }
 
     function addResult(num) {
-        const item = getItemDetails(num);
-        history.push(item);
-        updateUI();
+        const item = getItem Details ? getItemDetails(num) : null;
+        if(item) {
+            history.push(item);
+            updateUI();
+        }
     }
 
     function clearData() {
         history = [];
-        localStorage.removeItem('wingo_dragon_v1');
+        localStorage.removeItem('wingo_dynamic_v1');
         updateUI();
     }
 
