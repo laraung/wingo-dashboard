@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wingo 1024 Fully Dynamic AI Engine</title>
+    <title>Wingo 1024 Smart Predictor AI</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 15px; }
         .container { max-width: 650px; margin: 0 auto; background: #1e293b; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
@@ -40,7 +40,7 @@
 <body>
 
 <div class="container">
-    <h2>🎯 Wingo 1024 Fully Dynamic AI Engine</h2>
+    <h2>🎯 Wingo 1024 Smart AI Engine</h2>
     
     <div class="card-title" style="justify-content: center;">ထွက်ထားသည့် ဂဏန်း (0-9) ကို နှိပ်ပါ:</div>
     <div class="num-grid">
@@ -59,7 +59,7 @@
     <!-- AI Output Card -->
     <div class="card">
         <div class="card-title">
-            <span>🧠 1024 Pure Dynamic Engine</span>
+            <span>🧠 1024 Smart Dynamic Engine</span>
             <span id="ai-status" style="color: #22c55e;">Ready</span>
         </div>
         
@@ -103,7 +103,7 @@
 </div>
 
 <script>
-    // 1024 Pattern Database Generation
+    // 1024 Combinations Setup
     const ALL_PATTERNS = [];
     for (let i = 0; i < 1024; i++) {
         let binaryStr = i.toString(2).padStart(10, '0');
@@ -111,7 +111,7 @@
         ALL_PATTERNS.push(patternStr);
     }
 
-    let history = JSON.parse(localStorage.getItem('wingo_fully_dynamic_v5')) || [];
+    let history = JSON.parse(localStorage.getItem('wingo_smart_v6')) || [];
 
     function getItemDetails(num) {
         let color = '';
@@ -137,7 +137,7 @@
         const confidenceBar = document.getElementById('confidence-bar');
         const predReason = document.getElementById('pred-reason');
 
-        // History Render
+        // Render History
         historyDiv.innerHTML = '';
         history.slice(-15).forEach(item => {
             const wrap = document.createElement('div');
@@ -173,20 +173,10 @@
         const seqLen = currentSeq.length;
         const lastBS = currentSeq[seqLen - 1];
 
-        // Calculate current consecutive streak (1, 2, 3, 4, 5+ times)
-        let streak = 1;
-        for (let i = seqLen - 2; i >= 0; i--) {
-            if (history[i].bs === lastBS) {
-                streak++;
-            } else {
-                break;
-            }
-        }
-
-        // 1024 Database Sub-sequence Lookup
+        // Search in 1024 Database
         let bHits = 0;
         let sHits = 0;
-        let searchLen = Math.min(seqLen, 6);
+        let searchLen = Math.min(seqLen, 5);
         let activeSub = currentSeq.slice(-searchLen);
 
         ALL_PATTERNS.forEach(pat => {
@@ -201,36 +191,32 @@
             }
         });
 
-        // Dynamic Balance Score System (Prevents sticking to one side for short or long streaks)
-        let bScore = bHits;
-        let sScore = sHits;
+        // Smart Balancing Predictor Logic (Fixes "Follow-last" issue)
+        let predictedBS = '';
+        let bsProb = 50;
 
-        if (streak >= 3) {
-            // When streak is 3, 4, 5+ times, dynamically apply reversal weight so both Big/Small can appear
-            if (lastBS === 'B') {
-                sScore += (streak * 18);
+        if (bHits !== sHits && (bHits > 0 || sHits > 0)) {
+            if (bHits > sHits) {
+                predictedBS = 'BIG';
+                bsProb = Math.round((bHits / (bHits + sHits)) * 100);
             } else {
-                bScore += (streak * 18);
+                predictedBS = 'SMALL';
+                bsProb = Math.round((sHits / (bHits + sHits)) * 100);
             }
         } else {
-            // For 1, 2 streaks, ensure balanced alternation if hits are tied
-            if (bScore === sScore) {
-                if (lastBS === 'S') bScore += 12;
-                else sScore += 12;
-            }
+            // Reversal Rule when Hits are equal (Prevents S->S or B->B always)
+            predictedBS = (lastBS === 'S') ? 'BIG' : 'SMALL';
+            bsProb = 68;
         }
 
-        let predictedBS = (bScore >= sScore) ? 'BIG' : 'SMALL';
-        let totalScore = bScore + sScore;
-        let bsProb = totalScore > 0 ? Math.round((Math.max(bScore, sScore) / totalScore) * 100) : 65;
-        bsProb = Math.max(58, Math.min(bsProb, 88));
+        bsProb = Math.max(60, Math.min(bsProb, 90));
 
-        // Dynamic Color Prediction Logic
+        // Color Prediction
         const lastColor = history[history.length - 1].color;
         let predictedColor = lastColor.includes('Green') ? 'RED' : 'GREEN';
         let colorProb = 65;
 
-        const totalConfidence = Math.min(Math.round((bsProb + colorProb) / 1.42), 92);
+        const totalConfidence = Math.min(Math.round((bsProb + colorProb) / 1.42), 93);
 
         predColor.innerText = predictedColor;
         predColor.style.color = predictedColor === 'GREEN' ? '#4ade80' : '#f87171';
@@ -243,9 +229,9 @@
         confidenceVal.innerText = `${totalConfidence}%`;
         confidenceBar.style.width = `${totalConfidence}%`;
 
-        predReason.innerText = `💡 1024 Dynamic Engine: "${activeSub}" (Streak: ${streak} ကြိမ်) အပေါ်မူတည်၍ ${predictedBS} သို့ ပြောင်းလဲခန့်မှန်းထားပါသည်။`;
+        predReason.innerText = `💡 1024 Smart AI: "${activeSub}" Pattern အပေါ် မူတည်ပြီး ${predictedBS} ကို တိကျစွာ ခန့်မှန်းပေးထားပါသည်။`;
 
-        localStorage.setItem('wingo_fully_dynamic_v5', JSON.stringify(history));
+        localStorage.setItem('wingo_smart_v6', JSON.stringify(history));
     }
 
     function addResult(num) {
@@ -256,7 +242,7 @@
 
     function clearData() {
         history = [];
-        localStorage.removeItem('wingo_fully_dynamic_v5');
+        localStorage.removeItem('wingo_smart_v6');
         updateUI();
     }
 
