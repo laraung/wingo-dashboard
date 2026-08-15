@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wingo AI Smart Dashboard</title>
+    <title>Wingo Dragon AI Dashboard</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 15px; }
         .container { max-width: 650px; margin: 0 auto; background: #1e293b; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
@@ -26,7 +26,6 @@
         .pred-value { font-size: 1.4rem; font-weight: bold; margin-top: 4px; }
         .prob-text { font-size: 0.8rem; color: #38bdf8; margin-top: 4px; font-weight: 600; }
 
-        /* Confidence Bar */
         .progress-bg { background: #0f172a; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 12px; }
         .progress-fill { background: linear-gradient(90deg, #38bdf8, #22c55e); height: 100%; width: 0%; transition: width 0.4s ease; }
 
@@ -41,7 +40,7 @@
 <body>
 
 <div class="container">
-    <h2>🤖 Wingo AI Engine Dashboard</h2>
+    <h2>🐉 Wingo Dragon AI Dashboard</h2>
     
     <div class="card-title" style="justify-content: center;">ထွက်ထားသည့် ဂဏန်း (0-9) ကို နှိပ်ပါ:</div>
     <div class="num-grid">
@@ -60,8 +59,8 @@
     <!-- AI Prediction Output Card -->
     <div class="card">
         <div class="card-title">
-            <span>🧠 AI Probability Analytics</span>
-            <span id="ai-status" style="color: #22c55e;">Ready</span>
+            <span>🧠 Smart Pattern Analytics</span>
+            <span id="ai-status" style="color: #22c55e;">Dragon Detector Active</span>
         </div>
         
         <div id="status-msg" style="color: #f87171; text-align: center; font-size: 0.9rem; padding: 10px 0;">Data မလုံလောက်သေးပါ (အနည်းဆုံး ၅ ခု ထည့်ပါ)</div>
@@ -104,7 +103,7 @@
 </div>
 
 <script>
-    let history = JSON.parse(localStorage.getItem('wingo_ai_v1')) || [];
+    let history = JSON.parse(localStorage.getItem('wingo_dragon_v1')) || [];
 
     function getItemDetails(num) {
         let color = '';
@@ -153,7 +152,6 @@
             historyDiv.appendChild(wrap);
         });
 
-        // AI Engine Calculation
         if (history.length < 5) {
             statusMsg.style.display = 'block';
             aiOutput.style.display = 'none';
@@ -163,54 +161,43 @@
         statusMsg.style.display = 'none';
         aiOutput.style.display = 'block';
 
-        // Advanced AI Logic Engine
         const len = history.length;
         const lastBS = history.map(h => h.bs);
         const lastColors = history.map(h => h.color.includes('Green') ? 'GREEN' : h.color.includes('Red') ? 'RED' : 'VIOLET');
 
-        // 1. Big / Small Probability Calculation
-        let bigWeight = 50;
-        let smallWeight = 50;
-
-        const streakBS = lastBS.slice(-3);
-        if (streakBS.every(v => v === 'BIG')) {
-            smallWeight += 25;
-            bigWeight -= 25;
-        } else if (streakBS.every(v => v === 'SMALL')) {
-            bigWeight += 25;
-            smallWeight -= 25;
+        // Dragon & Streak Detection Logic
+        let streakCount = 1;
+        for (let i = len - 2; i >= 0; i--) {
+            if (lastBS[i] === lastBS[len - 1]) streakCount++;
+            else break;
         }
 
-        if (lastBS[len-1] !== lastBS[len-2]) {
-            // Alternating Trend
-            if (lastBS[len-1] === 'BIG') smallWeight += 15;
-            else bigWeight += 15;
-        }
+        let predictedBS = '';
+        let bsProb = 50;
+        let bsReason = '';
 
-        const predictedBS = bigWeight >= smallWeight ? 'BIG' : 'SMALL';
-        const bsProb = Math.max(bigWeight, smallWeight);
-
-        // 2. Color Probability Calculation
-        let greenWeight = 50;
-        let redWeight = 50;
-
-        const lastC = lastColors[len-1];
-        if (lastC === 'GREEN') {
-            redWeight += 20;
-        } else if (lastC === 'RED') {
-            greenWeight += 20;
+        // Dragon Detection Rule (၃ ခါ နှင့် အထက် ဆက်တိုက်ထွက်ရင် Dragon အဖြစ် သတ်မှတ်ပြီး ထိုအတိုင်း ဆက်လိုက်ခိုင်းမည်)
+        if (streakCount >= 3) {
+            predictedBS = lastBS[len - 1]; // Trend အတိုင်း ဆက်လိုက်မည်
+            bsProb = Math.min(65 + (streakCount * 4), 92); // Streak ရှည်လေ ရာခိုင်နှုန်း တက်လေ
+            bsReason = `🐉 Dragon Trend detected (${streakCount} ခါဆက်တိုက် ${predictedBS} ထွက်နေသည်) - Trend အတိုင်း ဆက်လိုက်ပါ။`;
+        } else if (lastBS[len-1] !== lastBS[len-2] && lastBS[len-2] !== lastBS[len-3]) {
+            // Ping-Pong (Alternating) Pattern
+            predictedBS = lastBS[len-1] === 'BIG' ? 'SMALL' : 'BIG';
+            bsProb = 75;
+            bsReason = `🔄 Alternating Pattern (တလှည့်စီ) ပေါ်နေသဖြင့် ${predictedBS} သို့ ခန့်မှန်းသည်။`;
         } else {
-            greenWeight += 10;
-            redWeight += 10;
+            predictedBS = lastBS[len-1] === 'BIG' ? 'SMALL' : 'BIG';
+            bsProb = 60;
+            bsReason = `📊 Normal Trend အရ ${predictedBS} ဖြစ်နိုင်ခြေ ပိုများသည်။`;
         }
 
-        const predictedColor = greenWeight >= redWeight ? 'GREEN' : 'RED';
-        const colorProb = Math.max(greenWeight, redWeight);
+        // Color Logic
+        let predictedColor = lastColors[len-1] === 'GREEN' ? 'RED' : 'GREEN';
+        let colorProb = 68;
 
-        // Overall AI Confidence
-        const confidence = Math.min(Math.round((bsProb + colorProb) / 1.6), 92);
+        const confidence = Math.min(Math.round((bsProb + colorProb) / 1.5), 95);
 
-        // Render AI Results
         predColor.innerText = predictedColor;
         predColor.style.color = predictedColor === 'GREEN' ? '#4ade80' : '#f87171';
         probColor.innerText = `${colorProb}% Probability`;
@@ -222,9 +209,9 @@
         confidenceVal.innerText = `${confidence}%`;
         confidenceBar.style.width = `${confidence}%`;
 
-        predReason.innerText = `🤖 AI Analysis: Data ${len} ခုကို မူတည်၍ Big/Small Trend တွင် ${predictedBS} ဖြစ်နိုင်ခြေ ${bsProb}% နှင့် Color Trend တွင် ${predictedColor} ဖြစ်နိုင်ခြေ ${colorProb}% ရှိပါသည်။`;
+        predReason.innerText = `💡 ${bsReason}`;
 
-        localStorage.setItem('wingo_ai_v1', JSON.stringify(history));
+        localStorage.setItem('wingo_dragon_v1', JSON.stringify(history));
     }
 
     function addResult(num) {
@@ -235,7 +222,7 @@
 
     function clearData() {
         history = [];
-        localStorage.removeItem('wingo_ai_v1');
+        localStorage.removeItem('wingo_dragon_v1');
         updateUI();
     }
 
