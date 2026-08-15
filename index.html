@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wingo 1024 Pattern Matching Engine</title>
+    <title>Wingo Pure 1024 Pattern Engine</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 15px; }
         .container { max-width: 650px; margin: 0 auto; background: #1e293b; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
@@ -40,7 +40,7 @@
 <body>
 
 <div class="container">
-    <h2>🎯 Wingo 1024 Dynamic AI Engine</h2>
+    <h2>🎯 Wingo Pure 1024 Array Engine</h2>
     
     <div class="card-title" style="justify-content: center;">ထွက်ထားသည့် ဂဏန်း (0-9) ကို နှိပ်ပါ:</div>
     <div class="num-grid">
@@ -56,10 +56,10 @@
         <button class="btn-green" onclick="addResult(9)">9 (B)</button>
     </div>
 
-    <!-- AI Prediction Output Card -->
+    <!-- AI Output Card -->
     <div class="card">
         <div class="card-title">
-            <span>🧠 Pattern Matching Algorithm</span>
+            <span>📊 Pure 1024 Database Analysis</span>
             <span id="ai-status" style="color: #22c55e;">Ready</span>
         </div>
         
@@ -103,18 +103,15 @@
 </div>
 
 <script>
-    // Generate 1024 Combinations Sequence Matrix
+    // 1024 Array Generation (0000000000 to 1111111111)
     const ALL_PATTERNS = [];
     for (let i = 0; i < 1024; i++) {
         let binaryStr = i.toString(2).padStart(10, '0');
-        let patternStr = '';
-        for (let char of binaryStr) {
-            patternStr += (char === '0' ? 'S' : 'B');
-        }
+        let patternStr = binaryStr.replace(/0/g, 'B').replace(/1/g, 'S');
         ALL_PATTERNS.push(patternStr);
     }
 
-    let history = JSON.parse(localStorage.getItem('wingo_dynamic_v2')) || [];
+    let history = JSON.parse(localStorage.getItem('wingo_pure_1024_v1')) || [];
 
     function getItemDetails(num) {
         let color = '';
@@ -140,7 +137,7 @@
         const confidenceBar = document.getElementById('confidence-bar');
         const predReason = document.getElementById('pred-reason');
 
-        // Render History Items
+        // Render History
         historyDiv.innerHTML = '';
         history.slice(-15).forEach(item => {
             const wrap = document.createElement('div');
@@ -174,19 +171,18 @@
 
         const currentSeq = history.map(h => h.bs).join('');
         const seqLen = currentSeq.length;
-        const lastBS = currentSeq[seqLen - 1];
 
-        // Multi-length Pattern Search (Sub-pattern Lookup)
-        let bCount = 0;
-        let sCount = 0;
+        // Pure 1024 Database Lookup
+        let bNextCount = 0;
+        let sNextCount = 0;
+        let matchedLen = 0;
         let totalMatches = 0;
-        let matchedPatternLen = 0;
 
-        for (let subLen = Math.min(seqLen, 6); subLen >= 2; subLen--) {
+        for (let subLen = Math.min(seqLen, 8); subLen >= 1; subLen--) {
             let searchSub = currentSeq.slice(-subLen);
-            bCount = 0;
-            sCount = 0;
-            totalMatches = 0;
+            let bCount = 0;
+            let sCount = 0;
+            let matches = 0;
 
             ALL_PATTERNS.forEach(pat => {
                 let idx = pat.indexOf(searchSub);
@@ -195,57 +191,47 @@
                         let nextChar = pat[idx + subLen];
                         if (nextChar === 'B') bCount++;
                         else if (nextChar === 'S') sCount++;
-                        totalMatches++;
+                        matches++;
                     }
                     idx = pat.indexOf(searchSub, idx + 1);
                 }
             });
 
-            if (totalMatches > 0 && bCount !== sCount) {
-                matchedPatternLen = subLen;
+            if (matches > 0) {
+                bNextCount = bCount;
+                sNextCount = sCount;
+                totalMatches = matches;
+                matchedLen = subLen;
                 break;
             }
         }
 
         let predictedBS = 'BIG';
         let bsProb = 50;
-        let reasonMsg = '';
 
-        if (totalMatches > 0 && bCount !== sCount) {
-            if (bCount > sCount) {
+        if (totalMatches > 0) {
+            if (bNextCount > sNextCount) {
                 predictedBS = 'BIG';
-                bsProb = Math.round((bCount / totalMatches) * 100);
-            } else {
+                bsProb = Math.round((bNextCount / totalMatches) * 100);
+            } else if (sNextCount > bNextCount) {
                 predictedBS = 'SMALL';
-                bsProb = Math.round((sCount / totalMatches) * 100);
-            }
-            bsProb = Math.max(60, Math.min(bsProb, 90));
-            reasonMsg = `🔍 1024 Database တွင် "${currentSeq.slice(-matchedPatternLen)}" Pattern အပေါ်မူတည်၍ ${predictedBS} ကို ခန့်မှန်းထားပါသည်။`;
-        } else {
-            // Dynamic Trend Pattern Fallback
-            let streak = 1;
-            for (let i = seqLen - 2; i >= 0; i--) {
-                if (history[i].bs === lastBS) streak++;
-                else break;
-            }
-
-            if (streak >= 3) {
-                predictedBS = lastBS === 'B' ? 'SMALL' : 'BIG';
-                bsProb = 75;
-                reasonMsg = `📈 ${streak} ကြိမ်ဆက် ${lastBS} ထွက်ထားသဖြင့် Reversal Rule အရ ${predictedBS} သို့ အပြောင်းအလဲခန့်မှန်းပါသည်။`;
+                bsProb = Math.round((sNextCount / totalMatches) * 100);
             } else {
-                predictedBS = lastBS === 'B' ? 'SMALL' : 'BIG';
-                bsProb = 65;
-                reasonMsg = `🔄 Standard Alternating Logic အရ ${predictedBS} ကို ခန့်မှန်းထားပါသည်။`;
+                // If tie, follow last output trend
+                predictedBS = currentSeq[seqLen - 1] === 'B' ? 'BIG' : 'SMALL';
+                bsProb = 50;
             }
         }
+
+        const activeSub = currentSeq.slice(-matchedLen);
+        const reasonMsg = `🔍 ၁,၀၂၄ စာရင်းတွင် "${activeSub}" မှ ရရှိသော Data အခြေအနေ: (BIG: ${bNextCount} ကြိမ် / SMALL: ${sNextCount} ကြိမ်)`;
 
         // Color Logic
         const lastColor = history[history.length - 1].color;
         let predictedColor = lastColor.includes('Green') ? 'RED' : 'GREEN';
-        let colorProb = 65;
+        let colorProb = 60;
 
-        const totalConfidence = Math.min(Math.round((bsProb + colorProb) / 1.45), 92);
+        const totalConfidence = Math.min(Math.round((bsProb + colorProb) / 1.4), 95);
 
         predColor.innerText = predictedColor;
         predColor.style.color = predictedColor === 'GREEN' ? '#4ade80' : '#f87171';
@@ -260,7 +246,7 @@
 
         predReason.innerText = `💡 ${reasonMsg}`;
 
-        localStorage.setItem('wingo_dynamic_v2', JSON.stringify(history));
+        localStorage.setItem('wingo_pure_1024_v1', JSON.stringify(history));
     }
 
     function addResult(num) {
@@ -271,7 +257,7 @@
 
     function clearData() {
         history = [];
-        localStorage.removeItem('wingo_dynamic_v2');
+        localStorage.removeItem('wingo_pure_1024_v1');
         updateUI();
     }
 
