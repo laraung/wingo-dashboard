@@ -3,431 +3,246 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
-<title>Wingo AI Predictor</title>
+<title>Wingo AI Analytics Dashboard</title>
 
 <style>
 *{
   box-sizing:border-box;
   margin:0;
   padding:0;
-}
-
-:root{
-  --bg:#050914;
-  --card:#0d1425;
-  --card2:#111a30;
-  --border:#263454;
-  --cyan:#00eaff;
-  --blue:#1478ff;
-  --green:#00e59a;
-  --red:#ff4f70;
-  --orange:#ff9d32;
-  --text:#f5f7ff;
-  --muted:#8793b2;
+  font-family:Arial,"Myanmar Text",sans-serif;
 }
 
 body{
   min-height:100vh;
   background:
-    radial-gradient(circle at 50% -10%,#17366d 0,#081126 35%,#050914 75%);
-  color:var(--text);
-  font-family:Arial,"Noto Sans Myanmar",sans-serif;
+    radial-gradient(circle at top,#16254a 0%,#0c1429 45%,#070d1d 100%);
+  color:white;
+  padding:20px;
 }
 
 .container{
-  width:min(1100px,94%);
+  width:min(900px,100%);
   margin:auto;
-  padding:18px 0 40px;
 }
-
-/* HEADER */
 
 .header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-  margin-bottom:18px;
+  text-align:center;
+  padding:20px 10px;
 }
 
-.logo{
-  display:flex;
-  align-items:center;
-  gap:12px;
+.header h1{
+  color:#29b6ff;
+  font-size:30px;
+  margin-bottom:10px;
 }
 
-.logo-icon{
-  width:46px;
-  height:46px;
-  border-radius:14px;
-  display:grid;
-  place-items:center;
-  background:linear-gradient(135deg,#00eaff,#1165ff);
-  box-shadow:0 0 25px #007cff66;
-  font-size:24px;
-}
-
-.logo h1{
-  font-size:22px;
-  letter-spacing:.5px;
-}
-
-.logo p{
-  color:var(--muted);
-  font-size:12px;
-  margin-top:4px;
-}
-
-.status{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  padding:9px 13px;
-  border-radius:20px;
-  background:#0b1828;
-  border:1px solid #1c3c55;
-  color:#69ffc9;
-  font-size:12px;
-}
-
-.dot{
-  width:8px;
-  height:8px;
-  background:#00e59a;
-  border-radius:50%;
-  box-shadow:0 0 10px #00e59a;
-}
-
-/* GRID */
-
-.grid{
-  display:grid;
-  grid-template-columns:1.4fr .8fr;
-  gap:15px;
+.header p{
+  color:#aebbd0;
 }
 
 .card{
-  background:linear-gradient(145deg,
-    rgba(17,27,49,.96),
-    rgba(8,14,28,.96));
-  border:1px solid var(--border);
-  border-radius:18px;
+  background:#202d43;
+  border-radius:15px;
   padding:18px;
-  box-shadow:0 15px 40px #00000035;
+  margin-bottom:16px;
+  box-shadow:0 10px 30px #0005;
 }
 
 .card-title{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:15px;
-}
-
-.card-title h2{
-  font-size:16px;
-}
-
-.card-title span{
-  color:var(--muted);
-  font-size:11px;
-}
-
-/* PERIOD */
-
-.period{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-.info{
-  background:#080f20;
-  border:1px solid #1d2a48;
-  border-radius:13px;
-  padding:14px;
-}
-
-.info small{
-  color:var(--muted);
-  display:block;
-  margin-bottom:7px;
-}
-
-.info strong{
-  font-size:20px;
-}
-
-.timer{
-  color:var(--cyan);
-  text-shadow:0 0 12px #00eaff66;
-}
-
-/* PREDICTION */
-
-.prediction{
-  margin-top:14px;
-  border-radius:17px;
-  padding:25px 15px;
-  text-align:center;
-  background:
-    radial-gradient(circle at center,#073d5960,#081124 70%);
-  border:1px solid #126d89;
-}
-
-.prediction-label{
-  color:var(--muted);
-  font-size:12px;
-}
-
-.prediction-value{
-  font-size:46px;
-  font-weight:900;
-  margin:9px 0;
-  letter-spacing:1px;
-}
-
-.big{
-  color:var(--orange);
-  text-shadow:0 0 22px #ff8a3055;
-}
-
-.small{
-  color:#19a8ff;
-  text-shadow:0 0 22px #168dff66;
-}
-
-.neutral{
-  color:var(--cyan);
-}
-
-.confidence{
-  color:#b8c5e7;
-  font-size:13px;
-}
-
-.bar{
-  height:9px;
-  background:#17223b;
-  border-radius:20px;
-  overflow:hidden;
-  margin-top:14px;
-}
-
-.bar-fill{
-  height:100%;
-  width:0%;
-  border-radius:20px;
-  background:linear-gradient(90deg,#00c6ff,#00f0a0);
-  transition:.5s;
-}
-
-/* SCORE */
-
-.score-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-
-.score-box{
-  background:#080f20;
-  border:1px solid #1d2a48;
-  border-radius:13px;
-  padding:13px;
-}
-
-.score-box small{
-  color:var(--muted);
-  display:block;
-  margin-bottom:5px;
-}
-
-.score-box strong{
-  font-size:20px;
-}
-
-/* HISTORY */
-
-.history{
-  display:flex;
-  flex-wrap:wrap;
-  gap:7px;
-  min-height:47px;
-}
-
-.ball{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  font-weight:bold;
+  color:#a9bdd8;
   font-size:15px;
+  margin-bottom:14px;
 }
 
-.ball-b{
-  background:linear-gradient(145deg,#ffb14a,#ff542d);
-  box-shadow:0 0 13px #ff6d3850;
-}
-
-.ball-s{
-  background:linear-gradient(145deg,#35baff,#1769ff);
-  box-shadow:0 0 13px #1685ff50;
-}
-
-.empty{
-  color:var(--muted);
-  font-size:13px;
-  padding:12px 0;
-}
-
-/* BUTTONS */
-
-.buttons{
-  display:grid;
-  grid-template-columns:1fr 1fr;
+.input-area{
+  display:flex;
   gap:10px;
-  margin-top:14px;
+}
+
+input{
+  flex:1;
+  background:#0e172b;
+  color:white;
+  border:1px solid #40516b;
+  border-radius:9px;
+  padding:14px;
+  font-size:17px;
+  outline:none;
 }
 
 button{
   border:0;
-  cursor:pointer;
-  color:#fff;
+  border-radius:9px;
+  padding:12px 20px;
   font-weight:bold;
-}
-
-.bs-btn{
-  padding:15px;
-  border-radius:13px;
-  font-size:17px;
-}
-
-.big-btn{
-  background:linear-gradient(135deg,#ffad32,#ff4b25);
-  box-shadow:0 7px 20px #ff632833;
-}
-
-.small-btn{
-  background:linear-gradient(135deg,#19b9ff,#1765ff);
-  box-shadow:0 7px 20px #1677ff33;
-}
-
-.action{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:10px;
-}
-
-.action button{
-  padding:11px;
-  border-radius:10px;
-  background:#17223a;
-  border:1px solid #2b3a5d;
-  color:#cbd5ef;
+  cursor:pointer;
 }
 
 .analyze{
-  width:100%;
-  margin-top:12px;
-  padding:15px;
-  border-radius:12px;
-  background:linear-gradient(135deg,#00bce8,#0865ff);
-  box-shadow:0 7px 20px #006eff38;
-  font-size:15px;
+  background:#19a8ff;
+  color:white;
 }
 
-/* TABLE */
-
-.table-wrap{
-  overflow:auto;
-  max-height:330px;
+.clear{
+  width:100%;
+  background:#718198;
+  color:white;
+  margin-top:14px;
 }
 
-table{
-  width:100%;
-  border-collapse:collapse;
+.example{
+  color:#8ea2bd;
   font-size:12px;
+  margin-top:8px;
 }
 
-th{
-  position:sticky;
-  top:0;
-  background:#101a30;
-  color:#8f9cbc;
+.prediction-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
 }
 
-th,td{
-  padding:10px;
+.prediction{
+  background:#0d172b;
+  border-radius:10px;
+  padding:25px 10px;
   text-align:center;
-  border-bottom:1px solid #1b2742;
 }
 
-td{
-  color:#dce4fa;
+.prediction small{
+  color:#8da2bc;
 }
 
-.win{
-  color:#00e59a;
+.prediction .value{
+  font-size:28px;
+  font-weight:bold;
+  margin-top:10px;
 }
 
-.loss{
-  color:#ff5876;
+.big{
+  color:#ff5252;
 }
 
-/* NOTICE */
+.small{
+  color:#28d76f;
+}
 
-.notice{
-  margin-top:15px;
-  padding:12px;
-  border-radius:11px;
-  background:#17140a;
-  border:1px solid #51411b;
-  color:#cdbb82;
+.confidence{
+  margin-top:10px;
+  color:#ffd54a;
+  font-size:14px;
+}
+
+.bar{
+  height:9px;
+  background:#26354c;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:8px;
+}
+
+.bar-fill{
+  height:100%;
+  background:linear-gradient(90deg,#16d77a,#20a8ff);
+  width:0%;
+  transition:.5s;
+}
+
+.history{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.ball{
+  width:52px;
+  height:65px;
+  background:#101b30;
+  border-radius:7px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+.ball-number{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+}
+
+.ball.B .ball-number{
+  background:#ef4444;
+}
+
+.ball.S .ball-number{
+  background:#20c76a;
+}
+
+.ball-label{
   font-size:11px;
-  line-height:1.7;
+  margin-top:3px;
+  color:#b7c3d5;
 }
 
-/* RESPONSIVE */
-
-@media(max-width:780px){
-  .grid{
-    grid-template-columns:1fr;
-  }
-
-  .header{
-    align-items:flex-start;
-  }
-
-  .logo h1{
-    font-size:18px;
-  }
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
 }
 
-@media(max-width:480px){
-  .container{
-    width:96%;
-    padding-top:10px;
-  }
+.stat{
+  background:#0e172b;
+  border-radius:9px;
+  padding:15px 5px;
+  text-align:center;
+}
 
-  .card{
-    padding:14px;
-  }
+.stat strong{
+  display:block;
+  font-size:22px;
+  color:#35b7ff;
+}
 
-  .period{
-    grid-template-columns:1fr 1fr;
-  }
+.stat span{
+  font-size:11px;
+  color:#879bb5;
+}
 
-  .prediction-value{
-    font-size:38px;
-  }
+.analysis{
+  line-height:1.8;
+  color:#c5d0df;
+}
 
-  .ball{
-    width:35px;
-    height:35px;
-  }
+.signal{
+  text-align:center;
+  padding:15px;
+  border-radius:9px;
+  background:#0e172b;
+  margin-top:12px;
+  color:#ffd54a;
+}
+
+.pattern-box{
+  background:#0b1426;
+  border-radius:9px;
+  padding:15px;
+  overflow:auto;
+  font-family:monospace;
+  color:#8ed8ff;
+}
+
+@media(max-width:600px){
+  body{padding:10px}
+  .prediction-grid{grid-template-columns:1fr 1fr}
+  .stats{grid-template-columns:1fr 1fr}
+  .input-area{flex-direction:column}
+  .header h1{font-size:24px}
 }
 </style>
 </head>
@@ -436,275 +251,146 @@ td{
 
 <div class="container">
 
-  <!-- HEADER -->
   <div class="header">
+    <h1>Wingo AI Analytics Dashboard</h1>
+    <p>Big / Small Pattern Analyzer</p>
+  </div>
 
-    <div class="logo">
+  <!-- INPUT -->
+  <div class="card">
+    <div class="card-title">
+      📥 နောက်ဆုံးထွက်ခဲ့သော နံပါတ်များ ထည့်ပါ
+    </div>
 
-      <div class="logo-icon">⚡</div>
+    <div class="input-area">
+      <input
+        id="numbers"
+        placeholder="ဥပမာ - 6 1 0 5 6 8 1 2 3 4"
+      >
+      <button class="analyze" onclick="analyze()">
+        ANALYZE
+      </button>
+    </div>
 
-      <div>
-        <h1>WINGO AI PREDICTOR</h1>
-        <p>Big / Small Pattern Analyzer</p>
+    <div class="example">
+      0-4 = SMALL (S) &nbsp;&nbsp; | &nbsp;&nbsp; 5-9 = BIG (B)
+    </div>
+  </div>
+
+
+  <!-- PREDICTION -->
+  <div class="card">
+
+    <div class="card-title">
+      🎯 TREND PATTERN PREDICTION
+    </div>
+
+    <div class="prediction-grid">
+
+      <div class="prediction">
+        <small>Big / Small ခန့်မှန်းချက်</small>
+        <div id="bsPrediction" class="value">---</div>
+        <div class="confidence">
+          Confidence: <span id="bsConfidence">0%</span>
+        </div>
+        <div class="bar">
+          <div id="bsBar" class="bar-fill"></div>
+        </div>
+      </div>
+
+      <div class="prediction">
+        <small>နောက်ဆုံး Pattern</small>
+        <div id="patternPrediction" class="value">---</div>
+        <div class="confidence">
+          Pattern Strength:
+          <span id="patternConfidence">0%</span>
+        </div>
+        <div class="bar">
+          <div id="patternBar" class="bar-fill"></div>
+        </div>
       </div>
 
     </div>
 
-    <div class="status">
-      <span class="dot"></span>
-      AI SYSTEM ONLINE
+    <div id="signal" class="signal">
+      💡 History ထည့်ပြီး ANALYZE နှိပ်ပါ
     </div>
 
   </div>
 
 
-  <div class="grid">
+  <!-- STATS -->
+  <div class="card">
 
-    <!-- LEFT -->
-    <div>
+    <div class="card-title">📊 HISTORY STATISTICS</div>
 
-      <!-- CURRENT -->
-      <div class="card">
+    <div class="stats">
 
-        <div class="card-title">
-          <h2>🎯 Current Prediction</h2>
-          <span>Data Analysis</span>
-        </div>
-
-        <div class="period">
-
-          <div class="info">
-            <small>Current Period</small>
-            <strong id="period">000001</strong>
-          </div>
-
-          <div class="info">
-            <small>Countdown</small>
-            <strong class="timer" id="timer">60s</strong>
-          </div>
-
-        </div>
-
-        <div class="prediction">
-
-          <div class="prediction-label">
-            NEXT BIG / SMALL
-          </div>
-
-          <div id="prediction"
-               class="prediction-value neutral">
-            WAIT
-          </div>
-
-          <div id="confidence" class="confidence">
-            B/S history 10 ခု ထည့်ပါ
-          </div>
-
-          <div class="bar">
-            <div id="confidenceBar"
-                 class="bar-fill"></div>
-          </div>
-
-        </div>
-
+      <div class="stat">
+        <strong id="total">0</strong>
+        <span>TOTAL</span>
       </div>
 
-
-      <!-- HISTORY INPUT -->
-      <div class="card" style="margin-top:15px">
-
-        <div class="card-title">
-          <h2>📥 B/S History Input</h2>
-          <span id="count">0 / 10</span>
-        </div>
-
-        <div id="history" class="history">
-          <div class="empty">
-            BIG / SMALL ကိုရွေးပြီး history ထည့်ပါ
-          </div>
-        </div>
-
-        <div class="buttons">
-
-          <button
-            class="bs-btn big-btn"
-            onclick="addResult('B')">
-            BIG
-          </button>
-
-          <button
-            class="bs-btn small-btn"
-            onclick="addResult('S')">
-            SMALL
-          </button>
-
-        </div>
-
-        <div class="action">
-
-          <button onclick="removeLast()">
-            ↩ Undo
-          </button>
-
-          <button onclick="clearHistory()">
-            🗑 Clear
-          </button>
-
-        </div>
-
-        <button class="analyze" onclick="analyze()">
-          🔍 ANALYZE & PREDICT
-        </button>
-
+      <div class="stat">
+        <strong id="bigCount">0</strong>
+        <span>BIG</span>
       </div>
 
+      <div class="stat">
+        <strong id="smallCount">0</strong>
+        <span>SMALL</span>
+      </div>
 
-      <!-- STATISTICS -->
-      <div class="card" style="margin-top:15px">
-
-        <div class="card-title">
-          <h2>📊 Pattern Statistics</h2>
-          <span>Last 10</span>
-        </div>
-
-        <div class="score-grid">
-
-          <div class="score-box">
-            <small>BIG Count</small>
-            <strong id="bigCount">0</strong>
-          </div>
-
-          <div class="score-box">
-            <small>SMALL Count</small>
-            <strong id="smallCount">0</strong>
-          </div>
-
-          <div class="score-box">
-            <small>Pattern ID</small>
-            <strong id="patternId">----</strong>
-          </div>
-
-          <div class="score-box">
-            <small>Current Streak</small>
-            <strong id="streak">-</strong>
-          </div>
-
-        </div>
-
+      <div class="stat">
+        <strong id="bigPercent">0%</strong>
+        <span>BIG %</span>
       </div>
 
     </div>
+  </div>
 
 
-    <!-- RIGHT -->
-    <div>
+  <!-- HISTORY -->
+  <div class="card">
 
-      <!-- AI SCORE -->
-      <div class="card">
+    <div class="card-title">
+      📜 HISTORY
+    </div>
 
-        <div class="card-title">
-          <h2>🧠 AI Score</h2>
-          <span>Analysis</span>
-        </div>
+    <div id="history" class="history"></div>
 
-        <div class="score-grid">
+    <button class="clear" onclick="clearHistory()">
+      Clear History
+    </button>
 
-          <div class="score-box">
-            <small>BIG Score</small>
-            <strong id="bigScore">0</strong>
-          </div>
-
-          <div class="score-box">
-            <small>SMALL Score</small>
-            <strong id="smallScore">0</strong>
-          </div>
-
-          <div class="score-box">
-            <small>Balance</small>
-            <strong id="balance">0%</strong>
-          </div>
-
-          <div class="score-box">
-            <small>Data Quality</small>
-            <strong id="quality">LOW</strong>
-          </div>
-
-        </div>
-
-      </div>
+  </div>
 
 
-      <!-- PATTERN -->
-      <div class="card" style="margin-top:15px">
+  <!-- AI ANALYSIS -->
+  <div class="card">
 
-        <div class="card-title">
-          <h2>🔢 Current Pattern</h2>
-          <span>2¹⁰ = 1024</span>
-        </div>
+    <div class="card-title">
+      🤖 AI PATTERN ANALYSIS
+    </div>
 
-        <div class="info">
-
-          <small>10-Result Pattern</small>
-
-          <strong id="pattern"
-                  style="letter-spacing:3px">
-            ----------
-          </strong>
-
-        </div>
-
-        <div class="notice">
-          B = Big<br>
-          S = Small<br><br>
-
-          Pattern ID သည် B/S 10 ကြိမ်ကို
-          binary pattern အဖြစ်ပြောင်းပြီး
-          1–1024 အတွင်း index ထုတ်ပေးထားခြင်းဖြစ်ပါတယ်။
-        </div>
-
-      </div>
-
-
-      <!-- PREDICTION HISTORY -->
-      <div class="card" style="margin-top:15px">
-
-        <div class="card-title">
-          <h2>📋 Prediction History</h2>
-          <span id="historyCount">0</span>
-        </div>
-
-        <div class="table-wrap">
-
-          <table>
-
-            <thead>
-              <tr>
-                <th>Pattern</th>
-                <th>AI</th>
-                <th>Score</th>
-              </tr>
-            </thead>
-
-            <tbody id="predictionTable">
-            </tbody>
-
-          </table>
-
-        </div>
-
-      </div>
-
+    <div id="analysis" class="analysis">
+      Data ထည့်ပြီး Analyze လုပ်ပါ။
     </div>
 
   </div>
 
 
-  <div class="notice">
-    ⚠️ <b>Important:</b>
-    ဤ dashboard သည် historical B/S data ကို
-    statistical pattern analysis ပြုလုပ်ရန်အတွက်သာ ဖြစ်ပါတယ်။
-    Random game result ကို 100% မှန်ကန်စွာ ကြိုတင်သိနိုင်သည်ဟု
-    အာမခံမထားပါ။
+  <!-- B/S PATTERN -->
+  <div class="card">
+
+    <div class="card-title">
+      🔬 B/S Pattern
+    </div>
+
+    <div id="bsPattern" class="pattern-box">
+      ---
+    </div>
+
   </div>
 
 </div>
@@ -712,451 +398,449 @@ td{
 
 <script>
 
-/* =========================================================
+/* =========================
    DATA
-========================================================= */
+========================= */
 
-let results = [];
-let predictionHistory = [];
-
-let currentPeriod = 1;
-let seconds = 60;
+let history = [];
 
 
-/* =========================================================
-   TIMER
-========================================================= */
+/* =========================
+   NUMBER -> BIG / SMALL
+========================= */
 
-setInterval(() => {
+function getType(n){
 
-  seconds--;
+  n = Number(n);
 
-  if(seconds <= 0){
-
-    seconds = 60;
-    currentPeriod++;
-
-    document.getElementById("period").innerText =
-      String(currentPeriod).padStart(6,"0");
-
+  if(n >= 5){
+    return "B";
   }
 
-  document.getElementById("timer").innerText =
-    seconds + "s";
-
-},1000);
-
-
-/* =========================================================
-   ADD RESULT
-========================================================= */
-
-function addResult(value){
-
-  if(results.length >= 10){
-
-    alert("နောက်ဆုံး 10 ကြိမ်ပြည့်နေပါပြီ။ Analyze လုပ်ပါ။");
-
-    return;
-  }
-
-  results.push(value);
-
-  renderHistory();
-  updateStats();
-
+  return "S";
 }
 
 
-/* =========================================================
-   REMOVE
-========================================================= */
-
-function removeLast(){
-
-  if(results.length === 0) return;
-
-  results.pop();
-
-  renderHistory();
-  updateStats();
-
-}
-
-
-/* =========================================================
-   CLEAR
-========================================================= */
-
-function clearHistory(){
-
-  results = [];
-
-  renderHistory();
-  updateStats();
-
-  document.getElementById("prediction").innerText = "WAIT";
-
-  document.getElementById("prediction").className =
-    "prediction-value neutral";
-
-  document.getElementById("confidence").innerText =
-    "B/S history 10 ခု ထည့်ပါ";
-
-  document.getElementById("confidenceBar").style.width =
-    "0%";
-
-}
-
-
-/* =========================================================
-   RENDER
-========================================================= */
-
-function renderHistory(){
-
-  const box =
-    document.getElementById("history");
-
-  box.innerHTML = "";
-
-  if(results.length === 0){
-
-    box.innerHTML =
-      '<div class="empty">BIG / SMALL ကိုရွေးပြီး history ထည့်ပါ</div>';
-
-  }
-
-  results.forEach((item,index)=>{
-
-    const div =
-      document.createElement("div");
-
-    div.className =
-      "ball " + (item === "B" ? "ball-b":"ball-s");
-
-    div.innerText = item;
-
-    div.title =
-      "Result " + (index + 1);
-
-    box.appendChild(div);
-
-  });
-
-  document.getElementById("count").innerText =
-    results.length + " / 10";
-
-}
-
-
-/* =========================================================
-   PATTERN ID
-========================================================= */
-
-function getPatternId(pattern){
-
-  let binary = "";
-
-  for(const c of pattern){
-
-    binary += c === "B" ? "1" : "0";
-
-  }
-
-  return parseInt(binary,2) + 1;
-
-}
-
-
-/* =========================================================
-   STREAK
-========================================================= */
-
-function getStreak(){
-
-  if(results.length === 0)
-    return "-";
-
-  const last =
-    results[results.length - 1];
-
-  let count = 0;
-
-  for(let i=results.length-1;i>=0;i--){
-
-    if(results[i] === last)
-      count++;
-    else
-      break;
-
-  }
-
-  return last + " × " + count;
-
-}
-
-
-/* =========================================================
-   STATISTICS
-========================================================= */
-
-function updateStats(){
-
-  const big =
-    results.filter(x=>x==="B").length;
-
-  const small =
-    results.filter(x=>x==="S").length;
-
-  document.getElementById("bigCount").innerText =
-    big;
-
-  document.getElementById("smallCount").innerText =
-    small;
-
-  document.getElementById("streak").innerText =
-    getStreak();
-
-  document.getElementById("quality").innerText =
-    results.length >= 10
-      ? "HIGH"
-      : results.length >= 6
-      ? "MEDIUM"
-      : "LOW";
-
-}
-
-
-/* =========================================================
-   ANALYZE
-========================================================= */
+/* =========================
+   INPUT
+========================= */
 
 function analyze(){
 
-  if(results.length < 10){
+  const input =
+    document.getElementById("numbers").value.trim();
 
-    alert(
-      "AI analysis အတွက် B/S result 10 ခု ထည့်ပေးပါ။"
-    );
-
+  if(!input){
+    alert("နံပါတ်တွေ အရင်ထည့်ပါ");
     return;
   }
 
+  const nums = input
+    .split(/[\s,]+/)
+    .map(Number)
+    .filter(n => Number.isInteger(n) && n >= 0 && n <= 9);
 
-  const pattern =
-    results.join("");
+  if(nums.length === 0){
+    alert("0 မှ 9 အတွင်း နံပါတ်ထည့်ပါ");
+    return;
+  }
 
-  const id =
-    getPatternId(pattern);
+  history = nums;
+
+  updateDashboard();
+
+}
+
+
+/* =========================
+   DASHBOARD
+========================= */
+
+function updateDashboard(){
+
+  if(history.length === 0) return;
+
+  const types = history.map(getType);
 
   const big =
-    results.filter(x=>x==="B").length;
+    types.filter(x => x === "B").length;
 
   const small =
-    results.filter(x=>x==="S").length;
+    types.filter(x => x === "S").length;
+
+  const total = types.length;
+
+  const bigPercent =
+    Math.round(big / total * 100);
+
+  const smallPercent =
+    Math.round(small / total * 100);
 
 
-  /*
-   * -----------------------------------------
-   * SCORING
-   * -----------------------------------------
-   *
-   * This is an educational statistical
-   * estimator, not a guaranteed predictor.
-   */
+  /* STATS */
 
-  let bigScore = big * 10;
-  let smallScore = small * 10;
+  document.getElementById("total").innerText = total;
+  document.getElementById("bigCount").innerText = big;
+  document.getElementById("smallCount").innerText = small;
+  document.getElementById("bigPercent").innerText =
+    bigPercent + "%";
 
 
-  /* Recent-result weighting */
+  /* HISTORY */
 
-  results.forEach((value,index)=>{
+  const historyBox =
+    document.getElementById("history");
 
-    const weight = index + 1;
+  historyBox.innerHTML = "";
 
-    if(value === "B")
-      bigScore += weight;
+  history.slice(-20).forEach(n => {
 
-    else
-      smallScore += weight;
+    const type = getType(n);
+
+    const div = document.createElement("div");
+
+    div.className = "ball " + type;
+
+    div.innerHTML = `
+      <div class="ball-number">${n}</div>
+      <div class="ball-label">
+        ${type === "B" ? "BIG" : "SMALL"}
+      </div>
+    `;
+
+    historyBox.appendChild(div);
 
   });
 
 
-  /* Streak factor */
+  /* B/S PATTERN */
 
-  const streak =
-    getStreak();
+  const pattern = types.join("");
 
-  const streakCount =
-    parseInt(streak.split("×")[1]) || 0;
+  document.getElementById("bsPattern").innerText =
+    pattern;
 
 
-  if(streakCount >= 3){
+  /* PREDICTION */
 
-    const last =
-      results[results.length-1];
+  const result =
+    calculatePrediction(types);
 
-    if(last === "B")
-      bigScore += 3;
+  document.getElementById("bsPrediction").innerText =
+    result.prediction === "B" ? "BIG" : "SMALL";
 
-    else
-      smallScore += 3;
+  document.getElementById("bsPrediction").className =
+    "value " +
+    (result.prediction === "B" ? "big" : "small");
+
+  document.getElementById("bsConfidence").innerText =
+    result.confidence + "%";
+
+  document.getElementById("bsBar").style.width =
+    result.confidence + "%";
+
+
+  /* PATTERN */
+
+  document.getElementById("patternPrediction").innerText =
+    result.pattern;
+
+  document.getElementById("patternConfidence").innerText =
+    result.patternStrength + "%";
+
+  document.getElementById("patternBar").style.width =
+    result.patternStrength + "%";
+
+
+  /* SIGNAL */
+
+  document.getElementById("signal").innerHTML =
+    result.message;
+
+
+  /* ANALYSIS */
+
+  document.getElementById("analysis").innerHTML =
+    result.analysis;
+
+}
+
+
+/* =========================
+   PREDICTION ENGINE
+========================= */
+
+function calculatePrediction(types){
+
+  const total = types.length;
+
+  if(total < 3){
+
+    return {
+      prediction:"S",
+      confidence:50,
+      pattern:"WAIT",
+      patternStrength:0,
+      message:"💡 Data အနည်းငယ်ထည့်ပေးပါ",
+      analysis:"အနည်းဆုံး 3 ကြိမ်ခန့် History ထည့်ပြီးမှ Trend ကို တွက်ချက်ပါ။"
+    };
 
   }
 
 
-  const total =
-    bigScore + smallScore;
+  /* -------------------------
+     1. Overall Frequency
+  ------------------------- */
 
-  let bigPercent =
-    Math.round((bigScore / total) * 100);
+  const big =
+    types.filter(x => x === "B").length;
 
-  let smallPercent =
-    100 - bigPercent;
-
-
-  let prediction;
-
-  if(bigScore > smallScore)
-    prediction = "BIG";
-
-  else if(smallScore > bigScore)
-    prediction = "SMALL";
-
-  else
-    prediction = "NEUTRAL";
+  const small =
+    types.filter(x => x === "S").length;
 
 
-  const confidence =
-    Math.max(bigPercent,smallPercent);
+  /* -------------------------
+     2. Recent Trend
+  ------------------------- */
+
+  const recent =
+    types.slice(-10);
+
+  const recentBig =
+    recent.filter(x => x === "B").length;
+
+  const recentSmall =
+    recent.length - recentBig;
 
 
-  /* DISPLAY */
+  /* -------------------------
+     3. Alternating Pattern
+  ------------------------- */
 
-  document.getElementById("pattern").innerText =
-    pattern;
+  let alternating = 0;
 
-  document.getElementById("patternId").innerText =
-    String(id).padStart(4,"0");
+  for(let i = 1; i < recent.length; i++){
 
-  document.getElementById("bigScore").innerText =
-    bigScore;
+    if(recent[i] !== recent[i-1]){
+      alternating++;
+    }
 
-  document.getElementById("smallScore").innerText =
-    smallScore;
+  }
 
-  document.getElementById("balance").innerText =
-    Math.abs(bigPercent-smallPercent) + "%";
-
-
-  const predictionElement =
-    document.getElementById("prediction");
+  const alternatingRate =
+    recent.length > 1
+      ? alternating / (recent.length - 1)
+      : 0;
 
 
-  predictionElement.innerText =
-    prediction;
+  /* -------------------------
+     4. Streak
+  ------------------------- */
+
+  let streak = 1;
+
+  for(let i = types.length - 1; i > 0; i--){
+
+    if(types[i] === types[i-1]){
+      streak++;
+    }else{
+      break;
+    }
+
+  }
+
+  const last =
+    types[types.length - 1];
 
 
-  predictionElement.className =
-    "prediction-value " +
-    (
-      prediction === "BIG"
-      ? "big"
-      : prediction === "SMALL"
-      ? "small"
-      : "neutral"
+  /* -------------------------
+     5. Weighted Score
+  ------------------------- */
+
+  let score = 0;
+
+
+  /* recent trend */
+
+  if(recentBig > recentSmall){
+    score += 2;
+  }
+
+  if(recentSmall > recentBig){
+    score -= 2;
+  }
+
+
+  /* overall trend */
+
+  if(big > small){
+    score += 1;
+  }
+
+  if(small > big){
+    score -= 1;
+  }
+
+
+  /* alternating */
+
+  if(alternatingRate >= 0.7){
+
+    if(last === "B"){
+      score -= 1;
+    }else{
+      score += 1;
+    }
+
+  }
+
+
+  /* streak */
+
+  if(streak >= 3){
+
+    if(last === "B"){
+      score -= 1;
+    }else{
+      score += 1;
+    }
+
+  }
+
+
+  const prediction =
+    score >= 0 ? "B" : "S";
+
+
+  /* confidence */
+
+  let confidence =
+    50 + Math.min(Math.abs(score) * 7, 28);
+
+  confidence =
+    Math.round(confidence);
+
+
+  /* pattern */
+
+  let pattern = "MIXED";
+
+  if(alternatingRate >= 0.75){
+    pattern = "ALTERNATING";
+  }
+  else if(streak >= 4){
+    pattern = "STREAK";
+  }
+  else if(recentBig >= 7){
+    pattern = "BIG TREND";
+  }
+  else if(recentSmall >= 7){
+    pattern = "SMALL TREND";
+  }
+
+
+  const patternStrength =
+    Math.round(
+      Math.min(
+        100,
+        40 +
+        Math.abs(recentBig - recentSmall) * 8 +
+        (streak >= 3 ? 15 : 0)
+      )
     );
 
 
-  document.getElementById("confidence").innerText =
-    prediction === "NEUTRAL"
-      ? "50 / 50 — insufficient separation"
-      : confidence +
-        "% statistical score — NOT guaranteed";
+  /* message */
+
+  let message = "";
+
+  if(prediction === "B"){
+
+    message =
+      "🎯 Analysis Signal: <b style='color:#ff5252'>BIG</b>";
+
+  }else{
+
+    message =
+      "🎯 Analysis Signal: <b style='color:#28d76f'>SMALL</b>";
+
+  }
 
 
-  document.getElementById("confidenceBar").style.width =
-    confidence + "%";
+  /* analysis text */
+
+  const analysis = `
+    Total data = <b>${total}</b><br>
+    BIG = <b>${big}</b>
+    (${Math.round(big/total*100)}%)<br>
+    SMALL = <b>${small}</b>
+    (${Math.round(small/total*100)}%)<br><br>
+
+    နောက်ဆုံး ${recent.length} ကြိမ်အတွင်း
+    BIG = <b>${recentBig}</b> ၊
+    SMALL = <b>${recentSmall}</b><br>
+
+    လက်ရှိ Streak =
+    <b>${streak}</b> ကြိမ်
+    (${last === "B" ? "BIG" : "SMALL"})<br>
+
+    Pattern =
+    <b>${pattern}</b><br><br>
+
+    <span style="color:#ffd54a">
+    ⚠️ ဒီ Result သည် statistical pattern analysis
+    ဖြစ်ပြီး နောက်ထွက်မည့် result ကို အာမခံမပေးနိုင်ပါ။
+    </span>
+  `;
 
 
-  /* SAVE HISTORY */
-
-  predictionHistory.unshift({
-
-    pattern: pattern,
-
-    prediction: prediction,
-
-    score: confidence
-
-  });
-
-
-  if(predictionHistory.length > 20)
-    predictionHistory.pop();
-
-
-  renderPredictionHistory();
-
-}
-
-
-/* =========================================================
-   PREDICTION HISTORY
-========================================================= */
-
-function renderPredictionHistory(){
-
-  const table =
-    document.getElementById("predictionTable");
-
-  table.innerHTML = "";
-
-  predictionHistory.forEach(item=>{
-
-    const row =
-      document.createElement("tr");
-
-    row.innerHTML = `
-
-      <td>${item.pattern}</td>
-
-      <td class="${
-        item.prediction === "BIG"
-        ? "win"
-        : item.prediction === "SMALL"
-        ? "loss"
-        : ""
-      }">
-        ${item.prediction}
-      </td>
-
-      <td>
-        ${item.score}%
-      </td>
-
-    `;
-
-    table.appendChild(row);
-
-  });
-
-
-  document.getElementById("historyCount").innerText =
-    predictionHistory.length;
+  return {
+    prediction,
+    confidence,
+    pattern,
+    patternStrength,
+    message,
+    analysis
+  };
 
 }
 
 
-/* =========================================================
-   INITIAL
-========================================================= */
+/* =========================
+   CLEAR
+========================= */
 
-renderHistory();
-updateStats();
+function clearHistory(){
+
+  history = [];
+
+  document.getElementById("numbers").value = "";
+
+  document.getElementById("history").innerHTML = "";
+
+  document.getElementById("total").innerText = "0";
+  document.getElementById("bigCount").innerText = "0";
+  document.getElementById("smallCount").innerText = "0";
+  document.getElementById("bigPercent").innerText = "0%";
+
+  document.getElementById("bsPrediction").innerText = "---";
+  document.getElementById("patternPrediction").innerText = "---";
+
+  document.getElementById("bsConfidence").innerText = "0%";
+  document.getElementById("patternConfidence").innerText = "0%";
+
+  document.getElementById("bsBar").style.width = "0%";
+  document.getElementById("patternBar").style.width = "0%";
+
+  document.getElementById("bsPattern").innerText = "---";
+
+  document.getElementById("signal").innerHTML =
+    "💡 History ထည့်ပြီး ANALYZE နှိပ်ပါ";
+
+  document.getElementById("analysis").innerHTML =
+    "Data ထည့်ပြီး Analyze လုပ်ပါ။";
+
+}
 
 </script>
 
