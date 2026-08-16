@@ -3,66 +3,83 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Pattern AI Analyzer</title>
+<title>BIG SMALL AI Analyzer</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
-  font-family:Arial,"Noto Sans Myanmar",sans-serif;
   background:#07111f;
-  color:#fff;
+  color:white;
+  font-family:Arial,"Noto Sans Myanmar",sans-serif;
 }
 
-.container{
-  width:min(500px,100%);
+.app{
+  width:min(520px,100%);
   margin:auto;
-  min-height:100vh;
-  padding:16px;
+  padding:15px;
 }
 
-.header{
+header{
   text-align:center;
-  margin-bottom:15px;
+  padding:12px 0 18px;
 }
 
-.header h1{
-  margin:5px 0;
-  font-size:24px;
+header h1{
+  margin:0;
   color:#42e8ff;
+  font-size:25px;
 }
 
-.header p{
-  margin:5px 0;
-  color:#91a4b8;
-  font-size:13px;
+header p{
+  color:#8da5ba;
+  font-size:12px;
 }
 
 .card{
-  background:#0d1b2d;
-  border:1px solid #1c3854;
+  background:#0d1c2d;
+  border:1px solid #1d3852;
   border-radius:16px;
   padding:15px;
   margin-bottom:14px;
-  box-shadow:0 8px 30px rgba(0,0,0,.25);
 }
 
-.title{
-  color:#8ca8c2;
+.label{
+  color:#89a3ba;
   font-size:12px;
   margin-bottom:10px;
-  text-transform:uppercase;
 }
 
-.current{
+.numbers{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:8px;
+}
+
+button{
+  border:0;
+  cursor:pointer;
+}
+
+.num{
+  height:48px;
+  border-radius:10px;
+  background:#152c43;
+  color:white;
+  font-size:18px;
+  font-weight:bold;
+}
+
+.num:active{
+  transform:scale(.94);
+}
+
+.results{
   display:flex;
   gap:7px;
-  flex-wrap:wrap;
   justify-content:center;
+  flex-wrap:wrap;
 }
 
 .ball{
@@ -70,98 +87,42 @@ body{
   height:40px;
   border-radius:10px;
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
   font-weight:bold;
-  font-size:17px;
 }
 
-.ball.big{
-  background:#e83d52;
+.big{
+  background:#e94359;
 }
 
-.ball.small{
+.small{
   background:#1976d2;
 }
 
-.ball.empty{
-  background:#172a3e;
-  color:#526b82;
+.empty{
+  background:#17293c;
+  color:#50667a;
 }
 
 .pattern{
   text-align:center;
-  font-size:22px;
+  font-size:23px;
   letter-spacing:4px;
-  color:#42e8ff;
   font-weight:bold;
+  color:#42e8ff;
   word-break:break-all;
 }
 
-.pattern span{
-  display:inline-block;
-  min-width:22px;
+.b{
+  color:#ff5066;
 }
 
-.pattern .b{
-  color:#ff5064;
+.s{
+  color:#42aaff;
 }
 
-.pattern .s{
-  color:#39a5ff;
-}
-
-.input-grid{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:8px;
-}
-
-.num{
-  height:48px;
-  border:0;
-  border-radius:11px;
-  background:#142a40;
-  color:#fff;
-  font-size:19px;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-.num:active{
-  transform:scale(.95);
-  background:#245273;
-}
-
-.buttons{
-  display:flex;
-  gap:8px;
-  margin-top:10px;
-}
-
-.btn{
-  flex:1;
-  border:0;
-  border-radius:10px;
-  padding:12px;
-  color:#fff;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-.undo{
-  background:#75551c;
-}
-
-.clear{
-  background:#7c2633;
-}
-
-.analyze{
-  background:#087d76;
-}
-
-.stats{
+.grid{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:8px;
@@ -169,481 +130,448 @@ body{
 
 .stat{
   background:#101f31;
+  border-radius:11px;
   padding:12px;
-  border-radius:10px;
   text-align:center;
 }
 
-.stat strong{
+.stat b{
   display:block;
   font-size:22px;
   margin-top:5px;
 }
 
-.red{
-  color:#ff5368;
+.actions{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
 }
 
-.blue{
-  color:#3caaff;
+.action{
+  flex:1;
+  padding:12px;
+  border-radius:10px;
+  color:white;
+  font-weight:bold;
 }
 
-.predict{
+.undo{background:#76591f}
+.clear{background:#7e2735}
+
+.prediction{
   display:grid;
   gap:8px;
 }
 
-.pred-row{
+.row{
   background:#101f31;
-  border-radius:10px;
-  padding:11px;
+  border-radius:11px;
+  padding:12px;
 }
 
-.pred-head{
+.rowtop{
   display:flex;
   justify-content:space-between;
   margin-bottom:7px;
 }
 
+.percent{
+  color:#9db2c4;
+  font-size:12px;
+}
+
 .bar{
   height:8px;
-  background:#172a3e;
-  border-radius:20px;
+  border-radius:10px;
   overflow:hidden;
+  background:#1a2c3e;
 }
 
-.bar-inner{
+.fill{
   height:100%;
-  background:linear-gradient(90deg,#ff4057,#ff9c45);
+  background:linear-gradient(90deg,#ff4058,#ff9c42);
 }
 
-.result{
-  margin-top:12px;
-  padding:14px;
-  background:#071722;
-  border:1px solid #24516b;
-  border-radius:12px;
+.final{
   text-align:center;
+  margin-top:12px;
+  padding:15px;
+  border-radius:12px;
+  background:#081a25;
+  border:1px solid #24536a;
 }
 
-.result-pattern{
+.final .value{
   color:#42e8ff;
-  font-size:22px;
+  font-size:24px;
   font-weight:bold;
-  letter-spacing:3px;
+  letter-spacing:4px;
 }
 
-.warning{
-  color:#8ca8c2;
+.note{
+  color:#8298aa;
   font-size:11px;
   line-height:1.6;
   text-align:center;
-  margin-top:10px;
 }
 
 .history{
-  max-height:220px;
+  max-height:230px;
   overflow:auto;
 }
 
-.history-row{
+.history div{
   display:flex;
   justify-content:space-between;
-  padding:9px 4px;
-  border-bottom:1px solid #1a3045;
+  padding:9px 3px;
+  border-bottom:1px solid #1b3044;
   font-size:13px;
-}
-
-.badge{
-  padding:3px 8px;
-  border-radius:20px;
-  font-weight:bold;
-}
-
-.badge.b{
-  background:#54212a;
-  color:#ff6576;
-}
-
-.badge.s{
-  background:#123d61;
-  color:#4eb4ff;
-}
-
-.hidden{
-  display:none;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="app">
 
-  <div class="header">
-    <h1>AI PATTERN ANALYZER</h1>
-    <p>BIG / SMALL • Pattern & Probability Analysis</p>
+<header>
+  <h1>AI PATTERN ANALYZER</h1>
+  <p>BIG / SMALL • Pattern Probability</p>
+</header>
+
+<!-- CURRENT -->
+<div class="card">
+
+  <div class="label">CURRENT 10 RESULTS</div>
+
+  <div id="results" class="results"></div>
+
+  <div style="height:15px"></div>
+
+  <div class="label">CURRENT PATTERN</div>
+
+  <div id="pattern" class="pattern">----------</div>
+
+</div>
+
+
+<!-- NUMBER BUTTONS -->
+<div class="card">
+
+  <div class="label">ဂဏန်းကို နှိပ်ပါ</div>
+
+  <div class="numbers">
+
+    <button class="num" onclick="add(0)">0</button>
+    <button class="num" onclick="add(1)">1</button>
+    <button class="num" onclick="add(2)">2</button>
+    <button class="num" onclick="add(3)">3</button>
+    <button class="num" onclick="add(4)">4</button>
+
+    <button class="num" onclick="add(5)">5</button>
+    <button class="num" onclick="add(6)">6</button>
+    <button class="num" onclick="add(7)">7</button>
+    <button class="num" onclick="add(8)">8</button>
+    <button class="num" onclick="add(9)">9</button>
+
   </div>
 
-  <!-- CURRENT -->
-  <div class="card">
-    <div class="title">Current 10 Results</div>
-    <div id="currentBalls" class="current"></div>
-
-    <div style="height:15px"></div>
-
-    <div class="title">Current Pattern</div>
-    <div id="currentPattern" class="pattern">----------</div>
+  <div class="actions">
+    <button class="action undo" onclick="undo()">UNDO</button>
+    <button class="action clear" onclick="clearData()">CLEAR</button>
   </div>
 
-  <!-- NUMBER INPUT -->
-  <div class="card">
-    <div class="title">ဂဏန်းကို နှိပ်ပြီး Result ထည့်ပါ</div>
+</div>
 
-    <div class="input-grid">
-      <button class="num" onclick="addNumber(0)">0</button>
-      <button class="num" onclick="addNumber(1)">1</button>
-      <button class="num" onclick="addNumber(2)">2</button>
-      <button class="num" onclick="addNumber(3)">3</button>
-      <button class="num" onclick="addNumber(4)">4</button>
 
-      <button class="num" onclick="addNumber(5)">5</button>
-      <button class="num" onclick="addNumber(6)">6</button>
-      <button class="num" onclick="addNumber(7)">7</button>
-      <button class="num" onclick="addNumber(8)">8</button>
-      <button class="num" onclick="addNumber(9)">9</button>
+<!-- STAT -->
+<div class="card">
+
+  <div class="label">STATISTICS</div>
+
+  <div class="grid">
+
+    <div class="stat">
+      SMALL
+      <b id="small" style="color:#42aaff">0</b>
     </div>
 
-    <div class="buttons">
-      <button class="btn undo" onclick="undo()">UNDO</button>
-      <button class="btn clear" onclick="clearAll()">CLEAR</button>
-      <button class="btn analyze" onclick="analyze()">ANALYZE</button>
+    <div class="stat">
+      BIG
+      <b id="big" style="color:#ff5066">0</b>
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- AI -->
+<div class="card">
+
+  <div class="label">AI PROBABILITY ANALYSIS</div>
+
+  <div id="prediction" class="prediction">
+    <div class="note">
+      Result 5 ခုအနည်းဆုံးထည့်ပါ။
     </div>
   </div>
 
-  <!-- STATS -->
-  <div class="card">
-    <div class="title">Current Statistics</div>
+  <div class="final">
 
-    <div class="stats">
-      <div class="stat">
-        SMALL
-        <strong id="smallCount" class="blue">0</strong>
-      </div>
+    <div class="label">ESTIMATED PATTERN</div>
 
-      <div class="stat">
-        BIG
-        <strong id="bigCount" class="red">0</strong>
-      </div>
-    </div>
-  </div>
-
-  <!-- FIRST 5 -->
-  <div class="card">
-    <div class="title">First 5 Pattern</div>
-    <div id="firstFive" class="pattern">-----</div>
-  </div>
-
-  <!-- ANALYSIS -->
-  <div id="analysisCard" class="card hidden">
-
-    <div class="title">Remaining 5 Probability Estimate</div>
-
-    <div id="predictionList" class="predict"></div>
-
-    <div class="result">
-      <div class="title">Estimated Pattern</div>
-      <div id="predictionPattern" class="result-pattern">
-        ----------
-      </div>
+    <div id="finalPattern" class="value">
+      ----------
     </div>
 
-    <div id="matchInfo" class="warning"></div>
-
   </div>
 
-  <!-- HISTORY -->
-  <div class="card">
-    <div class="title">Result History</div>
-    <div id="history" class="history"></div>
-  </div>
+</div>
 
-  <div class="warning">
-    Probability estimate only. Random game result ကို 100% ကြိုတင်သိနိုင်သော
-    AI မဟုတ်ပါ။
-  </div>
+
+<!-- HISTORY -->
+<div class="card">
+
+  <div class="label">HISTORY</div>
+
+  <div id="history" class="history"></div>
+
+</div>
+
+
+<div class="note">
+  ဤ system သည် historical pattern နှင့် probability ကို
+  ခွဲခြမ်းစိတ်ဖြာပေးသော tool ဖြစ်ပြီး random result ကို
+  100% ကြိုတင်သိနိုင်ခြင်း မရှိပါ။
+</div>
 
 </div>
 
 
 <script>
 
-/* =====================================================
+/* ================================
    DATA
-===================================================== */
+================================ */
 
-let results = [];
-
-/*
-  1024 possible B/S combinations
-*/
-const ALL_PATTERNS = [];
-
-for(let n = 0; n < 1024; n++){
-
-  let binary = n.toString(2).padStart(10,"0");
-
-  let pattern = "";
-
-  for(const bit of binary){
-
-    pattern += bit === "0" ? "S" : "B";
-
-  }
-
-  ALL_PATTERNS.push(pattern);
-}
+let data =
+  JSON.parse(localStorage.getItem("bs_history") || "[]");
 
 
-/* =====================================================
+/* ================================
    BIG / SMALL
-===================================================== */
+================================ */
 
-function getType(number){
-
-  return number >= 5 ? "B" : "S";
-
+function type(n){
+  return n >= 5 ? "B" : "S";
 }
 
 
-/* =====================================================
-   ADD NUMBER
-===================================================== */
+/* ================================
+   SAVE
+================================ */
 
-function addNumber(number){
+function save(){
+  localStorage.setItem(
+    "bs_history",
+    JSON.stringify(data)
+  );
+}
 
-  /*
-    History ကို unlimited သိမ်းထားပြီး
-    UI မှာ နောက်ဆုံး 10 ကြိမ်ကို ပြမယ်
-  */
 
-  results.push(Number(number));
+/* ================================
+   ADD
+================================ */
 
-  updateUI();
+function add(n){
 
-  /*
-    10 ပြည့်တာနဲ့ auto analyze
-  */
+  data.push(Number(n));
 
-  if(results.length >= 10){
+  save();
 
+  render();
+
+  if(data.length >= 5){
     analyze();
-
   }
 
 }
 
 
-/* =====================================================
+/* ================================
    UNDO
-===================================================== */
+================================ */
 
 function undo(){
 
-  if(results.length > 0){
+  data.pop();
 
-    results.pop();
+  save();
 
+  render();
+
+  if(data.length >= 5){
+    analyze();
+  }else{
+    resetAnalysis();
   }
 
-  updateUI();
-
 }
 
 
-/* =====================================================
+/* ================================
    CLEAR
-===================================================== */
+================================ */
 
-function clearAll(){
+function clearData(){
 
-  results = [];
+  if(!confirm("History အားလုံးဖျက်မလား?"))
+    return;
 
-  updateUI();
+  data=[];
 
-  document
-    .getElementById("analysisCard")
-    .classList.add("hidden");
+  save();
 
-}
+  render();
 
-
-/* =====================================================
-   GET LAST 10
-===================================================== */
-
-function getLast10(){
-
-  return results.slice(-10);
+  resetAnalysis();
 
 }
 
 
-/* =====================================================
-   CREATE B/S PATTERN
-===================================================== */
+/* ================================
+   LAST 10
+================================ */
+
+function last10(){
+  return data.slice(-10);
+}
+
+
+/* ================================
+   PATTERN
+================================ */
 
 function getPattern(){
 
-  return getLast10()
-    .map(n => getType(n))
+  return last10()
+    .map(n=>type(n))
     .join("");
 
 }
 
 
-/* =====================================================
-   UPDATE UI
-===================================================== */
+/* ================================
+   FORMAT
+================================ */
 
-function updateUI(){
+function formatPattern(p){
 
-  const last10 = getLast10();
+  if(!p) return "----------";
 
-  const balls = document.getElementById("currentBalls");
+  return p.split("").map(x=>{
 
-  balls.innerHTML = "";
+    if(x==="B")
+      return `<span class="b">B</span>`;
 
-  /*
-    10 slots
-  */
+    return `<span class="s">S</span>`;
 
-  for(let i = 0; i < 10; i++){
+  }).join("");
 
-    const div = document.createElement("div");
+}
 
-    if(i < last10.length){
 
-      const number = last10[i];
+/* ================================
+   RENDER
+================================ */
 
-      const type = getType(number);
+function render(){
 
-      div.className =
-        "ball " +
-        (type === "B" ? "big" : "small");
+  const list=last10();
 
-      div.textContent = number;
+  const box=
+    document.getElementById("results");
+
+  box.innerHTML="";
+
+  for(let i=0;i<10;i++){
+
+    const el=
+      document.createElement("div");
+
+    if(i<list.length){
+
+      const n=list[i];
+
+      el.className=
+        "ball "+(type(n)==="B"?"big":"small");
+
+      el.textContent=n;
 
     }else{
 
-      div.className = "ball empty";
+      el.className="ball empty";
 
-      div.textContent = "-";
+      el.textContent="-";
 
     }
 
-    balls.appendChild(div);
+    box.appendChild(el);
 
   }
 
 
-  const pattern = getPattern();
+  const p=getPattern();
 
-  document.getElementById("currentPattern")
-    .innerHTML = formatPattern(pattern);
+  document.getElementById("pattern")
+    .innerHTML=formatPattern(p);
 
 
-  /*
-    statistics
-  */
+  let B=0;
+  let S=0;
 
-  let B = 0;
-  let S = 0;
+  list.forEach(n=>{
 
-  last10.forEach(n => {
-
-    if(getType(n) === "B") B++;
+    if(type(n)==="B") B++;
     else S++;
 
   });
 
-  document.getElementById("bigCount")
-    .textContent = B;
 
-  document.getElementById("smallCount")
-    .textContent = S;
+  document.getElementById("big")
+    .textContent=B;
 
-
-  /*
-    first five
-  */
-
-  const firstFive = pattern.substring(0,5);
-
-  document.getElementById("firstFive")
-    .innerHTML = formatPattern(firstFive);
+  document.getElementById("small")
+    .textContent=S;
 
 
-  /*
-    history
-  */
-
-  updateHistory();
+  renderHistory();
 
 }
 
 
-/* =====================================================
-   FORMAT PATTERN
-===================================================== */
-
-function formatPattern(pattern){
-
-  if(!pattern) return "----------";
-
-  return pattern
-    .split("")
-    .map(x => {
-
-      if(x === "B")
-        return `<span class="b">B</span>`;
-
-      if(x === "S")
-        return `<span class="s">S</span>`;
-
-      return `<span>-</span>`;
-
-    })
-    .join("");
-
-}
-
-
-/* =====================================================
+/* ================================
    HISTORY
-===================================================== */
+================================ */
 
-function updateHistory(){
+function renderHistory(){
 
-  const box = document.getElementById("history");
+  const box=
+    document.getElementById("history");
 
-  box.innerHTML = "";
+  box.innerHTML="";
 
-  const history = [...results].reverse();
+  [...data].reverse().forEach((n,i)=>{
 
-  history.forEach((number,index)=>{
+    const row=
+      document.createElement("div");
 
-    const type = getType(number);
-
-    const row = document.createElement("div");
-
-    row.className = "history-row";
-
-    row.innerHTML = `
-      <span>Round ${results.length - index}</span>
-      <strong>${number}</strong>
-      <span class="badge ${type.toLowerCase()}">
-        ${type === "B" ? "BIG" : "SMALL"}
+    row.innerHTML=`
+      <span>Round ${data.length-i}</span>
+      <strong>${n}</strong>
+      <span>
+        ${type(n)==="B"?"BIG":"SMALL"}
       </span>
     `;
 
@@ -654,331 +582,276 @@ function updateHistory(){
 }
 
 
-/* =====================================================
-   PATTERN MATCHING
-===================================================== */
+/* ================================
+   TRANSITION ANALYSIS
+================================ */
 
-function findMatchingPatterns(firstFive){
+function transitionScore(){
 
-  return ALL_PATTERNS.filter(pattern => {
+  if(data.length<2)
+    return {B:50,S:50};
 
-    return pattern.substring(0,5) === firstFive;
+  let BB=0;
+  let BS=0;
+  let SB=0;
+  let SS=0;
+
+  for(let i=1;i<data.length;i++){
+
+    const prev=type(data[i-1]);
+    const cur=type(data[i]);
+
+    if(prev==="B" && cur==="B") BB++;
+    if(prev==="B" && cur==="S") BS++;
+    if(prev==="S" && cur==="B") SB++;
+    if(prev==="S" && cur==="S") SS++;
+
+  }
+
+  const prev=type(data[data.length-1]);
+
+  let B;
+  let S;
+
+  if(prev==="B"){
+
+    B=BB;
+    S=BS;
+
+  }else{
+
+    B=SB;
+    S=SS;
+
+  }
+
+  const total=B+S;
+
+  if(!total)
+    return {B:50,S:50};
+
+  return {
+    B:B/total*100,
+    S:S/total*100
+  };
+
+}
+
+
+/* ================================
+   FREQUENCY
+================================ */
+
+function frequencyScore(){
+
+  const list=last10();
+
+  if(!list.length)
+    return {B:50,S:50};
+
+  let B=0;
+  let S=0;
+
+  list.forEach(n=>{
+
+    if(type(n)==="B") B++;
+    else S++;
 
   });
 
-}
-
-
-/* =====================================================
-   PROBABILITY
-===================================================== */
-
-function calculateProbability(patterns, position){
-
-  let B = 0;
-  let S = 0;
-
-  patterns.forEach(pattern => {
-
-    if(pattern[position] === "B") B++;
-
-    if(pattern[position] === "S") S++;
-
-  });
-
-  const total = B + S;
-
-  if(total === 0){
-
-    return {
-      B:50,
-      S:50
-    };
-
-  }
-
   return {
-
-    B:(B / total) * 100,
-
-    S:(S / total) * 100
-
+    B:B/list.length*100,
+    S:S/list.length*100
   };
 
 }
 
 
-/* =====================================================
-   HISTORY BASED WEIGHT
-===================================================== */
-
-function historicalProbability(position){
-
-  /*
-    လက်ရှိ result 10 ခုကိုကြည့်ပြီး
-    position များအလိုက် B/S ကိုတွက်သည်။
-  */
-
-  const recent = results.slice(-50);
-
-  let B = 0;
-  let S = 0;
-
-  /*
-    result မလုံလောက်ရင် neutral
-  */
-
-  if(recent.length < 2){
-
-    return {
-      B:50,
-      S:50
-    };
-
-  }
-
-
-  /*
-    Recent sequence transition
-  */
-
-  for(let i = 1; i < recent.length; i++){
-
-    const previous = getType(recent[i-1]);
-
-    const current = getType(recent[i]);
-
-    if(previous === "B" && current === "B") B++;
-
-    if(previous === "S" && current === "B") B++;
-
-    if(previous === "B" && current === "S") S++;
-
-    if(previous === "S" && current === "S") S++;
-
-  }
-
-  const total = B + S;
-
-  if(total === 0){
-
-    return {
-      B:50,
-      S:50
-    };
-
-  }
-
-  return {
-
-    B:(B / total) * 100,
-
-    S:(S / total) * 100
-
-  };
-
-}
-
-
-/* =====================================================
-   COMBINED ESTIMATE
-===================================================== */
-
-function combinedProbability(
-  patternProbability,
-  historyProbability
-){
-
-  /*
-    Pattern matching = 70%
-    Historical transition = 30%
-  */
-
-  const B =
-    patternProbability.B * 0.70 +
-    historyProbability.B * 0.30;
-
-  const S =
-    patternProbability.S * 0.70 +
-    historyProbability.S * 0.30;
-
-  const total = B + S;
-
-  return {
-
-    B:(B / total) * 100,
-
-    S:(S / total) * 100
-
-  };
-
-}
-
-
-/* =====================================================
-   ANALYZE
-===================================================== */
+/* ================================
+   AI ESTIMATE
+================================ */
 
 function analyze(){
 
-  if(results.length < 5){
+  const pattern=getPattern();
 
-    alert("အနည်းဆုံး Result ၅ ခု ထည့်ပါ။");
-
+  if(pattern.length<5)
     return;
+
+
+  const firstFive=
+    pattern.substring(0,5);
+
+
+  /*
+    1024 binary patterns
+    first 5 တူတာတွေ
+  */
+
+  const matches=[];
+
+  for(let n=0;n<1024;n++){
+
+    const binary=
+      n.toString(2).padStart(10,"0");
+
+    let p="";
+
+    for(const bit of binary){
+
+      p+=bit==="0"?"S":"B";
+
+    }
+
+    if(p.substring(0,5)===firstFive)
+      matches.push(p);
 
   }
 
 
-  const pattern = getPattern();
+  const transition=
+    transitionScore();
 
-  const firstFive = pattern.substring(0,5);
-
-
-  /*
-    1024 patterns ထဲက
-    first 5 တူတဲ့ pattern တွေ
-  */
-
-  const matches =
-    findMatchingPatterns(firstFive);
+  const frequency=
+    frequencyScore();
 
 
-  const predictionList =
-    document.getElementById("predictionList");
+  let output="";
 
-  predictionList.innerHTML = "";
-
-
-  let predictedRemaining = "";
+  let predicted=
+    firstFive;
 
 
-  /*
-    Position 6 → 10
-  */
+  for(let pos=5;pos<10;pos++){
 
-  for(let position = 5; position < 10; position++){
+    let B=0;
+    let S=0;
 
-    const patternProb =
-      calculateProbability(matches,position);
+    matches.forEach(p=>{
 
-    const historyProb =
-      historicalProbability(position);
+      if(p[pos]==="B") B++;
+      else S++;
 
-    const finalProb =
-      combinedProbability(
-        patternProb,
-        historyProb
-      );
+    });
 
 
-    const prediction =
-      finalProb.B >= finalProb.S
-      ? "B"
-      : "S";
+    let total=B+S;
+
+    let patternB=
+      total ? B/total*100 : 50;
+
+    let patternS=
+      total ? S/total*100 : 50;
 
 
-    predictedRemaining += prediction;
+    /*
+      Combined score
+
+      Pattern      60%
+      Transition   25%
+      Frequency    15%
+    */
+
+    let finalB=
+      patternB*.60+
+      transition.B*.25+
+      frequency.B*.15;
+
+    let finalS=
+      patternS*.60+
+      transition.S*.25+
+      frequency.S*.15;
 
 
-    const confidence =
-      Math.max(
-        finalProb.B,
-        finalProb.S
-      );
+    const pred=
+      finalB>=finalS?"B":"S";
 
 
-    const row =
-      document.createElement("div");
+    predicted+=pred;
 
-    row.className = "pred-row";
 
-    row.innerHTML = `
+    const confidence=
+      Math.max(finalB,finalS);
 
-      <div class="pred-head">
 
-        <span>
-          Position ${position + 1}
-        </span>
+    output+=`
 
-        <strong>
-          ${prediction === "B"
-            ? "BIG"
-            : "SMALL"}
-        </strong>
+      <div class="row">
 
-      </div>
+        <div class="rowtop">
 
-      <div style="font-size:12px;color:#9bb0c3">
+          <strong>
+            Position ${pos+1}
+          </strong>
 
-        BIG ${finalProb.B.toFixed(1)}%
-        &nbsp; / &nbsp;
-        SMALL ${finalProb.S.toFixed(1)}%
+          <strong>
+            ${pred==="B"?"BIG":"SMALL"}
+          </strong>
 
-      </div>
+        </div>
 
-      <div class="bar" style="margin-top:8px">
+        <div class="percent">
 
-        <div
-          class="bar-inner"
-          style="width:${confidence}%">
+          BIG ${finalB.toFixed(1)}%
+          &nbsp; | &nbsp;
+          SMALL ${finalS.toFixed(1)}%
+
+        </div>
+
+        <div class="bar">
+
+          <div
+            class="fill"
+            style="width:${confidence}%">
+          </div>
+
         </div>
 
       </div>
 
     `;
 
-    predictionList.appendChild(row);
-
   }
 
 
-  /*
-    First 5 + predicted 5
-  */
-
-  const fullPrediction =
-    firstFive + predictedRemaining;
+  document.getElementById("prediction")
+    .innerHTML=output;
 
 
-  document.getElementById("predictionPattern")
-    .innerHTML =
-      formatPattern(fullPrediction);
-
-
-  /*
-    Match information
-  */
-
-  document.getElementById("matchInfo")
-    .innerHTML = `
-
-      First 5:
-      <b>${firstFive}</b>
-      <br>
-
-      Matching patterns from 1024:
-      <b>${matches.length}</b>
-
-      <br><br>
-
-      Pattern matching + recent-history
-      probability estimate ကို ပေါင်းတွက်ထားသည်။
-
-    `;
-
-
-  document.getElementById("analysisCard")
-    .classList.remove("hidden");
+  document.getElementById("finalPattern")
+    .innerHTML=
+      formatPattern(predicted);
 
 }
 
 
-/* =====================================================
-   INITIAL UI
-===================================================== */
+/* ================================
+   RESET
+================================ */
 
-updateUI();
+function resetAnalysis(){
+
+  document.getElementById("prediction")
+    .innerHTML=`
+      <div class="note">
+        Result 5 ခုအနည်းဆုံးထည့်ပါ။
+      </div>
+    `;
+
+  document.getElementById("finalPattern")
+    .textContent="----------";
+
+}
+
+
+/* ================================
+   START
+================================ */
+
+render();
+
+if(data.length>=5)
+  analyze();
 
 </script>
 
