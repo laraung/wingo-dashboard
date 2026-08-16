@@ -1,252 +1,690 @@
 <!DOCTYPE html>
 <html lang="my">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wingo 1024 Smart Predictor AI</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 15px; }
-        .container { max-width: 650px; margin: 0 auto; background: #1e293b; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
-        h2 { text-align: center; color: #38bdf8; margin: 0 0 15px 0; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        
-        .num-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; }
-        button { padding: 12px 5px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: transform 0.1s; color: #fff; font-size: 1.1rem; }
-        button:active { transform: scale(0.95); }
-        
-        .btn-green { background: #22c55e; }
-        .btn-red { background: #ef4444; }
-        .btn-violet-red { background: linear-gradient(135deg, #a855f7 50%, #ef4444 50%); }
-        .btn-violet-green { background: linear-gradient(135deg, #a855f7 50%, #22c55e 50%); }
-        
-        .card { background: #334155; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
-        .card-title { color: #94a3b8; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600; display: flex; justify-content: space-between; }
-        
-        .pred-box { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-        .pred-item { background: #0f172a; padding: 12px; border-radius: 8px; text-align: center; border: 1px solid #475569; }
-        .pred-value { font-size: 1.5rem; font-weight: bold; margin-top: 4px; }
-        .prob-text { font-size: 0.85rem; color: #38bdf8; margin-top: 4px; font-weight: 600; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        .progress-bg { background: #0f172a; height: 10px; border-radius: 5px; overflow: hidden; margin-top: 12px; }
-        .progress-fill { background: linear-gradient(90deg, #38bdf8, #22c55e); height: 100%; width: 0%; transition: width 0.4s ease; }
+  <title>Wingo Pattern AI Analyzer</title>
 
-        .history { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-start; margin-top: 10px; }
-        .history-item { display: flex; flex-direction: column; align-items: center; background: #0f172a; padding: 6px 8px; border-radius: 6px; border: 1px solid #475569; }
-        .dot { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: #fff; }
-        .bs-text { font-size: 10px; margin-top: 4px; color: #cbd5e1; font-weight: bold; }
-        
-        .clear-btn { background: #64748b; color: white; width: 100%; font-size: 0.9rem; margin-top: 5px; }
-    </style>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top, #16204a 0%, #080b18 45%, #05060c 100%);
+      color: #fff;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      color: #00eaff;
+      text-shadow: 0 0 15px #00eaff;
+    }
+
+    .header p {
+      color: #9ba5c7;
+      margin-top: 8px;
+    }
+
+    .card {
+      background: rgba(18, 24, 50, 0.9);
+      border: 1px solid #27335f;
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+
+    .card h2 {
+      color: #fff;
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .bs-btn {
+      flex: 1;
+      min-width: 80px;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .big-btn {
+      background: linear-gradient(135deg, #ff9d00, #ff4d00);
+      color: white;
+    }
+
+    .small-btn {
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      color: white;
+    }
+
+    .bs-btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.15);
+    }
+
+    .sequence {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 48px;
+      margin-top: 15px;
+    }
+
+    .ball {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 17px;
+    }
+
+    .ball-b {
+      background: #ff5b18;
+      box-shadow: 0 0 12px rgba(255,91,24,.5);
+    }
+
+    .ball-s {
+      background: #1677ff;
+      box-shadow: 0 0 12px rgba(22,119,255,.5);
+    }
+
+    .remove-btn {
+      background: #272d45;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+
+    .analyze-btn {
+      width: 100%;
+      border: none;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 12px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #00eaff, #0066ff);
+      color: #fff;
+      font-size: 17px;
+      font-weight: bold;
+    }
+
+    .analyze-btn:hover {
+      filter: brightness(1.15);
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .result-box {
+      background: #0d132b;
+      border: 1px solid #29345e;
+      padding: 15px;
+      border-radius: 13px;
+    }
+
+    .result-box span {
+      display: block;
+      color: #8d98bd;
+      font-size: 13px;
+      margin-bottom: 7px;
+    }
+
+    .result-box strong {
+      font-size: 21px;
+    }
+
+    .prediction {
+      text-align: center;
+      padding: 22px;
+      border-radius: 15px;
+      background: linear-gradient(
+        135deg,
+        rgba(0,234,255,.12),
+        rgba(0,102,255,.12)
+      );
+      border: 1px solid #1b8ca9;
+    }
+
+    .prediction .label {
+      color: #9da8ca;
+      font-size: 14px;
+    }
+
+    .prediction .value {
+      font-size: 38px;
+      font-weight: bold;
+      margin: 10px 0;
+      color: #00eaff;
+      text-shadow: 0 0 15px #00eaff;
+    }
+
+    .confidence {
+      color: #9ba5c7;
+    }
+
+    .warning {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 10px;
+      background: rgba(255,180,0,.1);
+      border: 1px solid rgba(255,180,0,.35);
+      color: #ffd36a;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .history {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .history-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      margin-bottom: 7px;
+      background: #0b1127;
+      border-radius: 9px;
+      font-size: 14px;
+    }
+
+    .status {
+      color: #00ffae;
+    }
+
+    @media(max-width:600px) {
+      body {
+        padding: 10px;
+      }
+
+      .result-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header h1 {
+        font-size: 23px;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
 <div class="container">
-    <h2>🎯 Wingo 1024 Smart AI Engine</h2>
-    
-    <div class="card-title" style="justify-content: center;">ထွက်ထားသည့် ဂဏန်း (0-9) ကို နှိပ်ပါ:</div>
-    <div class="num-grid">
-        <button class="btn-violet-red" onclick="addResult(0)">0 (S)</button>
-        <button class="btn-green" onclick="addResult(1)">1 (S)</button>
-        <button class="btn-red" onclick="addResult(2)">2 (S)</button>
-        <button class="btn-green" onclick="addResult(3)">3 (S)</button>
-        <button class="btn-red" onclick="addResult(4)">4 (S)</button>
-        <button class="btn-violet-green" onclick="addResult(5)">5 (B)</button>
-        <button class="btn-red" onclick="addResult(6)">6 (B)</button>
-        <button class="btn-green" onclick="addResult(7)">7 (B)</button>
-        <button class="btn-red" onclick="addResult(8)">8 (B)</button>
-        <button class="btn-green" onclick="addResult(9)">9 (B)</button>
+
+  <div class="header">
+    <h1>⚡ WINGO PATTERN AI</h1>
+    <p>Big / Small Pattern Analyzer</p>
+  </div>
+
+  <!-- INPUT -->
+  <div class="card">
+
+    <h2>① နောက်ဆုံးထွက်ရလဒ် 10 ကြိမ်ထည့်ပါ</h2>
+
+    <div class="input-row">
+
+      <button class="bs-btn big-btn" onclick="addResult('B')">
+        BIG
+      </button>
+
+      <button class="bs-btn small-btn" onclick="addResult('S')">
+        SMALL
+      </button>
+
     </div>
 
-    <!-- AI Output Card -->
-    <div class="card">
-        <div class="card-title">
-            <span>🧠 1024 Smart Dynamic Engine</span>
-            <span id="ai-status" style="color: #22c55e;">Ready</span>
-        </div>
-        
-        <div id="status-msg" style="color: #f87171; text-align: center; font-size: 0.9rem; padding: 10px 0;">Data မလုံလောက်သေးပါ (အနည်းဆုံး ၁ ခု ထည့်ပါ)</div>
-        
-        <div id="ai-output" style="display: none;">
-            <div class="pred-box">
-                <div class="pred-item">
-                    <span style="font-size: 0.8rem; color: #94a3b8;">ခန့်မှန်း အရောင်</span>
-                    <div id="pred-color" class="pred-value">-</div>
-                    <div id="prob-color" class="prob-text">0% Probability</div>
-                </div>
-                <div class="pred-item">
-                    <span style="font-size: 0.8rem; color: #94a3b8;">ခန့်မှန်း အရွယ်အစား</span>
-                    <div id="pred-bs" class="pred-value">-</div>
-                    <div id="prob-bs" class="prob-text">0% Probability</div>
-                </div>
-            </div>
+    <div id="sequence" class="sequence"></div>
 
-            <div style="margin-top: 12px;">
-                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #cbd5e1;">
-                    <span>Pattern Matching Accuracy:</span>
-                    <span id="confidence-val">0%</span>
-                </div>
-                <div class="progress-bg">
-                    <div id="confidence-bar" class="progress-fill"></div>
-                </div>
-            </div>
+    <button class="remove-btn" onclick="removeLast()">
+      ← နောက်ဆုံးတစ်ခုဖျက်
+    </button>
 
-            <div id="pred-reason" style="font-size: 0.85rem; color: #38bdf8; margin-top: 12px; text-align: center; line-height: 1.4;"></div>
-        </div>
+    <button class="remove-btn" onclick="clearAll()">
+      Clear All
+    </button>
+
+    <button class="analyze-btn" onclick="analyze()">
+      🔍 ANALYZE PATTERN
+    </button>
+
+  </div>
+
+
+  <!-- RESULT -->
+  <div class="card">
+
+    <h2>② Pattern Analysis</h2>
+
+    <div class="result-grid">
+
+      <div class="result-box">
+        <span>Current Pattern</span>
+        <strong id="currentPattern">---</strong>
+      </div>
+
+      <div class="result-box">
+        <span>Pattern Index</span>
+        <strong id="patternIndex">---</strong>
+      </div>
+
+      <div class="result-box">
+        <span>Big Count</span>
+        <strong id="bigCount">0</strong>
+      </div>
+
+      <div class="result-box">
+        <span>Small Count</span>
+        <strong id="smallCount">0</strong>
+      </div>
+
+      <div class="result-box">
+        <span>Current Streak</span>
+        <strong id="streak">---</strong>
+      </div>
+
+      <div class="result-box">
+        <span>Pattern Size</span>
+        <strong>2¹⁰ = 1024</strong>
+      </div>
+
     </div>
 
-    <!-- History Card -->
-    <div class="card">
-        <div class="card-title">📜 ရလဒ် မှတ်တမ်း (နောက်ဆုံး ၁၅ ခု)</div>
-        <div id="history" class="history"></div>
+  </div>
+
+
+  <!-- PREDICTION -->
+  <div class="card">
+
+    <h2>③ AI Estimate</h2>
+
+    <div class="prediction">
+
+      <div class="label">
+        Data-based estimate
+      </div>
+
+      <div class="value" id="prediction">
+        ---
+      </div>
+
+      <div class="confidence" id="confidence">
+        Pattern 10 ခု ပြည့်အောင်ထည့်ပါ
+      </div>
+
     </div>
 
-    <button class="clear-btn" onclick="clearData()">Clear History</button>
+    <div class="warning">
+      ⚠️ ဒီစနစ်က historical pattern analysis ဖြစ်ပြီး
+      နောက်ထွက်ရလဒ်ကို 100% အာမခံပြီး ကြိုတင်သိနိုင်တဲ့စနစ် မဟုတ်ပါ။
+      Random result ဖြစ်ပါက pattern တူခြင်းက future result ကို အာမခံမပေးနိုင်ပါ။
+    </div>
+
+  </div>
+
+
+  <!-- 1024 PATTERN -->
+  <div class="card">
+
+    <h2>④ 1,024 Pattern Table</h2>
+
+    <div class="history" id="patternTable"></div>
+
+  </div>
+
 </div>
 
+
 <script>
-    // 1024 Combinations Setup
-    const ALL_PATTERNS = [];
+
+  let sequence = [];
+
+  /*
+   * Add B/S
+   */
+  function addResult(value) {
+
+    if (sequence.length >= 10) {
+      alert("10 ကြိမ်ပြည့်နေပါပြီ။ Analyze လုပ်ပါ။");
+      return;
+    }
+
+    sequence.push(value);
+
+    renderSequence();
+  }
+
+
+  /*
+   * Remove last
+   */
+  function removeLast() {
+
+    sequence.pop();
+
+    renderSequence();
+  }
+
+
+  /*
+   * Clear
+   */
+  function clearAll() {
+
+    sequence = [];
+
+    renderSequence();
+
+    document.getElementById("currentPattern").innerText = "---";
+    document.getElementById("patternIndex").innerText = "---";
+    document.getElementById("bigCount").innerText = "0";
+    document.getElementById("smallCount").innerText = "0";
+    document.getElementById("streak").innerText = "---";
+
+    document.getElementById("prediction").innerText = "---";
+
+    document.getElementById("confidence").innerText =
+      "Pattern 10 ခု ပြည့်အောင်ထည့်ပါ";
+  }
+
+
+  /*
+   * Render sequence
+   */
+  function renderSequence() {
+
+    const box = document.getElementById("sequence");
+
+    box.innerHTML = "";
+
+    sequence.forEach((item, index) => {
+
+      const ball = document.createElement("div");
+
+      ball.className =
+        "ball " + (item === "B" ? "ball-b" : "ball-s");
+
+      ball.innerText = item;
+
+      ball.title = "Position " + (index + 1);
+
+      box.appendChild(ball);
+
+    });
+
+  }
+
+
+  /*
+   * Convert binary B/S sequence
+   *
+   * B = 1
+   * S = 0
+   *
+   * Example:
+   * BBBBBBBBBB = 1024
+   * SSSSSSSSSS = 1
+   *
+   * This gives a deterministic pattern index.
+   */
+  function getPatternIndex(pattern) {
+
+    let binary = "";
+
+    pattern.split("").forEach(char => {
+
+      binary += char === "B" ? "1" : "0";
+
+    });
+
+    return parseInt(binary, 2) + 1;
+  }
+
+
+  /*
+   * Generate all 1024 patterns
+   */
+  function generatePatterns() {
+
+    const patterns = [];
+
     for (let i = 0; i < 1024; i++) {
-        let binaryStr = i.toString(2).padStart(10, '0');
-        let patternStr = binaryStr.replace(/0/g, 'B').replace(/1/g, 'S');
-        ALL_PATTERNS.push(patternStr);
+
+      let binary = i.toString(2).padStart(10, "0");
+
+      let pattern = "";
+
+      for (const bit of binary) {
+
+        pattern += bit === "1" ? "B" : "S";
+
+      }
+
+      patterns.push({
+        index: i + 1,
+        pattern: pattern
+      });
+
     }
 
-    let history = JSON.parse(localStorage.getItem('wingo_smart_v6')) || [];
+    return patterns;
 
-    function getItemDetails(num) {
-        let color = '';
-        if (num === 0) color = 'Violet-Red';
-        else if (num === 5) color = 'Violet-Green';
-        else if ([1, 3, 7, 9].includes(num)) color = 'Green';
-        else color = 'Red';
+  }
 
-        const bs = num >= 5 ? 'B' : 'S';
-        return { num, color, bs };
+
+  /*
+   * Display 1024 patterns
+   */
+  function renderPatternTable() {
+
+    const table =
+      document.getElementById("patternTable");
+
+    const patterns =
+      generatePatterns();
+
+    table.innerHTML = "";
+
+    patterns.forEach(item => {
+
+      const row =
+        document.createElement("div");
+
+      row.className = "history-row";
+
+      row.innerHTML = `
+        <span>
+          ${String(item.index).padStart(4, "0")}
+        </span>
+
+        <strong>
+          ${item.pattern}
+        </strong>
+      `;
+
+      table.appendChild(row);
+
+    });
+
+  }
+
+
+  /*
+   * Calculate current streak
+   */
+  function getStreak() {
+
+    if (sequence.length === 0) {
+      return "---";
     }
 
-    function updateUI() {
-        const historyDiv = document.getElementById('history');
-        const statusMsg = document.getElementById('status-msg');
-        const aiOutput = document.getElementById('ai-output');
-        
-        const predColor = document.getElementById('pred-color');
-        const probColor = document.getElementById('prob-color');
-        const predBs = document.getElementById('pred-bs');
-        const probBs = document.getElementById('prob-bs');
-        const confidenceVal = document.getElementById('confidence-val');
-        const confidenceBar = document.getElementById('confidence-bar');
-        const predReason = document.getElementById('pred-reason');
+    const last =
+      sequence[sequence.length - 1];
 
-        // Render History
-        historyDiv.innerHTML = '';
-        history.slice(-15).forEach(item => {
-            const wrap = document.createElement('div');
-            wrap.className = 'history-item';
-            
-            const dot = document.createElement('div');
-            dot.className = 'dot';
-            if (item.color === 'Green') dot.style.background = '#22c55e';
-            else if (item.color === 'Red') dot.style.background = '#ef4444';
-            else if (item.color === 'Violet-Red') dot.style.background = 'linear-gradient(135deg, #a855f7 50%, #ef4444 50%)';
-            else if (item.color === 'Violet-Green') dot.style.background = 'linear-gradient(135deg, #a855f7 50%, #22c55e 50%)';
-            dot.innerText = item.num;
+    let count = 0;
 
-            const bsLabel = document.createElement('span');
-            bsLabel.className = 'bs-text';
-            bsLabel.innerText = item.bs;
+    for (let i = sequence.length - 1; i >= 0; i--) {
 
-            wrap.appendChild(dot);
-            wrap.appendChild(bsLabel);
-            historyDiv.appendChild(wrap);
-        });
+      if (sequence[i] === last) {
+        count++;
+      } else {
+        break;
+      }
 
-        if (history.length < 1) {
-            statusMsg.style.display = 'block';
-            aiOutput.style.display = 'none';
-            return;
-        }
-
-        statusMsg.style.display = 'none';
-        aiOutput.style.display = 'block';
-
-        const currentSeq = history.map(h => h.bs).join('');
-        const seqLen = currentSeq.length;
-        const lastBS = currentSeq[seqLen - 1];
-
-        // Search in 1024 Database
-        let bHits = 0;
-        let sHits = 0;
-        let searchLen = Math.min(seqLen, 5);
-        let activeSub = currentSeq.slice(-searchLen);
-
-        ALL_PATTERNS.forEach(pat => {
-            let idx = pat.indexOf(activeSub);
-            while (idx !== -1) {
-                if (idx + searchLen < pat.length) {
-                    let nextChar = pat[idx + searchLen];
-                    if (nextChar === 'B') bHits++;
-                    else if (nextChar === 'S') sHits++;
-                }
-                idx = pat.indexOf(activeSub, idx + 1);
-            }
-        });
-
-        // Smart Balancing Predictor Logic (Fixes "Follow-last" issue)
-        let predictedBS = '';
-        let bsProb = 50;
-
-        if (bHits !== sHits && (bHits > 0 || sHits > 0)) {
-            if (bHits > sHits) {
-                predictedBS = 'BIG';
-                bsProb = Math.round((bHits / (bHits + sHits)) * 100);
-            } else {
-                predictedBS = 'SMALL';
-                bsProb = Math.round((sHits / (bHits + sHits)) * 100);
-            }
-        } else {
-            // Reversal Rule when Hits are equal (Prevents S->S or B->B always)
-            predictedBS = (lastBS === 'S') ? 'BIG' : 'SMALL';
-            bsProb = 68;
-        }
-
-        bsProb = Math.max(60, Math.min(bsProb, 90));
-
-        // Color Prediction
-        const lastColor = history[history.length - 1].color;
-        let predictedColor = lastColor.includes('Green') ? 'RED' : 'GREEN';
-        let colorProb = 65;
-
-        const totalConfidence = Math.min(Math.round((bsProb + colorProb) / 1.42), 93);
-
-        predColor.innerText = predictedColor;
-        predColor.style.color = predictedColor === 'GREEN' ? '#4ade80' : '#f87171';
-        probColor.innerText = `${colorProb}% Probability`;
-
-        predBs.innerText = predictedBS;
-        predBs.style.color = predictedBS === 'BIG' ? '#fbbf24' : '#38bdf8';
-        probBs.innerText = `${bsProb}% Probability`;
-
-        confidenceVal.innerText = `${totalConfidence}%`;
-        confidenceBar.style.width = `${totalConfidence}%`;
-
-        predReason.innerText = `💡 1024 Smart AI: "${activeSub}" Pattern အပေါ် မူတည်ပြီး ${predictedBS} ကို တိကျစွာ ခန့်မှန်းပေးထားပါသည်။`;
-
-        localStorage.setItem('wingo_smart_v6', JSON.stringify(history));
     }
 
-    function addResult(num) {
-        const item = getItemDetails(num);
-        history.push(item);
-        updateUI();
+    return last + " × " + count;
+
+  }
+
+
+  /*
+   * Analyze
+   */
+  function analyze() {
+
+    if (sequence.length !== 10) {
+
+      alert(
+        "Analysis လုပ်ရန် B/S 10 ကြိမ် အပြည့်ထည့်ပါ။"
+      );
+
+      return;
+
     }
 
-    function clearData() {
-        history = [];
-        localStorage.removeItem('wingo_smart_v6');
-        updateUI();
+    const pattern =
+      sequence.join("");
+
+    const index =
+      getPatternIndex(pattern);
+
+    const bigCount =
+      sequence.filter(x => x === "B").length;
+
+    const smallCount =
+      sequence.filter(x => x === "S").length;
+
+    document.getElementById(
+      "currentPattern"
+    ).innerText = pattern;
+
+    document.getElementById(
+      "patternIndex"
+    ).innerText =
+      String(index).padStart(4, "0");
+
+    document.getElementById(
+      "bigCount"
+    ).innerText = bigCount;
+
+    document.getElementById(
+      "smallCount"
+    ).innerText = smallCount;
+
+    document.getElementById(
+      "streak"
+    ).innerText = getStreak();
+
+
+    /*
+     * IMPORTANT:
+     *
+     * We do NOT pretend that the next
+     * result can be known with certainty.
+     *
+     * Instead we provide a simple
+     * data-based estimate.
+     */
+
+    let prediction = "";
+    let confidence = 0;
+
+    if (bigCount > smallCount) {
+
+      prediction = "BIG";
+
+      confidence =
+        Math.round(
+          (bigCount / 10) * 100
+        );
+
+    } else if (smallCount > bigCount) {
+
+      prediction = "SMALL";
+
+      confidence =
+        Math.round(
+          (smallCount / 10) * 100
+        );
+
+    } else {
+
+      prediction = "50 / 50";
+
+      confidence = 50;
+
     }
 
-    updateUI();
+
+    document.getElementById(
+      "prediction"
+    ).innerText = prediction;
+
+    document.getElementById(
+      "confidence"
+    ).innerText =
+      "Recent 10 results ratio: " +
+      confidence +
+      "% (not a guaranteed probability)";
+
+  }
+
+
+  /*
+   * Start
+   */
+  renderPatternTable();
+
 </script>
 
 </body>
