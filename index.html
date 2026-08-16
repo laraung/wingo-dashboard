@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Wingo AI Pattern Analyzer</title>
+<title>Wingo S/B Auto Predictor</title>
 
 <style>
 *{
@@ -17,14 +17,14 @@
 body{
     min-height:100vh;
     background:
-        radial-gradient(circle at top,#172a4d 0%,#0b1428 45%,#070d1b 100%);
-    color:white;
-    padding:20px;
+        radial-gradient(circle at top,#1b3155 0%,#0d172b 45%,#070d19 100%);
+    color:#fff;
+    padding:15px;
 }
 
 .container{
     width:100%;
-    max-width:760px;
+    max-width:720px;
     margin:auto;
 }
 
@@ -32,36 +32,35 @@ body{
 
 .header{
     text-align:center;
-    margin-bottom:18px;
+    padding:15px 5px 20px;
 }
 
 .header h1{
     color:#35bfff;
-    font-size:30px;
+    font-size:29px;
     margin-bottom:8px;
-    text-shadow:0 0 15px rgba(53,191,255,.35);
 }
 
 .header p{
-    color:#aabbd4;
-    font-size:14px;
+    color:#9eb2cb;
+    font-size:13px;
 }
 
 /* CARD */
 
 .card{
     background:#202e43;
-    border:1px solid rgba(255,255,255,.06);
     border-radius:16px;
-    padding:18px;
-    margin-bottom:16px;
-    box-shadow:0 15px 35px rgba(0,0,0,.25);
+    padding:17px;
+    margin-bottom:15px;
+    box-shadow:0 12px 30px rgba(0,0,0,.25);
+    border:1px solid rgba(255,255,255,.05);
 }
 
-.title{
-    color:#a9c0db;
+.section-title{
+    color:#a9bdd4;
     font-size:14px;
-    margin-bottom:12px;
+    margin-bottom:13px;
 }
 
 /* NUMBER BUTTONS */
@@ -69,296 +68,279 @@ body{
 .number-grid{
     display:grid;
     grid-template-columns:repeat(5,1fr);
-    gap:10px;
+    gap:9px;
 }
 
-.number-btn{
+.num-btn{
+    height:58px;
     border:0;
-    border-radius:10px;
-    height:55px;
-    color:white;
-    font-size:20px;
+    border-radius:11px;
+    color:#fff;
+    font-size:22px;
     font-weight:bold;
     cursor:pointer;
-    transition:.15s;
+    transition:.12s;
+    box-shadow:inset 0 -3px 0 rgba(0,0,0,.15);
 }
 
-.number-btn:hover{
+.num-btn:hover{
     transform:translateY(-2px);
-    filter:brightness(1.15);
+    filter:brightness(1.12);
 }
 
-.number-btn:active{
-    transform:scale(.95);
+.num-btn:active{
+    transform:scale(.94);
 }
 
-.n0,.n2,.n4,.n6,.n8{
+/* 0-4 SMALL */
+
+.small-btn{
     background:#ef4444;
 }
 
-.n1,.n3,.n5,.n7,.n9{
+/* 5-9 BIG */
+
+.big-btn{
     background:#20c768;
 }
 
-/* INPUT */
+/* LAST 10 */
 
-.input-box{
+.history{
     display:flex;
-    gap:10px;
-    margin-top:14px;
+    gap:8px;
+    overflow-x:auto;
+    padding:3px 1px 7px;
 }
 
-#numberInput{
-    flex:1;
-    height:48px;
-    border:none;
-    outline:none;
+.history::-webkit-scrollbar{
+    height:4px;
+}
+
+.history::-webkit-scrollbar-thumb{
+    background:#50637d;
+    border-radius:20px;
+}
+
+.history-item{
+    min-width:57px;
+    height:74px;
     border-radius:10px;
-    padding:0 15px;
-    font-size:17px;
-    background:#0d172a;
-    color:white;
-    border:1px solid #33445d;
+    background:#0e192c;
+    border:1px solid #31435b;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
 }
 
-#numberInput:focus{
-    border-color:#27b8ff;
-    box-shadow:0 0 0 2px rgba(39,184,255,.12);
-}
-
-.clear-btn{
-    border:none;
-    border-radius:10px;
-    padding:0 18px;
-    background:#687b94;
-    color:white;
+.history-number{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
     font-weight:bold;
-    cursor:pointer;
+    font-size:17px;
 }
 
-.clear-btn:hover{
-    background:#7d90a8;
+.history-number.S{
+    background:#ef4444;
 }
 
-/* STATUS */
+.history-number.B{
+    background:#20c768;
+}
 
-.status{
-    text-align:center;
-    margin-top:13px;
-    color:#8ea5c2;
-    font-size:13px;
+.history-label{
+    font-size:10px;
+    margin-top:4px;
+    color:#b4c3d6;
 }
 
 /* PREDICTION */
 
-.prediction-grid{
+.prediction{
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:12px;
 }
 
-.prediction-box{
-    background:#0d172a;
-    border-radius:12px;
-    min-height:130px;
-    padding:18px;
+.predict-box{
+    background:#0d182b;
+    border:1px solid #2c405a;
+    border-radius:13px;
+    padding:18px 10px;
     text-align:center;
-    border:1px solid #293b54;
 }
 
-.prediction-box .small-title{
-    color:#91a6c0;
+.predict-title{
+    color:#91a6bf;
     font-size:13px;
-    margin-bottom:10px;
+    margin-bottom:9px;
 }
 
-.prediction-value{
-    font-size:34px;
+.predict-value{
+    font-size:36px;
     font-weight:900;
-    margin-bottom:7px;
 }
 
-.big{
-    color:#ffb84d;
+.predict-value.big{
+    color:#20c768;
 }
 
-.small{
-    color:#38bdf8;
+.predict-value.small{
+    color:#ef4444;
 }
 
-.wait{
-    color:#8293a9;
+.predict-value.wait{
+    color:#71849d;
 }
 
 .confidence{
-    color:#b6c5d8;
-    font-size:13px;
+    color:#b7c7d9;
+    font-size:12px;
+    margin-top:5px;
 }
 
-.bar{
+/* BAR */
+
+.progress{
+    width:100%;
     height:8px;
     background:#26374e;
     border-radius:20px;
     overflow:hidden;
-    margin-top:10px;
+    margin-top:11px;
 }
 
-.bar-fill{
-    width:0%;
+.progress-fill{
     height:100%;
+    width:0%;
     border-radius:20px;
-    background:linear-gradient(90deg,#20c768,#35bfff);
+    background:linear-gradient(
+        90deg,
+        #ef4444,
+        #f6c343,
+        #20c768
+    );
     transition:.4s;
 }
 
 /* SIGNAL */
 
 .signal{
-    text-align:center;
-    margin-top:14px;
-    padding:12px;
-    background:#101c31;
+    margin-top:13px;
+    padding:13px;
+    background:#101c30;
     border-radius:10px;
+    text-align:center;
     color:#35bfff;
     line-height:1.7;
 }
 
-.signal strong{
-    color:#fff;
-}
-
-/* STATS */
+/* STAT */
 
 .stats{
     display:grid;
     grid-template-columns:repeat(4,1fr);
-    gap:10px;
+    gap:8px;
 }
 
 .stat{
-    background:#101b2f;
-    border-radius:10px;
-    padding:14px 5px;
+    background:#101b2e;
+    padding:13px 4px;
     text-align:center;
+    border-radius:10px;
 }
 
-.stat-number{
-    font-size:22px;
+.stat-value{
+    font-size:21px;
     font-weight:bold;
-    margin-bottom:5px;
 }
 
 .stat-label{
-    color:#91a6c0;
-    font-size:11px;
-}
-
-/* HISTORY */
-
-.history{
-    display:flex;
-    gap:8px;
-    overflow-x:auto;
-    padding-bottom:4px;
-}
-
-.history::-webkit-scrollbar{
-    height:5px;
-}
-
-.history::-webkit-scrollbar-thumb{
-    background:#41536c;
-    border-radius:10px;
-}
-
-.history-item{
-    flex:0 0 54px;
-    height:70px;
-    background:#101b2f;
-    border-radius:9px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    border:1px solid #2c3d55;
-}
-
-.history-number{
-    width:34px;
-    height:34px;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:bold;
-    font-size:16px;
-}
-
-.history-number.B{
-    background:#ef4444;
-}
-
-.history-number.S{
-    background:#20c768;
-}
-
-.history-label{
     font-size:10px;
-    color:#a9bbcf;
+    color:#8da2ba;
     margin-top:4px;
 }
 
 /* PATTERN */
 
-.pattern-box{
-    background:#101b2f;
-    border-radius:10px;
-    padding:15px;
+.pattern{
     text-align:center;
+    background:#0e192c;
+    border-radius:10px;
+    padding:14px;
 }
 
 .pattern-code{
-    color:#fff;
-    font-size:21px;
+    font-size:22px;
+    letter-spacing:4px;
     font-weight:bold;
-    letter-spacing:3px;
     word-break:break-all;
-    margin-top:8px;
 }
 
-.pattern-info{
-    color:#91a6c0;
-    font-size:12px;
+.pattern-help{
+    color:#7f94ae;
+    font-size:11px;
     margin-top:8px;
 }
 
 /* ANALYSIS */
 
 .analysis{
-    color:#c2cede;
-    line-height:1.8;
-    font-size:14px;
+    background:#0e192c;
+    padding:14px;
+    border-radius:10px;
+    color:#b9c8d9;
+    font-size:13px;
+    line-height:1.9;
 }
 
 .analysis b{
-    color:white;
+    color:#fff;
 }
 
-/* FOOTER */
+/* CLEAR */
+
+.clear-btn{
+    width:100%;
+    height:46px;
+    border:0;
+    border-radius:10px;
+    background:#687b94;
+    color:#fff;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:12px;
+}
+
+.clear-btn:hover{
+    background:#7d91aa;
+}
+
+.status{
+    text-align:center;
+    color:#8ea4be;
+    font-size:12px;
+    margin-top:10px;
+}
 
 .footer{
     text-align:center;
-    color:#647790;
-    font-size:11px;
-    padding:10px;
+    color:#586b84;
+    font-size:10px;
+    padding:5px;
 }
 
 /* MOBILE */
 
-@media(max-width:600px){
+@media(max-width:550px){
 
     body{
-        padding:12px;
+        padding:10px;
     }
 
     .header h1{
@@ -369,33 +351,22 @@ body{
         padding:13px;
     }
 
-    .number-grid{
-        gap:7px;
+    .num-btn{
+        height:52px;
+        font-size:20px;
     }
 
-    .number-btn{
-        height:48px;
-        font-size:18px;
-    }
-
-    .prediction-grid{
+    .prediction{
         grid-template-columns:1fr;
     }
 
     .stats{
         grid-template-columns:repeat(2,1fr);
     }
-
-    .input-box{
-        flex-direction:column;
-    }
-
-    .clear-btn{
-        height:44px;
-    }
 }
 </style>
 </head>
+
 
 <body>
 
@@ -404,56 +375,106 @@ body{
     <!-- HEADER -->
 
     <div class="header">
-        <h1>Wingo AI Pattern Analyzer</h1>
-        <p>နံပါတ်ထည့်လိုက်တာနဲ့ အလိုအလျောက် BIG / SMALL ခန့်မှန်းပေးမည့်စနစ်</p>
+        <h1>Wingo S/B Auto Predictor</h1>
+
+        <p>
+            ထွက်ပြီးသားဂဏန်းကို ခလုတ်နှိပ်ပြီးထည့်ပါ —
+            နောက်ဆုံး 10 ကြိမ်ကို အလိုအလျောက်တွက်ချက်ပါမယ်
+        </p>
     </div>
 
 
-    <!-- INPUT -->
+    <!-- NUMBER INPUT -->
 
     <div class="card">
 
-        <div class="title">
-            🎯 0 - 9 နံပါတ်ရွေးပါ
+        <div class="section-title">
+            🎯 ထွက်ပြီးသားဂဏန်းကို ရွေးပါ
         </div>
 
         <div class="number-grid">
 
-            <button class="number-btn n0" onclick="addNumber(0)">0</button>
-            <button class="number-btn n1" onclick="addNumber(1)">1</button>
-            <button class="number-btn n2" onclick="addNumber(2)">2</button>
-            <button class="number-btn n3" onclick="addNumber(3)">3</button>
-            <button class="number-btn n4" onclick="addNumber(4)">4</button>
+            <button
+                class="num-btn small-btn"
+                onclick="addResult(0)"
+            >0</button>
 
-            <button class="number-btn n5" onclick="addNumber(5)">5</button>
-            <button class="number-btn n6" onclick="addNumber(6)">6</button>
-            <button class="number-btn n7" onclick="addNumber(7)">7</button>
-            <button class="number-btn n8" onclick="addNumber(8)">8</button>
-            <button class="number-btn n9" onclick="addNumber(9)">9</button>
+            <button
+                class="num-btn small-btn"
+                onclick="addResult(1)"
+            >1</button>
+
+            <button
+                class="num-btn small-btn"
+                onclick="addResult(2)"
+            >2</button>
+
+            <button
+                class="num-btn small-btn"
+                onclick="addResult(3)"
+            >3</button>
+
+            <button
+                class="num-btn small-btn"
+                onclick="addResult(4)"
+            >4</button>
+
+            <button
+                class="num-btn big-btn"
+                onclick="addResult(5)"
+            >5</button>
+
+            <button
+                class="num-btn big-btn"
+                onclick="addResult(6)"
+            >6</button>
+
+            <button
+                class="num-btn big-btn"
+                onclick="addResult(7)"
+            >7</button>
+
+            <button
+                class="num-btn big-btn"
+                onclick="addResult(8)"
+            >8</button>
+
+            <button
+                class="num-btn big-btn"
+                onclick="addResult(9)"
+            >9</button>
 
         </div>
 
-
-        <div class="input-box">
-
-            <input
-                id="numberInput"
-                type="text"
-                inputmode="numeric"
-                autocomplete="off"
-                placeholder="ဥပမာ 6 သို့မဟုတ် 6105681234"
-                oninput="inputNumbers(this)"
-            >
-
-            <button class="clear-btn" onclick="clearHistory()">
-                CLEAR
-            </button>
-
+        <div
+            id="status"
+            class="status"
+        >
+            နောက်ဆုံး 10 ကြိမ်ပြည့်ရန် ဂဏန်းများကို နှိပ်ပါ
         </div>
 
-        <div class="status" id="status">
-            10 ကြိမ်ပြည့်ရန် နံပါတ်ထည့်ပါ
+        <button
+            class="clear-btn"
+            onclick="clearAll()"
+        >
+            🗑 CLEAR HISTORY
+        </button>
+
+    </div>
+
+
+    <!-- LAST 10 RESULTS -->
+
+    <div class="card">
+
+        <div class="section-title">
+            📜 နောက်ဆုံးထွက်ဂဏန်းများ
         </div>
+
+        <div
+            id="history"
+            class="history"
+        ></div>
 
     </div>
 
@@ -462,21 +483,21 @@ body{
 
     <div class="card">
 
-        <div class="title">
-            🎯 AUTO PREDICTION
+        <div class="section-title">
+            🤖 S / B AUTO PREDICTION
         </div>
 
-        <div class="prediction-grid">
+        <div class="prediction">
 
-            <div class="prediction-box">
+            <div class="predict-box">
 
-                <div class="small-title">
-                    အကြီး / အသေး
+                <div class="predict-title">
+                    နောက်တစ်ကြိမ် ခန့်မှန်းချက်
                 </div>
 
                 <div
                     id="prediction"
-                    class="prediction-value wait"
+                    class="predict-value wait"
                 >
                     WAIT
                 </div>
@@ -488,25 +509,25 @@ body{
                     0%
                 </div>
 
-                <div class="bar">
+                <div class="progress">
                     <div
                         id="confidenceBar"
-                        class="bar-fill"
+                        class="progress-fill"
                     ></div>
                 </div>
 
             </div>
 
 
-            <div class="prediction-box">
+            <div class="predict-box">
 
-                <div class="small-title">
-                    Pattern Trend
+                <div class="predict-title">
+                    လက်ရှိ Trend
                 </div>
 
                 <div
                     id="trend"
-                    class="prediction-value wait"
+                    class="predict-value wait"
                 >
                     WAIT
                 </div>
@@ -518,10 +539,10 @@ body{
                     0%
                 </div>
 
-                <div class="bar">
+                <div class="progress">
                     <div
                         id="trendBar"
-                        class="bar-fill"
+                        class="progress-fill"
                     ></div>
                 </div>
 
@@ -534,7 +555,7 @@ body{
             id="signal"
             class="signal"
         >
-            📥 နောက်ဆုံး 10 ကြိမ်ပြည့်အောင် နံပါတ်ထည့်ပါ
+            📥 10 ကြိမ်ပြည့်အောင် ရလဒ်ထည့်ပါ
         </div>
 
     </div>
@@ -544,75 +565,70 @@ body{
 
     <div class="card">
 
-        <div class="title">
-            📊 Statistics
+        <div class="section-title">
+            📊 ထွက်ပြီးသားဂဏန်းများကို တွက်ချက်မှု
         </div>
 
         <div class="stats">
 
             <div class="stat">
+
                 <div
                     id="total"
-                    class="stat-number"
+                    class="stat-value"
                 >0</div>
 
                 <div class="stat-label">
                     TOTAL
                 </div>
+
             </div>
 
+
             <div class="stat">
+
                 <div
                     id="bigCount"
-                    class="stat-number"
-                    style="color:#ffb84d"
+                    class="stat-value"
+                    style="color:#20c768"
                 >0</div>
 
                 <div class="stat-label">
                     BIG
                 </div>
+
             </div>
 
+
             <div class="stat">
+
                 <div
                     id="smallCount"
-                    class="stat-number"
-                    style="color:#38bdf8"
+                    class="stat-value"
+                    style="color:#ef4444"
                 >0</div>
 
                 <div class="stat-label">
                     SMALL
                 </div>
+
             </div>
 
+
             <div class="stat">
+
                 <div
                     id="bigPercent"
-                    class="stat-number"
+                    class="stat-value"
                 >0%</div>
 
                 <div class="stat-label">
                     BIG %
                 </div>
+
             </div>
 
         </div>
-
-    </div>
-
-
-    <!-- HISTORY -->
-
-    <div class="card">
-
-        <div class="title">
-            📜 နောက်ဆုံး 10 ကြိမ် History
-        </div>
-
-        <div
-            id="history"
-            class="history"
-        ></div>
 
     </div>
 
@@ -621,11 +637,11 @@ body{
 
     <div class="card">
 
-        <div class="title">
-            🧠 Current Pattern
+        <div class="section-title">
+            🧠 S / B Pattern
         </div>
 
-        <div class="pattern-box">
+        <div class="pattern">
 
             <div
                 id="pattern"
@@ -634,11 +650,9 @@ body{
                 ---
             </div>
 
-            <div
-                id="patternInfo"
-                class="pattern-info"
-            >
-                Data မရှိသေးပါ
+            <div class="pattern-help">
+                S = SMALL (0–4) &nbsp; | &nbsp;
+                B = BIG (5–9)
             </div>
 
         </div>
@@ -646,27 +660,27 @@ body{
     </div>
 
 
-    <!-- ANALYSIS -->
+    <!-- AUTO ANALYSIS -->
 
     <div class="card">
 
-        <div class="title">
-            🤖 Auto Analysis
+        <div class="section-title">
+            🔎 Auto Calculation
         </div>
 
         <div
             id="analysis"
             class="analysis"
         >
-            နံပါတ် 10 လုံးထည့်ပြီးနောက်
-            အလိုအလျောက် analysis ပြပါမယ်။
+            ထွက်ပြီးသားဂဏန်းတွေကို ထည့်လိုက်တာနဲ့
+            အလိုအလျောက်တွက်ချက်ပြပါမယ်။
         </div>
 
     </div>
 
 
     <div class="footer">
-        Wingo AI Pattern Analyzer • Statistical Pattern Tool
+        S/B Pattern Analyzer
     </div>
 
 </div>
@@ -674,19 +688,19 @@ body{
 
 <script>
 
-/* =====================================================
-   DATA
-===================================================== */
+/* ==================================================
+   HISTORY
+================================================== */
 
 let history = [];
 
 
-/* =====================================================
+/* ==================================================
    BIG / SMALL
 
-   0 - 4 = SMALL
-   5 - 9 = BIG
-===================================================== */
+   0 1 2 3 4 = SMALL
+   5 6 7 8 9 = BIG
+================================================== */
 
 function getType(number){
 
@@ -697,131 +711,60 @@ function getType(number){
 }
 
 
-/* =====================================================
-   ADD ONE NUMBER
-===================================================== */
+/* ==================================================
+   USER CLICK NUMBER
+================================================== */
 
-function addNumber(number){
+function addResult(number){
+
+    /*
+       ထွက်ပြီးသားဂဏန်းကို history ထဲထည့်
+    */
 
     history.push(Number(number));
 
+
     /*
-       နောက်ဆုံး 10 ကြိမ်ပဲထားမယ်
+       နောက်ဆုံး 10 ကြိမ်ပဲထား
     */
 
     if(history.length > 10){
+
         history.shift();
+
     }
 
-    updateDashboard();
+
+    /*
+       UI အားလုံး update
+    */
+
+    updateAll();
 
 }
 
 
-/* =====================================================
-   INPUT NUMBER
+/* ==================================================
+   UPDATE ALL
+================================================== */
 
-   User က
-
-   6
-
-   သို့မဟုတ်
-
-   6105681234
-
-   လို ရိုက်ထည့်လည်းရ
-===================================================== */
-
-function inputNumbers(input){
-
-    const value = input.value;
-
-    const digits = value.match(/[0-9]/g);
-
-    if(!digits){
-        return;
-    }
-
-    /*
-       Input ထဲက digit တစ်လုံးချင်း auto add
-    */
-
-    digits.forEach(function(digit){
-
-        addNumber(Number(digit));
-
-    });
-
-
-    /*
-       Input box ပြန်ရှင်း
-    */
-
-    input.value = "";
-
-}
-
-
-/* =====================================================
-   UPDATE EVERYTHING
-===================================================== */
-
-function updateDashboard(){
+function updateAll(){
 
     renderHistory();
 
-    updateStatistics();
+    calculateStats();
 
-    updatePattern();
+    renderPattern();
 
 
     /*
-       10 ကြိမ်မပြည့်သေးရင် prediction မလုပ်
+       10 ကြိမ်မပြည့်သေးရင်
+       prediction မပြ
     */
 
     if(history.length < 10){
 
-        document.getElementById("prediction").innerText =
-            "WAIT";
-
-        document.getElementById("prediction").className =
-            "prediction-value wait";
-
-        document.getElementById("confidence").innerText =
-            "0%";
-
-        document.getElementById("confidenceBar").style.width =
-            "0%";
-
-
-        document.getElementById("trend").innerText =
-            "WAIT";
-
-        document.getElementById("trend").className =
-            "prediction-value wait";
-
-        document.getElementById("trendConfidence").innerText =
-            "0%";
-
-        document.getElementById("trendBar").style.width =
-            "0%";
-
-
-        document.getElementById("status").innerText =
-            "10 ကြိမ်ပြည့်ရန် " +
-            (10 - history.length) +
-            " ကြိမ်ကျန်ပါသည်";
-
-
-        document.getElementById("signal").innerHTML =
-            "📥 နောက်ဆုံး 10 ကြိမ်ပြည့်အောင် နံပါတ်ထည့်ပါ";
-
-
-        document.getElementById("analysis").innerHTML =
-            "လက်ရှိ <b>" +
-            history.length +
-            "/10</b> ကြိမ် ရှိပါသည်။ " +
-            "10 ကြိမ်ပြည့်သွားသောအခါ Prediction အလိုအလျောက်ထွက်ပါမည်.";
+        showWaiting();
 
         return;
 
@@ -829,107 +772,128 @@ function updateDashboard(){
 
 
     /*
-       10 ကြိမ်ပြည့်ပြီးရင် AI heuristic
+       10 ကြိမ်ပြည့်ပြီဆိုရင်
+       Auto Prediction
     */
 
-    const result = calculatePrediction();
+    const result =
+        analyzeHistory();
 
 
-    /* BIG / SMALL */
-
-    const prediction =
-        document.getElementById("prediction");
-
-    prediction.innerText =
-        result.prediction === "B"
-            ? "BIG"
-            : "SMALL";
-
-    prediction.className =
-        "prediction-value " +
-        (
-            result.prediction === "B"
-                ? "big"
-                : "small"
-        );
-
-
-    document.getElementById("confidence").innerText =
-        result.confidence + "%";
-
-
-    document.getElementById("confidenceBar").style.width =
-        result.confidence + "%";
-
-
-    /* TREND */
-
-    const trend =
-        document.getElementById("trend");
-
-    trend.innerText =
-        result.trend;
-
-    trend.className =
-        "prediction-value " +
-        (
-            result.trend === "BIG"
-                ? "big"
-                : "small"
-        );
-
-
-    document.getElementById("trendConfidence").innerText =
-        result.trendConfidence + "%";
-
-
-    document.getElementById("trendBar").style.width =
-        result.trendConfidence + "%";
-
-
-    /* STATUS */
-
-    document.getElementById("status").innerText =
-        "✅ 10/10 ပြည့်ပြီး • နံပါတ်အသစ်ထည့်တိုင်း Auto Update";
-
-
-    /* SIGNAL */
-
-    document.getElementById("signal").innerHTML =
-        result.message;
-
-
-    /* ANALYSIS */
-
-    document.getElementById("analysis").innerHTML =
-        result.analysis;
+    showPrediction(result);
 
 }
 
 
-/* =====================================================
-   PREDICTION ENGINE
-===================================================== */
+/* ==================================================
+   WAITING
+================================================== */
 
-function calculatePrediction(){
+function showWaiting(){
 
-    const nums = history.slice(-10);
+    const remain =
+        10 - history.length;
 
-    const types = nums.map(getType);
+
+    document.getElementById(
+        "prediction"
+    ).innerText = "WAIT";
+
+
+    document.getElementById(
+        "prediction"
+    ).className =
+        "predict-value wait";
+
+
+    document.getElementById(
+        "confidence"
+    ).innerText = "0%";
+
+
+    document.getElementById(
+        "confidenceBar"
+    ).style.width = "0%";
+
+
+    document.getElementById(
+        "trend"
+    ).innerText = "WAIT";
+
+
+    document.getElementById(
+        "trend"
+    ).className =
+        "predict-value wait";
+
+
+    document.getElementById(
+        "trendConfidence"
+    ).innerText = "0%";
+
+
+    document.getElementById(
+        "trendBar"
+    ).style.width = "0%";
+
+
+    document.getElementById(
+        "status"
+    ).innerText =
+        "နောက်ဆုံး 10 ကြိမ်ပြည့်ရန် " +
+        remain +
+        " ကြိမ်ကျန်ပါသည်";
+
+
+    document.getElementById(
+        "signal"
+    ).innerHTML =
+        "📥 ထွက်ပြီးသားဂဏန်း " +
+        "<b>" +
+        history.length +
+        "/10</b> ကြိမ်ရှိပါပြီ";
+
+
+    document.getElementById(
+        "analysis"
+    ).innerHTML =
+        "လက်ရှိ <b>" +
+        history.length +
+        "/10</b> ကြိမ် ရှိပါသည်။<br>" +
+        "10 ကြိမ်ပြည့်သွားလျှင် S/B Prediction အလိုအလျောက်တွက်ပါမယ်။";
+
+}
+
+
+/* ==================================================
+   ANALYSIS ENGINE
+================================================== */
+
+function analyzeHistory(){
+
+    const numbers =
+        history.slice(-10);
+
+
+    const types =
+        numbers.map(getType);
 
 
     /* -----------------------------------------------
-       1. BIG / SMALL COUNT
-    ----------------------------------------------- */
+       BIG / SMALL COUNT
+    ------------------------------------------------ */
 
     let bigCount = 0;
+
     let smallCount = 0;
+
 
     types.forEach(function(type){
 
         if(type === "B"){
             bigCount++;
-        }else{
+        }
+        else{
             smallCount++;
         }
 
@@ -937,97 +901,169 @@ function calculatePrediction(){
 
 
     /* -----------------------------------------------
-       2. RECENCY WEIGHT
+       WEIGHTED SCORE
 
-       နောက်ဆုံးထွက်တာတွေကို ပိုအလေးပေး
-    ----------------------------------------------- */
+       နောက်ဆုံးထွက်တဲ့ result ကို
+       အနည်းငယ်ပိုအလေးပေး
+    ------------------------------------------------ */
 
     let bigScore = 0;
+
     let smallScore = 0;
 
-    for(let i=0;i<types.length;i++){
+
+    for(
+        let i = 0;
+        i < types.length;
+        i++
+    ){
 
         /*
-           နောက်ဆုံး data ကို weight ပိုများ
+           1 → 10 weight
         */
 
         const weight = i + 1;
 
+
         if(types[i] === "B"){
+
             bigScore += weight;
-        }else{
+
+        }
+        else{
+
             smallScore += weight;
+
         }
 
     }
 
 
     /* -----------------------------------------------
-       3. LAST 3
-    ----------------------------------------------- */
+       LAST 5
+    ------------------------------------------------ */
+
+    const last5 =
+        types.slice(-5);
+
+
+    const last5Big =
+        last5.filter(
+            x => x === "B"
+        ).length;
+
+
+    const last5Small =
+        5 - last5Big;
+
+
+    /*
+       Last 5 trend ကို score ပေး
+    */
+
+    if(last5Big > last5Small){
+
+        bigScore += 5;
+
+    }
+    else if(last5Small > last5Big){
+
+        smallScore += 5;
+
+    }
+
+
+    /* -----------------------------------------------
+       LAST 3
+    ------------------------------------------------ */
 
     const last3 =
         types.slice(-3);
 
+
     const last3Big =
-        last3.filter(x => x === "B").length;
+        last3.filter(
+            x => x === "B"
+        ).length;
+
 
     const last3Small =
         3 - last3Big;
 
 
-    /*
-       Last 3 trend ကို ထပ်အလေးပေး
-    */
-
     if(last3Big > last3Small){
-        bigScore += 4;
-    }
 
-    if(last3Small > last3Big){
+        bigScore += 4;
+
+    }
+    else if(last3Small > last3Big){
+
         smallScore += 4;
+
     }
 
 
     /* -----------------------------------------------
-       4. ALTERNATING PATTERN
-    ----------------------------------------------- */
+       ALTERNATING
+
+       B S B S
+       S B S B
+    ------------------------------------------------ */
 
     let alternating = true;
 
-    for(let i=1;i<types.length;i++){
 
-        if(types[i] === types[i-1]){
+    for(
+        let i = 1;
+        i < types.length;
+        i++
+    ){
+
+        if(
+            types[i] ===
+            types[i - 1]
+        ){
+
             alternating = false;
+
             break;
+
         }
 
     }
 
 
-    /*
-       B S B S ...
-       ဖြစ်နေရင် နောက်တစ်ကြိမ် opposite
-    */
-
     if(alternating){
 
-        if(types[types.length-1] === "B"){
-            smallScore += 7;
-        }else{
-            bigScore += 7;
+        const last =
+            types[types.length - 1];
+
+
+        /*
+           Alternating ဖြစ်ရင်
+           နောက်တစ်ကြိမ် opposite
+        */
+
+        if(last === "B"){
+
+            smallScore += 6;
+
+        }
+        else{
+
+            bigScore += 6;
+
         }
 
     }
 
 
     /* -----------------------------------------------
-       5. STREAK
-
-       နောက်ဆုံးတူညီတာ ဘယ်နှစ်ကြိမ်ဆက်လဲ
-    ----------------------------------------------- */
+       STREAK
+    ------------------------------------------------ */
 
     let streak = 1;
+
 
     for(
         let i = types.length - 1;
@@ -1035,83 +1071,143 @@ function calculatePrediction(){
         i--
     ){
 
-        if(types[i] === types[i-1]){
+        if(
+            types[i] ===
+            types[i - 1]
+        ){
+
             streak++;
-        }else{
+
+        }
+        else{
+
             break;
+
         }
 
     }
 
 
     /*
-       Streak အရမ်းရှည်ရင်
-       opposite ကို small weight ပေး
+       Streak ရှည်ရင်
+       opposite trend ကို score ပေး
     */
 
     if(streak >= 4){
 
-        if(types[types.length-1] === "B"){
+        const last =
+            types[types.length - 1];
+
+
+        if(last === "B"){
+
             smallScore += 5;
-        }else{
+
+        }
+        else{
+
             bigScore += 5;
+
         }
 
     }
 
 
     /* -----------------------------------------------
-       6. FINAL
-    ----------------------------------------------- */
+       FINAL PREDICTION
+    ------------------------------------------------ */
 
     let prediction;
 
-    if(bigScore >= smallScore){
+
+    if(bigScore > smallScore){
+
         prediction = "B";
-    }else{
+
+    }
+    else if(smallScore > bigScore){
+
         prediction = "S";
+
+    }
+    else{
+
+        /*
+           Score တူရင်
+           Count ကိုကြည့်
+        */
+
+        prediction =
+            bigCount >= smallCount
+                ? "B"
+                : "S";
+
     }
 
 
     /* -----------------------------------------------
        CONFIDENCE
-
-       50-85 အတွင်းပဲထား
-    ----------------------------------------------- */
+    ------------------------------------------------ */
 
     const totalScore =
-        bigScore + smallScore;
+        bigScore +
+        smallScore;
 
-    let confidence =
-        Math.round(
-            Math.abs(bigScore-smallScore)
-            / totalScore
-            * 100
+
+    let difference =
+        Math.abs(
+            bigScore -
+            smallScore
         );
 
-    confidence =
-        Math.max(50, confidence + 50);
+
+    let confidence =
+        50 +
+        Math.round(
+            difference /
+            totalScore *
+            45
+        );
+
+
+    /*
+       50 - 95 အတွင်း
+    */
 
     confidence =
-        Math.min(85, confidence);
+        Math.max(
+            50,
+            Math.min(
+                95,
+                confidence
+            )
+        );
 
 
     /* -----------------------------------------------
-       TREND
-    ----------------------------------------------- */
+       CURRENT TREND
+    ------------------------------------------------ */
 
     let trend;
 
+
     if(last3Big > last3Small){
+
         trend = "BIG";
+
     }
     else if(last3Small > last3Big){
+
         trend = "SMALL";
+
     }
     else{
-        trend = prediction === "B"
-            ? "BIG"
-            : "SMALL";
+
+        trend =
+            prediction === "B"
+                ? "BIG"
+                : "SMALL";
+
     }
 
 
@@ -1123,102 +1219,100 @@ function calculatePrediction(){
             ) / 3 * 100
         );
 
+
     trendConfidence =
-        Math.min(
-            90,
-            Math.max(
-                50,
-                trendConfidence
-            )
+        Math.max(
+            50,
+            trendConfidence
         );
 
 
     /* -----------------------------------------------
        MESSAGE
-    ----------------------------------------------- */
+    ------------------------------------------------ */
 
-    let message = "";
+    let message;
+
 
     if(prediction === "B"){
 
         message =
-            "🤖 Prediction: " +
-            "<strong style='color:#ffb84d'>BIG</strong>" +
-            " • Confidence " +
+            "🤖 နောက်တစ်ကြိမ် ခန့်မှန်းချက် — " +
+            "<b style='color:#20c768;font-size:20px'>BIG</b>" +
+            " &nbsp; (" +
             confidence +
-            "%";
+            "%)";
 
-    }else{
+    }
+    else{
 
         message =
-            "🤖 Prediction: " +
-            "<strong style='color:#38bdf8'>SMALL</strong>" +
-            " • Confidence " +
+            "🤖 နောက်တစ်ကြိမ် ခန့်မှန်းချက် — " +
+            "<b style='color:#ef4444;font-size:20px'>SMALL</b>" +
+            " &nbsp; (" +
             confidence +
-            "%";
+            "%)";
 
     }
 
 
     /* -----------------------------------------------
-       ANALYSIS TEXT
-    ----------------------------------------------- */
+       PATTERN DESCRIPTION
+    ------------------------------------------------ */
 
-    const pattern =
-        types.join("");
+    let patternDescription = "";
 
-
-    let patternMessage = "";
 
     if(alternating){
 
-        patternMessage =
-            "Alternating pattern တွေ့ရှိထားသည်။";
+        patternDescription =
+            "B/S အလှည့်ကျ pattern ကို တွေ့ရပါတယ်။";
 
     }
     else if(streak >= 4){
 
-        patternMessage =
+        patternDescription =
             "နောက်ဆုံး " +
             streak +
-            " ကြိမ် တူညီသော trend ဆက်နေသည်။";
+            " ကြိမ် တစ်မျိုးတည်း ဆက်နေပါတယ်။";
 
     }
-    else if(last3Big > last3Small){
+    else if(last5Big > last5Small){
 
-        patternMessage =
-            "နောက်ဆုံး 3 ကြိမ်မှာ BIG ဘက် အနည်းငယ်အားသာသည်။";
+        patternDescription =
+            "နောက်ဆုံး 5 ကြိမ်မှာ BIG ဘက် ပိုများပါတယ်။";
 
     }
-    else if(last3Small > last3Big){
+    else if(last5Small > last5Big){
 
-        patternMessage =
-            "နောက်ဆုံး 3 ကြိမ်မှာ SMALL ဘက် အနည်းငယ်အားသာသည်။";
+        patternDescription =
+            "နောက်ဆုံး 5 ကြိမ်မှာ SMALL ဘက် ပိုများပါတယ်။";
 
     }
     else{
 
-        patternMessage =
-            "လက်ရှိ pattern သည် မျှတနေသည်။";
+        patternDescription =
+            "လက်ရှိ pattern က မျှတနေပါတယ်။";
 
     }
 
 
+    /* -----------------------------------------------
+       ANALYSIS
+    ------------------------------------------------ */
+
     const analysis =
 
-        "<b>နောက်ဆုံး 10 ကြိမ်:</b> " +
-        nums.join(" , ") +
-
-        "<br>" +
-
-        "<b>Pattern:</b> " +
-        pattern +
+        "<b>နောက်ဆုံး 10 ဂဏန်း:</b> " +
+        numbers.join(" , ") +
 
         "<br>" +
 
         "<b>BIG:</b> " +
         bigCount +
-        " ကြိမ် • " +
+        " ကြိမ်" +
+
+        " &nbsp; | &nbsp; " +
 
         "<b>SMALL:</b> " +
         smallCount +
@@ -1226,22 +1320,25 @@ function calculatePrediction(){
 
         "<br>" +
 
-        "<b>နောက်ဆုံး 3 ကြိမ်:</b> " +
+        "<b>နောက်ဆုံး 5:</b> " +
+        last5.join("") +
+
+        "<br>" +
+
+        "<b>နောက်ဆုံး 3:</b> " +
         last3.join("") +
 
         "<br>" +
 
-        "<b>Pattern Analysis:</b> " +
-        patternMessage +
+        "<b>Pattern:</b> " +
+        patternDescription +
 
         "<br>" +
 
-        "<b>Result:</b> " +
-        (
-            prediction === "B"
-                ? "BIG ဘက်ကို statistical score ပိုများနေပါတယ်။"
-                : "SMALL ဘက်ကို statistical score ပိုများနေပါတယ်။"
-        );
+        "<b>Score:</b> BIG " +
+        bigScore +
+        " / SMALL " +
+        smallScore;
 
 
     return {
@@ -1269,14 +1366,107 @@ function calculatePrediction(){
 }
 
 
-/* =====================================================
-   HISTORY DISPLAY
-===================================================== */
+/* ==================================================
+   SHOW PREDICTION
+================================================== */
+
+function showPrediction(result){
+
+    const prediction =
+        document.getElementById(
+            "prediction"
+        );
+
+
+    prediction.innerText =
+        result.prediction === "B"
+            ? "BIG"
+            : "SMALL";
+
+
+    prediction.className =
+        "predict-value " +
+        (
+            result.prediction === "B"
+                ? "big"
+                : "small"
+        );
+
+
+    document.getElementById(
+        "confidence"
+    ).innerText =
+        result.confidence + "%";
+
+
+    document.getElementById(
+        "confidenceBar"
+    ).style.width =
+        result.confidence + "%";
+
+
+    const trend =
+        document.getElementById(
+            "trend"
+        );
+
+
+    trend.innerText =
+        result.trend;
+
+
+    trend.className =
+        "predict-value " +
+        (
+            result.trend === "BIG"
+                ? "big"
+                : "small"
+        );
+
+
+    document.getElementById(
+        "trendConfidence"
+    ).innerText =
+        result.trendConfidence + "%";
+
+
+    document.getElementById(
+        "trendBar"
+    ).style.width =
+        result.trendConfidence + "%";
+
+
+    document.getElementById(
+        "status"
+    ).innerText =
+        "✅ 10/10 ပြည့်ပြီး — ဂဏန်းအသစ်နှိပ်တိုင်း အလိုအလျောက်တွက်ချက်မည်";
+
+
+    document.getElementById(
+        "signal"
+    ).innerHTML =
+        result.message;
+
+
+    document.getElementById(
+        "analysis"
+    ).innerHTML =
+        result.analysis;
+
+}
+
+
+/* ==================================================
+   HISTORY UI
+================================================== */
 
 function renderHistory(){
 
     const box =
-        document.getElementById("history");
+        document.getElementById(
+            "history"
+        );
+
 
     box.innerHTML = "";
 
@@ -1288,7 +1478,10 @@ function renderHistory(){
 
 
         const item =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         item.className =
             "history-item";
@@ -1318,11 +1511,11 @@ function renderHistory(){
 }
 
 
-/* =====================================================
+/* ==================================================
    STATISTICS
-===================================================== */
+================================================== */
 
-function updateStatistics(){
+function calculateStats(){
 
     const total =
         history.length;
@@ -1336,9 +1529,14 @@ function updateStatistics(){
     history.forEach(function(number){
 
         if(getType(number) === "B"){
+
             big++;
-        }else{
+
+        }
+        else{
+
             small++;
+
         }
 
     });
@@ -1346,36 +1544,50 @@ function updateStatistics(){
 
     let bigPercent = 0;
 
+
     if(total > 0){
 
         bigPercent =
             Math.round(
-                big / total * 100
+                big /
+                total *
+                100
             );
 
     }
 
 
-    document.getElementById("total").innerText =
+    document.getElementById(
+        "total"
+    ).innerText =
         total;
 
-    document.getElementById("bigCount").innerText =
+
+    document.getElementById(
+        "bigCount"
+    ).innerText =
         big;
 
-    document.getElementById("smallCount").innerText =
+
+    document.getElementById(
+        "smallCount"
+    ).innerText =
         small;
 
-    document.getElementById("bigPercent").innerText =
+
+    document.getElementById(
+        "bigPercent"
+    ).innerText =
         bigPercent + "%";
 
 }
 
 
-/* =====================================================
-   PATTERN DISPLAY
-===================================================== */
+/* ==================================================
+   PATTERN
+================================================== */
 
-function updatePattern(){
+function renderPattern(){
 
     const pattern =
         history
@@ -1383,73 +1595,32 @@ function updatePattern(){
             .join("");
 
 
-    document.getElementById("pattern").innerText =
+    document.getElementById(
+        "pattern"
+    ).innerText =
         pattern || "---";
-
-
-    if(history.length === 0){
-
-        document.getElementById("patternInfo").innerText =
-            "Data မရှိသေးပါ";
-
-    }
-    else{
-
-        document.getElementById("patternInfo").innerText =
-            history.length +
-            "/10 • " +
-            "B = BIG / S = SMALL";
-
-    }
 
 }
 
 
-/* =====================================================
+/* ==================================================
    CLEAR
-===================================================== */
+================================================== */
 
-function clearHistory(){
+function clearAll(){
 
     history = [];
 
-
-    document.getElementById("numberInput").value =
-        "";
-
-
-    updateDashboard();
+    updateAll();
 
 }
 
 
-/* =====================================================
-   KEYBOARD SUPPORT
-
-   Enter နှိပ်ပြီး digit ထည့်လို့လည်းရ
-===================================================== */
-
-document
-    .getElementById("numberInput")
-    .addEventListener(
-        "keydown",
-        function(event){
-
-            if(event.key === "Enter"){
-
-                inputNumbers(this);
-
-            }
-
-        }
-    );
-
-
-/* =====================================================
+/* ==================================================
    START
-===================================================== */
+================================================== */
 
-updateDashboard();
+updateAll();
 
 </script>
 
