@@ -47,7 +47,7 @@
             </div>
 
             <div class="relative">
-                <input type="text" id="digitInput" oninput="handleDigitInput()" placeholder="ဥပမာ: 9503459990" maxlength="10"
+                <input type="text" id="digitInput" oninput="handleDigitInput()" placeholder="ဥပမာ: 9503459990"
                     class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3.5 text-xl font-mono text-emerald-400 tracking-wider focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
             </div>
 
@@ -179,7 +179,6 @@
             const input = document.getElementById('digitInput');
 
             input.value = '';
-            input.maxLength = maxDigits;
             handleDigitInput();
             document.getElementById('predictionCard').classList.add('hidden');
 
@@ -200,12 +199,20 @@
             document.getElementById('predictionCard').classList.add('hidden');
         }
 
-        // Render Real-Time Color & Big/Small Chips
+        // Real-Time Digit Auto-Shift (FIFO Logic) & Chip Renderer
         function handleDigitInput() {
             const input = document.getElementById('digitInput');
-            // Clean non-numeric input
-            input.value = input.value.replace(/[^0-9]/g, '');
-            const val = input.value;
+            // Remove non-numeric characters
+            let val = input.value.replace(/[^0-9]/g, '');
+
+            // Auto-Shift Logic: If typed count exceeds limit, shift digits right and drop the oldest
+            if (val.length > maxDigits) {
+                const newestDigit = val.slice(-1);
+                const previousDigits = val.slice(0, -1);
+                val = newestDigit + previousDigits.slice(0, maxDigits - 1);
+            }
+
+            input.value = val;
             const container = document.getElementById('chipsContainer');
             
             document.getElementById('digitCountText').innerText = `${val.length} / ${maxDigits} digits`;
@@ -334,7 +341,7 @@
             updateStatsUI();
             renderLedgerUI();
 
-            // Shift digits input for next round (removes oldest, leaves newest first space empty)
+            // Shift digits input for next round (removes oldest)
             const input = document.getElementById('digitInput');
             input.value = input.value.substring(0, maxDigits - 1);
             handleDigitInput();
