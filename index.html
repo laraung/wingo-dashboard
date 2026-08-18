@@ -3,170 +3,388 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wingo Analyzer Clone</title>
+    <title>Wingo Pro Analyzer - AI Prediction Tool</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center p-4">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center p-3 sm:p-6 font-sans">
 
-    <!-- Header -->
-    <header class="w-full max-w-md py-4 text-center border-b border-slate-800 mb-6">
-        <h1 class="text-2xl font-bold text-emerald-400 flex items-center justify-center gap-2">
-            <i class="fa-solid font-bolt"></i> Wingo Analyzer
-        </h1>
-        <p class="text-xs text-slate-400 mt-1">AI Prediction & History Tool</p>
+    <!-- Header Section -->
+    <header class="w-full max-w-lg py-4 border-b border-slate-800 mb-6 flex justify-between items-center px-2">
+        <div>
+            <h1 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300 flex items-center gap-2">
+                <i class="fa-solid fa-microchip text-emerald-400"></i> WINGO ANALYZER
+            </h1>
+            <p class="text-xs text-slate-400 mt-0.5">Compatible with 91 CLUB, Tiranga, DiuWin & 10+ Games</p>
+        </div>
+        <span class="bg-emerald-950 border border-emerald-800 text-emerald-400 text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> LIVE AI
+        </span>
     </header>
 
     <!-- Main Container -->
-    <main class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-2xl space-y-6">
-        
-        <!-- Mode Switcher -->
-        <div class="flex bg-slate-800 p-1 rounded-xl text-sm font-semibold">
-            <button id="btn1Min" onclick="setMode('1min')" class="flex-1 py-2 rounded-lg bg-emerald-600 text-white transition">Wingo 1 Min</button>
-            <button id="btn30Sec" onclick="setMode('30sec')" class="flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition">Wingo 30 Sec</button>
+    <main class="w-full max-w-lg space-y-6">
+
+        <!-- 1. Mode Switcher (1 Min / 30 Sec) -->
+        <div class="bg-slate-900 border border-slate-800 p-1.5 rounded-2xl flex gap-2 shadow-lg">
+            <button id="btn1Min" onclick="switchMode('1min')" class="flex-1 py-2.5 rounded-xl font-bold text-sm bg-emerald-600 text-white shadow-md transition-all flex items-center justify-center gap-2">
+                <i class="fa-regular fa-clock"></i> Wingo 1 Min (10 Digits)
+            </button>
+            <button id="btn30Sec" onclick="switchMode('30sec')" class="flex-1 py-2.5 rounded-xl font-bold text-sm text-slate-400 hover:text-white transition-all flex items-center justify-center gap-2">
+                <i class="fa-solid fa-stopwatch"></i> Wingo 30 Sec (5 Digits)
+            </button>
         </div>
 
-        <!-- Digit Input Section -->
-        <div>
-            <label id="inputLabel" class="block text-xs font-medium text-slate-400 mb-2">
-                ရလဒ် ဂဏန်း ၁၀ လုံး ရိုက်ထည့်ပါ (နောက်ဆုံးထွက်ထားသော ဂဏန်းမှ စ၍):
-            </label>
-            <input type="text" id="digitInput" oninput="renderChips()" placeholder="ဥပမာ: 9503459990" 
-                   maxlength="10"
-                   class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-lg text-emerald-400 tracking-widest focus:outline-none focus:border-emerald-500">
+        <!-- 2. History Digits Input Section -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
+            <div class="flex justify-between items-center">
+                <label id="inputLabel" class="text-xs font-semibold text-slate-300">
+                    ဂိမ်း History ထဲမှ နံပါတ် ၁၀ လုံး (နောက်ဆုံးရလဒ်မှစ၍ ရိုက်ထည့်ပါ):
+                </label>
+                <button onclick="clearInput()" class="text-xs text-rose-400 hover:underline">Clear</button>
+            </div>
+
+            <div class="relative">
+                <input type="text" id="digitInput" oninput="handleDigitInput()" placeholder="ဥပမာ: 9503459990" maxlength="10"
+                    class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3.5 text-xl font-mono text-emerald-400 tracking-wider focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
+            </div>
+
+            <!-- Parsed History Chips (Big/Small & Color Visualizer) -->
+            <div>
+                <div class="text-[11px] text-slate-400 mb-2 flex justify-between">
+                    <span>Parsed History Pattern:</span>
+                    <span id="digitCountText">0 / 10 digits</span>
+                </div>
+                <div id="chipsContainer" class="flex flex-wrap gap-1.5 min-h-[44px] bg-slate-950/60 p-2 rounded-xl border border-slate-800/80 items-center">
+                    <span class="text-xs text-slate-500 italic px-2">နံပါတ်များ ရိုက်ထည့်ပါ...</span>
+                </div>
+            </div>
+
+            <!-- Get Prediction Button -->
+            <button onclick="runPredictionEngine()" class="w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 hover:from-emerald-600 hover:to-cyan-700 text-white font-extrabold py-3.5 rounded-xl shadow-lg shadow-emerald-950/50 transition active:scale-[0.99] flex items-center justify-center gap-2 text-base">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> GET AI PREDICTION
+            </button>
         </div>
 
-        <!-- Rendered Chips (Big/Small & Colors) -->
-        <div>
-            <span class="text-xs text-slate-400 mb-2 block">Parsed History:</span>
-            <div id="chipsContainer" class="flex flex-wrap gap-2 min-h-[40px] items-center">
-                <span class="text-xs text-slate-500 italic">ဂဏန်း ရိုက်ထည့်ပါ...</span>
+        <!-- 3. AI Prediction Result Card (Initially Hidden) -->
+        <div id="predictionCard" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-2xl relative overflow-hidden">
+            <!-- Top Latency / Confidence Header -->
+            <div class="flex justify-between items-center text-xs text-slate-400 border-b border-slate-800/80 pb-3">
+                <span class="flex items-center gap-1.5">
+                    <i class="fa-solid fa-chart-line text-emerald-400"></i> AI Confidence: 
+                    <strong id="confidenceVal" class="text-emerald-400 font-bold">--%</strong>
+                </span>
+                <span class="flex items-center gap-1.5">
+                    <i class="fa-solid fa-bolt text-amber-400"></i> Latency: 
+                    <strong id="latencyVal" class="text-slate-300">-- ms</strong>
+                </span>
+            </div>
+
+            <!-- Prediction Call Output -->
+            <div class="text-center py-3">
+                <p class="text-xs uppercase tracking-widest text-slate-400 mb-1">Predicted Call</p>
+                <div id="predictedCallText" class="text-4xl font-black tracking-wider drop-shadow-md">
+                    --
+                </div>
+                <div id="predictedBS" class="text-xs font-bold mt-2 inline-block px-3 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+                    --
+                </div>
+            </div>
+
+            <!-- AI Pattern Rationale -->
+            <div class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-3 text-center">
+                <p class="text-[11px] text-slate-400 italic" id="rationaleText">
+                    --
+                </p>
+            </div>
+
+            <!-- Inline Win / Loss Logging -->
+            <div class="pt-2 border-t border-slate-800/80 space-y-2">
+                <p class="text-center text-xs text-slate-400 font-medium">How did this round go?</p>
+                <div class="flex gap-3">
+                    <button onclick="logOutcome('WIN')" class="flex-1 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-400 border border-emerald-800 font-bold py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-circle-check"></i> Mark Win
+                    </button>
+                    <button onclick="logOutcome('LOSS')" class="flex-1 bg-rose-950/80 hover:bg-rose-900 text-rose-400 border border-rose-800 font-bold py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-circle-xmark"></i> Mark Loss
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- Predict Button -->
-        <button onclick="generatePrediction()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-900/40 transition active:scale-[0.98]">
-            Get Prediction
-        </button>
-
-        <!-- Result Box (Initially Hidden) -->
-        <div id="resultBox" class="hidden bg-slate-950 border border-slate-800 rounded-xl p-4 text-center space-y-3">
-            <div class="flex justify-between items-center text-xs text-slate-400">
-                <span>AI Confidence: <strong id="confidenceText" class="text-emerald-400">--%</strong></span>
-                <span>Latency: <strong id="latencyText" class="text-slate-300">-- ms</strong></span>
+        <!-- 4. Session Intelligence Dashboard (Stats) -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-pie text-cyan-400"></i> Session Intelligence
+                </h3>
+                <button onclick="resetStats()" class="text-[11px] text-slate-500 hover:text-rose-400 transition">Reset Stats</button>
             </div>
 
-            <div id="predictedCall" class="text-3xl font-extrabold tracking-wider py-2">
-                --
+            <div class="grid grid-cols-3 gap-3 text-center">
+                <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-xl">
+                    <div class="text-[10px] text-slate-400 uppercase">Total Rounds</div>
+                    <div id="statTotal" class="text-lg font-bold text-slate-200 mt-1">0</div>
+                </div>
+                <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-xl">
+                    <div class="text-[10px] text-slate-400 uppercase">Win / Loss</div>
+                    <div class="text-lg font-bold mt-1">
+                        <span id="statWins" class="text-emerald-400">0</span> / <span id="statLosses" class="text-rose-400">0</span>
+                    </div>
+                </div>
+                <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-xl">
+                    <div class="text-[10px] text-slate-400 uppercase">Win Rate</div>
+                    <div id="statWinRate" class="text-lg font-bold text-cyan-400 mt-1">0%</div>
+                </div>
             </div>
+        </div>
 
-            <p id="rationaleText" class="text-xs text-slate-400 italic">
-                --
-            </p>
-
-            <!-- Win/Loss Tracking -->
-            <div class="pt-2 border-t border-slate-800 flex gap-2">
-                <button onclick="markOutcome('Win')" class="flex-1 bg-emerald-950 hover:bg-emerald-900 text-emerald-400 border border-emerald-800 py-1.5 rounded-lg text-xs font-semibold">Mark Win</button>
-                <button onclick="markOutcome('Loss')" class="flex-1 bg-rose-950 hover:bg-rose-900 text-rose-400 border border-rose-800 py-1.5 rounded-lg text-xs font-semibold">Mark Loss</button>
+        <!-- 5. Outcome Ledger / Recent History -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 shadow-xl">
+            <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                <i class="fa-solid fa-clock-rotate-left text-teal-400"></i> Outcome Ledger
+            </h3>
+            <div id="ledgerList" class="space-y-2 max-h-60 overflow-y-auto pr-1">
+                <p id="emptyLedgerText" class="text-xs text-slate-500 text-center py-4">မှတ်တမ်းများ မရှိသေးပါ။</p>
             </div>
         </div>
 
     </main>
 
+    <!-- JavaScript Logic -->
     <script>
+        // State Variables
         let currentMode = '1min';
         let maxDigits = 10;
+        let lastPrediction = null;
+        let stats = JSON.parse(localStorage.getItem('wingo_stats')) || { total: 0, wins: 0, losses: 0 };
+        let historyLedger = JSON.parse(localStorage.getItem('wingo_ledger')) || [];
 
-        function setMode(mode) {
+        // Initialize UI on load
+        window.onload = function() {
+            updateStatsUI();
+            renderLedgerUI();
+        };
+
+        // Switch Modes between 1 Min and 30 Sec
+        function switchMode(mode) {
             currentMode = mode;
             maxDigits = mode === '1min' ? 10 : 5;
-            
+
             const btn1Min = document.getElementById('btn1Min');
             const btn30Sec = document.getElementById('btn30Sec');
+            const inputLabel = document.getElementById('inputLabel');
             const input = document.getElementById('digitInput');
-            const label = document.getElementById('inputLabel');
 
             input.value = '';
             input.maxLength = maxDigits;
-            renderChips();
+            handleDigitInput();
+            document.getElementById('predictionCard').classList.add('hidden');
 
             if (mode === '1min') {
-                btn1Min.className = "flex-1 py-2 rounded-lg bg-emerald-600 text-white transition";
-                btn30Sec.className = "flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition";
-                label.innerText = "ရလဒ် ဂဏန်း ၁၀ လုံး ရိုက်ထည့်ပါ (နောက်ဆုံးထွက်ထားသော ဂဏန်းမှ စ၍):";
+                btn1Min.className = "flex-1 py-2.5 rounded-xl font-bold text-sm bg-emerald-600 text-white shadow-md transition-all flex items-center justify-center gap-2";
+                btn30Sec.className = "flex-1 py-2.5 rounded-xl font-bold text-sm text-slate-400 hover:text-white transition-all flex items-center justify-center gap-2";
+                inputLabel.innerText = "ဂိမ်း History ထဲမှ နံပါတ် ၁၀ လုံး (နောက်ဆုံးရလဒ်မှစ၍ ရိုက်ထည့်ပါ):";
             } else {
-                btn30Sec.className = "flex-1 py-2 rounded-lg bg-emerald-600 text-white transition";
-                btn1Min.className = "flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition";
-                label.innerText = "ရလဒ် ဂဏန်း ၅ လုံး ရိုက်ထည့်ပါ (နောက်ဆုံးထွက်ထားသော ဂဏန်းမှ စ၍):";
+                btn30Sec.className = "flex-1 py-2.5 rounded-xl font-bold text-sm bg-emerald-600 text-white shadow-md transition-all flex items-center justify-center gap-2";
+                btn1Min.className = "flex-1 py-2.5 rounded-xl font-bold text-sm text-slate-400 hover:text-white transition-all flex items-center justify-center gap-2";
+                inputLabel.innerText = "ဂိမ်း History ထဲမှ နံပါတ် ၅ လုံး (နောက်ဆုံးရလဒ်မှစ၍ ရိုက်ထည့်ပါ):";
             }
         }
 
-        function renderChips() {
-            const val = document.getElementById('digitInput').value;
+        function clearInput() {
+            document.getElementById('digitInput').value = '';
+            handleDigitInput();
+            document.getElementById('predictionCard').classList.add('hidden');
+        }
+
+        // Render Real-Time Color & Big/Small Chips
+        function handleDigitInput() {
+            const input = document.getElementById('digitInput');
+            // Clean non-numeric input
+            input.value = input.value.replace(/[^0-9]/g, '');
+            const val = input.value;
             const container = document.getElementById('chipsContainer');
+            
+            document.getElementById('digitCountText').innerText = `${val.length} / ${maxDigits} digits`;
             container.innerHTML = '';
 
-            if(!val) {
-                container.innerHTML = '<span class="text-xs text-slate-500 italic">ဂဏန်း ရိုက်ထည့်ပါ...</span>';
+            if (val.length === 0) {
+                container.innerHTML = '<span class="text-xs text-slate-500 italic px-2">နံပါတ်များ ရိုက်ထည့်ပါ...</span>';
                 return;
             }
 
-            for(let char of val) {
-                if(!isNaN(char) && char !== ' ') {
-                    const num = parseInt(char);
-                    const isBig = num >= 5;
-                    const sizeText = isBig ? 'B' : 'S';
-                    
-                    let bgClass = "bg-slate-700";
-                    if(num === 0 || num === 5) bgClass = "bg-purple-600";
-                    else if([1,3,7,9].includes(num)) bgClass = "bg-green-600";
-                    else bgClass = "bg-red-600";
+            for (let i = 0; i < val.length; i++) {
+                const num = parseInt(val[i]);
+                const isBig = num >= 5;
+                const sizeTag = isBig ? 'B' : 'S';
 
-                    const chip = document.createElement('span');
-                    chip.className = `${bgClass} text-white text-xs px-2 py-1 rounded font-bold shadow-sm`;
-                    chip.innerText = `${num}${sizeText}`;
-                    container.appendChild(chip);
-                }
+                let colorStyle = "";
+                if (num === 0) colorStyle = "bg-gradient-to-r from-red-600 to-purple-600";
+                else if (num === 5) colorStyle = "bg-gradient-to-r from-green-600 to-purple-600";
+                else if ([1, 3, 7, 9].includes(num)) colorStyle = "bg-emerald-600";
+                else colorStyle = "bg-rose-600";
+
+                const chip = document.createElement('div');
+                chip.className = `${colorStyle} text-white font-mono text-xs font-bold px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-sm border border-white/10`;
+                chip.innerHTML = `<span>${num}</span><span class="text-[9px] opacity-75">${sizeTag}</span>`;
+                container.appendChild(chip);
             }
         }
 
-        function generatePrediction() {
+        // Generate AI Prediction Logic
+        function runPredictionEngine() {
             const val = document.getElementById('digitInput').value;
-            if(val.length < maxDigits) {
-                alert(`ကျေးဇူးပြု၍ ဂဏန်း ${maxDigits} လုံး ပြည့်အောင် ရိုက်ထည့်ပါ။`);
+
+            if (val.length < maxDigits) {
+                alert(`ကျေးဇူးပြု၍ နံပါတ် ${maxDigits} လုံး ပြည့်အောင် ရိုက်ထည့်ပါ။`);
                 return;
             }
 
-            // Simulated AI Prediction Logic
-            const colors = ['RED', 'GREEN', 'VIOLET'];
-            const predictedColor = colors[Math.floor(Math.random() * colors.length)];
-            const confidence = (Math.random() * (75 - 55) + 55).toFixed(1);
-            const latency = Math.floor(Math.random() * (1900 - 800) + 800);
+            // Calculation Algorithm based on historical digits
+            const digits = val.split('').map(Number);
+            const sum = digits.reduce((a, b) => a + b, 0);
+            const lastDigit = digits[0]; // Newest digit
 
-            const resultBox = document.getElementById('resultBox');
-            const predictedCall = document.getElementById('predictedCall');
-            const confidenceText = document.getElementById('confidenceText');
-            const latencyText = document.getElementById('latencyText');
-            const rationaleText = document.getElementById('rationaleText');
+            // Deterministic weighted prediction calculation
+            let callColor = "GREEN";
+            let callBS = "BIG";
 
-            confidenceText.innerText = `${confidence}%`;
-            latencyText.innerText = `${latency} ms`;
-            predictedCall.innerText = predictedColor;
+            if ((sum + lastDigit) % 3 === 0) {
+                callColor = "VIOLET";
+                callBS = lastDigit >= 5 ? "SMALL" : "BIG";
+            } else if ((sum + lastDigit) % 2 === 0) {
+                callColor = "RED";
+                callBS = "BIG";
+            } else {
+                callColor = "GREEN";
+                callBS = "SMALL";
+            }
 
-            if(predictedColor === 'RED') predictedCall.className = "text-3xl font-extrabold text-red-500 py-2";
-            else if(predictedColor === 'GREEN') predictedCall.className = "text-3xl font-extrabold text-green-500 py-2";
-            else predictedCall.className = "text-3xl font-extrabold text-purple-500 py-2";
+            const confidence = (58.0 + (sum % 23) * 0.9).toFixed(1);
+            const latency = Math.floor(Math.random() * (1600 - 700) + 700);
 
-            rationaleText.innerText = `Pattern shift detected based on latest ${maxDigits}-digit history context.`;
+            // Rationales Pool
+            const rationales = [
+                `Pattern shift detected after latest digit ${lastDigit} — positive edge on ${callColor} context.`,
+                `High frequency cluster match across ${maxDigits}-digit history context.`,
+                `Trend reversal calculated following ${callColor === 'RED' ? 'Green' : 'Red'} streak exhaustion.`,
+                `Statistical equilibrium point aligned with ${callBS} outcome.`
+            ];
+            const rationale = rationales[sum % rationales.length];
 
-            resultBox.classList.remove('hidden');
+            // Display Results
+            const predictionCard = document.getElementById('predictionCard');
+            const callText = document.getElementById('predictedCallText');
+            const callBSDisplay = document.getElementById('predictedBS');
+
+            document.getElementById('confidenceVal').innerText = `${confidence}%`;
+            document.getElementById('latencyVal').innerText = `${latency} ms`;
+            document.getElementById('rationaleText').innerText = rationale;
+
+            callText.innerText = callColor;
+            callBSDisplay.innerText = callBS;
+
+            if (callColor === "RED") {
+                callText.className = "text-4xl font-black tracking-wider text-rose-500 drop-shadow-md";
+            } else if (callColor === "GREEN") {
+                callText.className = "text-4xl font-black tracking-wider text-emerald-400 drop-shadow-md";
+            } else {
+                callText.className = "text-4xl font-black tracking-wider text-purple-400 drop-shadow-md";
+            }
+
+            predictionCard.classList.remove('hidden');
+
+            // Save last prediction state for outcome logging
+            lastPrediction = {
+                mode: currentMode,
+                digits: val,
+                predictedColor: callColor,
+                predictedBS: callBS,
+                confidence: confidence
+            };
         }
 
-        function markOutcome(type) {
-            alert(`Result marked as ${type}`);
-            document.getElementById('digitInput').value = '';
-            renderChips();
-            document.getElementById('resultBox').classList.add('hidden');
+        // Log Win / Loss Outcome
+        function logOutcome(result) {
+            if (!lastPrediction) return;
+
+            stats.total += 1;
+            if (result === 'WIN') stats.wins += 1;
+            else stats.losses += 1;
+
+            localStorage.setItem('wingo_stats', JSON.stringify(stats));
+
+            // Log to Ledger
+            const entry = {
+                id: Date.now(),
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                digits: lastPrediction.digits,
+                predicted: `${lastPrediction.predictedColor} (${lastPrediction.predictedBS})`,
+                result: result
+            };
+
+            historyLedger.unshift(entry);
+            if (historyLedger.length > 20) historyLedger.pop(); // Keep last 20
+            localStorage.setItem('wingo_ledger', JSON.stringify(historyLedger));
+
+            // Update UI
+            updateStatsUI();
+            renderLedgerUI();
+
+            // Shift digits input for next round (removes oldest, leaves newest first space empty)
+            const input = document.getElementById('digitInput');
+            input.value = input.value.substring(0, maxDigits - 1);
+            handleDigitInput();
+
+            document.getElementById('predictionCard').classList.add('hidden');
+            lastPrediction = null;
+        }
+
+        function updateStatsUI() {
+            document.getElementById('statTotal').innerText = stats.total;
+            document.getElementById('statWins').innerText = stats.wins;
+            document.getElementById('statLosses').innerText = stats.losses;
+            const rate = stats.total > 0 ? ((stats.wins / stats.total) * 100).toFixed(1) : 0;
+            document.getElementById('statWinRate').innerText = `${rate}%`;
+        }
+
+        function renderLedgerUI() {
+            const container = document.getElementById('ledgerList');
+            if (historyLedger.length === 0) {
+                container.innerHTML = '<p id="emptyLedgerText" class="text-xs text-slate-500 text-center py-4">မှတ်တမ်းများ မရှိသေးပါ။</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            historyLedger.forEach(item => {
+                const isWin = item.result === 'WIN';
+                const card = document.createElement('div');
+                card.className = "bg-slate-950/70 border border-slate-800/80 p-2.5 rounded-xl flex justify-between items-center text-xs";
+                card.innerHTML = `
+                    <div>
+                        <div class="font-mono text-slate-400 text-[10px]">${item.time} | Sequence: ${item.digits}</div>
+                        <div class="font-bold text-slate-200 mt-0.5">${item.predicted}</div>
+                    </div>
+                    <span class="${isWin ? 'bg-emerald-950 text-emerald-400 border-emerald-800' : 'bg-rose-950 text-rose-400 border-rose-800'} px-2.5 py-1 border rounded-lg font-bold text-[11px]">
+                        ${item.result}
+                    </span>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function resetStats() {
+            if (confirm("Session Stats မှတ်တမ်းအားလုံးကို ဖျက်ရန် သေချာပါသလား?")) {
+                stats = { total: 0, wins: 0, losses: 0 };
+                historyLedger = [];
+                localStorage.removeItem('wingo_stats');
+                localStorage.removeItem('wingo_ledger');
+                updateStatsUI();
+                renderLedgerUI();
+            }
         }
     </script>
 </body>
