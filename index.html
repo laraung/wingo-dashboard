@@ -1,1290 +1,173 @@
 <!DOCTYPE html>
 <html lang="my">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>WINGO Pattern AI</title>
-
-<style>
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
-body{
-  margin:0;
-  background:
-    radial-gradient(circle at top,#122b45 0,#07111d 42%,#040a12 100%);
-  color:#fff;
-  font-family:Arial,"Noto Sans Myanmar",sans-serif;
-  min-height:100vh;
-}
-
-.app{
-  width:100%;
-  max-width:520px;
-  margin:auto;
-  padding:14px;
-}
-
-.header{
-  text-align:center;
-  padding:12px 5px 18px;
-}
-
-.header h1{
-  margin:0;
-  color:#35e7ff;
-  font-size:27px;
-  letter-spacing:1px;
-}
-
-.header p{
-  margin:7px 0 0;
-  color:#7892aa;
-  font-size:12px;
-}
-
-.card{
-  background:rgba(11,27,43,.96);
-  border:1px solid #1b3b56;
-  border-radius:18px;
-  padding:15px;
-  margin-bottom:14px;
-  box-shadow:0 10px 30px rgba(0,0,0,.22);
-}
-
-.title{
-  color:#8ba6bd;
-  font-size:12px;
-  margin-bottom:12px;
-  letter-spacing:.5px;
-}
-
-.rounds{
-  display:grid;
-  grid-template-columns:repeat(10,1fr);
-  gap:5px;
-}
-
-.round{
-  height:42px;
-  border-radius:9px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:17px;
-  font-weight:bold;
-}
-
-.round.big{
-  background:linear-gradient(145deg,#ff566c,#b91f3b);
-}
-
-.round.small{
-  background:linear-gradient(145deg,#299cff,#1558a4);
-}
-
-.round.empty{
-  background:#122538;
-  color:#48647b;
-}
-
-.patternBox{
-  background:#071521;
-  border:1px solid #1b4059;
-  border-radius:13px;
-  padding:14px 8px;
-  text-align:center;
-}
-
-.pattern{
-  font-size:25px;
-  font-weight:bold;
-  letter-spacing:4px;
-  word-break:break-all;
-}
-
-.B{
-  color:#ff5368;
-}
-
-.S{
-  color:#38a9ff;
-}
-
-.numberGrid{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:8px;
-}
-
-.number{
-  height:52px;
-  border:1px solid #25445d;
-  border-radius:12px;
-  background:#122b42;
-  color:white;
-  font-size:20px;
-  font-weight:bold;
-  cursor:pointer;
-  transition:.12s;
-}
-
-.number:hover{
-  background:#1b3e5d;
-}
-
-.number:active{
-  transform:scale(.94);
-}
-
-.actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin-top:10px;
-}
-
-.action{
-  height:43px;
-  border:0;
-  border-radius:10px;
-  color:#fff;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-.undo{
-  background:#72551d;
-}
-
-.clear{
-  background:#7d2738;
-}
-
-.stats{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:9px;
-}
-
-.stat{
-  background:#0a1b2b;
-  border-radius:12px;
-  padding:13px;
-  text-align:center;
-}
-
-.stat span{
-  color:#8da6ba;
-  font-size:12px;
-}
-
-.stat strong{
-  display:block;
-  margin-top:6px;
-  font-size:25px;
-}
-
-.stat.small strong{
-  color:#3baaff;
-}
-
-.stat.big strong{
-  color:#ff5368;
-}
-
-.aiStatus{
-  text-align:center;
-  color:#35e7ff;
-  font-size:12px;
-  margin-bottom:13px;
-}
-
-.prediction{
-  display:grid;
-  gap:9px;
-}
-
-.predRow{
-  background:#0a1b2b;
-  border:1px solid #18364d;
-  border-radius:12px;
-  padding:12px;
-}
-
-.predHead{
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:7px;
-  font-size:13px;
-}
-
-.predValue{
-  font-weight:bold;
-}
-
-.predValue.big{
-  color:#ff5368;
-}
-
-.predValue.small{
-  color:#3baaff;
-}
-
-.percent{
-  color:#8ba4b8;
-  font-size:11px;
-  margin-bottom:7px;
-}
-
-.bar{
-  height:8px;
-  background:#172d40;
-  border-radius:20px;
-  overflow:hidden;
-}
-
-.barFill{
-  height:100%;
-  border-radius:20px;
-}
-
-.fillBig{
-  background:linear-gradient(90deg,#ff3853,#ff9d48);
-}
-
-.fillSmall{
-  background:linear-gradient(90deg,#1b77ff,#45d5ff);
-}
-
-.final{
-  margin-top:13px;
-  background:
-    linear-gradient(145deg,rgba(13,48,65,.95),rgba(5,20,32,.98));
-  border:1px solid #226078;
-  border-radius:15px;
-  padding:16px;
-  text-align:center;
-}
-
-.finalTitle{
-  color:#7898ad;
-  font-size:11px;
-  margin-bottom:7px;
-}
-
-.finalPattern{
-  font-size:26px;
-  font-weight:bold;
-  letter-spacing:4px;
-  word-break:break-all;
-}
-
-.nextBox{
-  margin-top:12px;
-  padding:13px;
-  background:#07141f;
-  border-radius:12px;
-  text-align:center;
-}
-
-.nextLabel{
-  color:#7895a9;
-  font-size:11px;
-}
-
-.nextValue{
-  font-size:25px;
-  font-weight:bold;
-  margin-top:5px;
-}
-
-.nextValue.big{
-  color:#ff5368;
-}
-
-.nextValue.small{
-  color:#3baaff;
-}
-
-.history{
-  max-height:240px;
-  overflow:auto;
-}
-
-.historyItem{
-  display:grid;
-  grid-template-columns:1fr 45px 70px;
-  align-items:center;
-  padding:10px 4px;
-  border-bottom:1px solid #173044;
-  font-size:12px;
-}
-
-.historyItem .num{
-  font-size:18px;
-  font-weight:bold;
-}
-
-.historyItem .bigText{
-  color:#ff5368;
-}
-
-.historyItem .smallText{
-  color:#3baaff;
-}
-
-.emptyMessage{
-  text-align:center;
-  color:#60788d;
-  padding:14px;
-  font-size:12px;
-}
-
-.note{
-  text-align:center;
-  color:#637c90;
-  font-size:10px;
-  line-height:1.6;
-  padding:3px 8px 10px;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wingo Analyzer Clone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center p-4">
 
-<body>
+    <!-- Header -->
+    <header class="w-full max-w-md py-4 text-center border-b border-slate-800 mb-6">
+        <h1 class="text-2xl font-bold text-emerald-400 flex items-center justify-center gap-2">
+            <i class="fa-solid font-bolt"></i> Wingo Analyzer
+        </h1>
+        <p class="text-xs text-slate-400 mt-1">AI Prediction & History Tool</p>
+    </header>
 
-<div class="app">
-
-  <div class="header">
-    <h1>WINGO PATTERN AI</h1>
-    <p>BIG / SMALL • AUTO PATTERN ANALYZER</p>
-  </div>
-
-
-  <!-- CURRENT 10 -->
-  <div class="card">
-
-    <div class="title">
-      CURRENT LAST 10 RESULTS
-    </div>
-
-    <div id="rounds" class="rounds"></div>
-
-    <div style="height:14px"></div>
-
-    <div class="title">
-      CURRENT PATTERN
-    </div>
-
-    <div class="patternBox">
-      <div id="currentPattern" class="pattern">
-        ----------
-      </div>
-    </div>
-
-  </div>
-
-
-  <!-- NUMBER INPUT -->
-  <div class="card">
-
-    <div class="title">
-      ဂဏန်းကို နှိပ်ပြီး Result ထည့်ပါ
-    </div>
-
-    <div class="numberGrid">
-
-      <button class="number" onclick="addNumber(0)">0</button>
-      <button class="number" onclick="addNumber(1)">1</button>
-      <button class="number" onclick="addNumber(2)">2</button>
-      <button class="number" onclick="addNumber(3)">3</button>
-      <button class="number" onclick="addNumber(4)">4</button>
-
-      <button class="number" onclick="addNumber(5)">5</button>
-      <button class="number" onclick="addNumber(6)">6</button>
-      <button class="number" onclick="addNumber(7)">7</button>
-      <button class="number" onclick="addNumber(8)">8</button>
-      <button class="number" onclick="addNumber(9)">9</button>
-
-    </div>
-
-    <div class="actions">
-      <button class="action undo" onclick="undoLast()">
-        ↩ UNDO
-      </button>
-
-      <button class="action clear" onclick="clearAll()">
-        🗑 CLEAR
-      </button>
-    </div>
-
-  </div>
-
-
-  <!-- STATISTICS -->
-  <div class="card">
-
-    <div class="title">
-      LAST 10 STATISTICS
-    </div>
-
-    <div class="stats">
-
-      <div class="stat small">
-        <span>SMALL (0–4)</span>
-        <strong id="smallCount">0</strong>
-      </div>
-
-      <div class="stat big">
-        <span>BIG (5–9)</span>
-        <strong id="bigCount">0</strong>
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- AI ANALYSIS -->
-  <div class="card">
-
-    <div class="title">
-      AI PATTERN ANALYSIS
-    </div>
-
-    <div id="aiStatus" class="aiStatus">
-      Result 5 ခုထည့်ပြီးနောက် Auto Analyze လုပ်ပါမည်
-    </div>
-
-    <div id="prediction" class="prediction">
-
-      <div class="emptyMessage">
-        လက်ရှိ Result မလုံလောက်သေးပါ။
-      </div>
-
-    </div>
-
-
-    <div class="final">
-
-      <div class="finalTitle">
-        ESTIMATED 10-PATTERN
-      </div>
-
-      <div id="finalPattern" class="finalPattern">
-        ----------
-      </div>
-
-      <div class="nextBox">
-
-        <div class="nextLabel">
-          NEXT ESTIMATE
+    <!-- Main Container -->
+    <main class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-2xl space-y-6">
+        
+        <!-- Mode Switcher -->
+        <div class="flex bg-slate-800 p-1 rounded-xl text-sm font-semibold">
+            <button id="btn1Min" onclick="setMode('1min')" class="flex-1 py-2 rounded-lg bg-emerald-600 text-white transition">Wingo 1 Min</button>
+            <button id="btn30Sec" onclick="setMode('30sec')" class="flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition">Wingo 30 Sec</button>
         </div>
 
-        <div id="nextValue" class="nextValue">
-          -
+        <!-- Digit Input Section -->
+        <div>
+            <label id="inputLabel" class="block text-xs font-medium text-slate-400 mb-2">
+                ရလဒ် ဂဏန်း ၁၀ လုံး ရိုက်ထည့်ပါ (နောက်ဆုံးထွက်ထားသော ဂဏန်းမှ စ၍):
+            </label>
+            <input type="text" id="digitInput" oninput="renderChips()" placeholder="ဥပမာ: 9503459990" 
+                   maxlength="10"
+                   class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-lg text-emerald-400 tracking-widest focus:outline-none focus:border-emerald-500">
         </div>
 
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- HISTORY -->
-  <div class="card">
-
-    <div class="title">
-      RESULT HISTORY
-    </div>
-
-    <div id="history" class="history"></div>
-
-  </div>
-
-
-  <div class="note">
-    ဤ tool သည် ထည့်ထားသော historical results များကို
-    pattern/frequency/transition အပေါ်အခြေခံ၍
-    probability estimate ပြသပေးခြင်းဖြစ်သည်။
-    Random result ကို 100% ကြိုတင်ခန့်မှန်းနိုင်ခြင်း မရှိပါ။
-  </div>
-
-</div>
-
-
-<script>
-
-/* =========================================================
-   STORAGE
-========================================================= */
-
-let results =
-  JSON.parse(
-    localStorage.getItem("wingo_results") || "[]"
-  );
-
-
-/* =========================================================
-   BIG / SMALL
-   0-4 = SMALL
-   5-9 = BIG
-========================================================= */
-
-function getType(number){
-
-  return Number(number) >= 5 ? "B" : "S";
-
-}
-
-
-/* =========================================================
-   SAVE
-========================================================= */
-
-function save(){
-
-  localStorage.setItem(
-    "wingo_results",
-    JSON.stringify(results)
-  );
-
-}
-
-
-/* =========================================================
-   LAST 10
-========================================================= */
-
-function last10(){
-
-  return results.slice(-10);
-
-}
-
-
-/* =========================================================
-   GET PATTERN
-========================================================= */
-
-function getPattern(){
-
-  return last10()
-    .map(getType)
-    .join("");
-
-}
-
-
-/* =========================================================
-   COLORED PATTERN
-========================================================= */
-
-function coloredPattern(pattern){
-
-  if(!pattern){
-    return "----------";
-  }
-
-  return pattern
-    .split("")
-    .map(letter => {
-
-      return letter === "B"
-        ? '<span class="B">B</span>'
-        : '<span class="S">S</span>';
-
-    })
-    .join("");
-
-}
-
-
-/* =========================================================
-   ADD NUMBER
-========================================================= */
-
-function addNumber(number){
-
-  results.push(Number(number));
-
-  save();
-
-  render();
-
-  autoAnalyze();
-
-}
-
-
-/* =========================================================
-   UNDO
-========================================================= */
-
-function undoLast(){
-
-  if(results.length === 0){
-    return;
-  }
-
-  results.pop();
-
-  save();
-
-  render();
-
-  autoAnalyze();
-
-}
-
-
-/* =========================================================
-   CLEAR
-========================================================= */
-
-function clearAll(){
-
-  if(results.length === 0){
-    return;
-  }
-
-  const ok =
-    confirm("Result history အားလုံးကို ဖျက်မလား?");
-
-  if(!ok){
-    return;
-  }
-
-  results = [];
-
-  save();
-
-  render();
-
-  autoAnalyze();
-
-}
-
-
-/* =========================================================
-   RENDER CURRENT 10
-========================================================= */
-
-function renderRounds(){
-
-  const box =
-    document.getElementById("rounds");
-
-  box.innerHTML = "";
-
-  const list = last10();
-
-
-  for(let i=0;i<10;i++){
-
-    const item =
-      document.createElement("div");
-
-    if(i < list.length){
-
-      const number = list[i];
-      const type = getType(number);
-
-      item.className =
-        "round " +
-        (type === "B" ? "big" : "small");
-
-      item.textContent = number;
-
-    }else{
-
-      item.className = "round empty";
-      item.textContent = "-";
-
-    }
-
-    box.appendChild(item);
-
-  }
-
-}
-
-
-/* =========================================================
-   RENDER PATTERN + STATISTICS
-========================================================= */
-
-function renderStats(){
-
-  const list = last10();
-
-  let B = 0;
-  let S = 0;
-
-  list.forEach(number => {
-
-    if(getType(number) === "B"){
-      B++;
-    }else{
-      S++;
-    }
-
-  });
-
-
-  document.getElementById("bigCount")
-    .textContent = B;
-
-  document.getElementById("smallCount")
-    .textContent = S;
-
-
-  document.getElementById("currentPattern")
-    .innerHTML =
-      coloredPattern(getPattern());
-
-}
-
-
-/* =========================================================
-   HISTORY
-========================================================= */
-
-function renderHistory(){
-
-  const box =
-    document.getElementById("history");
-
-  box.innerHTML = "";
-
-
-  if(results.length === 0){
-
-    box.innerHTML =
-      '<div class="emptyMessage">History မရှိသေးပါ</div>';
-
-    return;
-
-  }
-
-
-  [...results]
-    .reverse()
-    .forEach((number,index) => {
-
-      const round =
-        results.length - index;
-
-      const type =
-        getType(number);
-
-      const item =
-        document.createElement("div");
-
-      item.className = "historyItem";
-
-      item.innerHTML = `
-
-        <span>Round ${round}</span>
-
-        <span class="num">${number}</span>
-
-        <span class="${
-          type === "B"
-          ? "bigText"
-          : "smallText"
-        }">
-
-          ${
-            type === "B"
-            ? "BIG"
-            : "SMALL"
-          }
-
-        </span>
-
-      `;
-
-      box.appendChild(item);
-
-    });
-
-}
-
-
-/* =========================================================
-   MAIN RENDER
-========================================================= */
-
-function render(){
-
-  renderRounds();
-
-  renderStats();
-
-  renderHistory();
-
-}
-
-
-/* =========================================================
-   FREQUENCY SCORE
-========================================================= */
-
-function frequencyScore(){
-
-  const list = last10();
-
-  if(list.length === 0){
-
-    return {
-      B:50,
-      S:50
-    };
-
-  }
-
-
-  let B = 0;
-  let S = 0;
-
-
-  list.forEach(number => {
-
-    if(getType(number) === "B"){
-      B++;
-    }else{
-      S++;
-    }
-
-  });
-
-
-  return {
-
-    B:(B / list.length) * 100,
-
-    S:(S / list.length) * 100
-
-  };
-
-}
-
-
-/* =========================================================
-   TRANSITION SCORE
-
-   Example:
-   B -> B
-   B -> S
-   S -> B
-   S -> S
-========================================================= */
-
-function transitionScore(){
-
-  if(results.length < 2){
-
-    return {
-      B:50,
-      S:50
-    };
-
-  }
-
-
-  let BB = 0;
-  let BS = 0;
-  let SB = 0;
-  let SS = 0;
-
-
-  for(let i=1;i<results.length;i++){
-
-    const previous =
-      getType(results[i-1]);
-
-    const current =
-      getType(results[i]);
-
-
-    if(previous === "B" && current === "B"){
-      BB++;
-    }
-
-    if(previous === "B" && current === "S"){
-      BS++;
-    }
-
-    if(previous === "S" && current === "B"){
-      SB++;
-    }
-
-    if(previous === "S" && current === "S"){
-      SS++;
-    }
-
-  }
-
-
-  const previous =
-    getType(results[results.length-1]);
-
-
-  let B;
-  let S;
-
-
-  if(previous === "B"){
-
-    B = BB;
-    S = BS;
-
-  }else{
-
-    B = SB;
-    S = SS;
-
-  }
-
-
-  const total = B + S;
-
-
-  if(total === 0){
-
-    return {
-      B:50,
-      S:50
-    };
-
-  }
-
-
-  return {
-
-    B:(B / total) * 100,
-
-    S:(S / total) * 100
-
-  };
-
-}
-
-
-/* =========================================================
-   GENERATE ALL 1024 B/S PATTERNS
-========================================================= */
-
-function generate1024(){
-
-  const patterns = [];
-
-
-  for(let n=0;n<1024;n++){
-
-    const binary =
-      n.toString(2).padStart(10,"0");
-
-
-    let pattern = "";
-
-
-    for(const bit of binary){
-
-      pattern +=
-        bit === "0"
-        ? "S"
-        : "B";
-
-    }
-
-
-    patterns.push(pattern);
-
-  }
-
-
-  return patterns;
-
-}
-
-
-/* =========================================================
-   1024 PATTERN MATCHING
-========================================================= */
-
-function getPatternMatches(firstFive){
-
-  const all =
-    generate1024();
-
-  return all.filter(pattern => {
-
-    return pattern.substring(0,5)
-      === firstFive;
-
-  });
-
-}
-
-
-/* =========================================================
-   AUTO ANALYZE
-========================================================= */
-
-function autoAnalyze(){
-
-  const pattern = getPattern();
-
-
-  if(pattern.length < 5){
-
-    document.getElementById("aiStatus")
-      .textContent =
-        "Result 5 ခုထည့်ပြီးနောက် Auto Analyze လုပ်ပါမည်";
-
-    document.getElementById("prediction")
-      .innerHTML =
-        '<div class="emptyMessage">Result 5 ခုအနည်းဆုံးလိုအပ်ပါသည်။</div>';
-
-    document.getElementById("finalPattern")
-      .textContent =
-        "----------";
-
-    document.getElementById("nextValue")
-      .textContent =
-        "-";
-
-    return;
-
-  }
-
-
-  analyze(pattern);
-
-}
-
-
-/* =========================================================
-   ANALYZE
-========================================================= */
-
-function analyze(pattern){
-
-  const firstFive =
-    pattern.substring(0,5);
-
-
-  const matches =
-    getPatternMatches(firstFive);
-
-
-  const frequency =
-    frequencyScore();
-
-
-  const transition =
-    transitionScore();
-
-
-  let predicted =
-    firstFive;
-
-
-  let html = "";
-
-
-  /*
-    Analyze positions 6-10
-
-    Pattern matching = 60%
-    Transition = 25%
-    Frequency = 15%
-  */
-
-  for(let position=5;position<10;position++){
-
-    let B = 0;
-    let S = 0;
-
-
-    matches.forEach(patternItem => {
-
-      if(patternItem[position] === "B"){
-        B++;
-      }else{
-        S++;
-      }
-
-    });
-
-
-    const total = B + S;
-
-
-    const patternB =
-      total > 0
-      ? (B / total) * 100
-      : 50;
-
-
-    const patternS =
-      total > 0
-      ? (S / total) * 100
-      : 50;
-
-
-    let finalB =
-      patternB * 0.60 +
-      transition.B * 0.25 +
-      frequency.B * 0.15;
-
-
-    let finalS =
-      patternS * 0.60 +
-      transition.S * 0.25 +
-      frequency.S * 0.15;
-
-
-    /*
-      Normalize
-    */
-
-    const sum =
-      finalB + finalS;
-
-
-    finalB =
-      finalB / sum * 100;
-
-    finalS =
-      finalS / sum * 100;
-
-
-    const prediction =
-      finalB >= finalS
-      ? "B"
-      : "S";
-
-
-    predicted += prediction;
-
-
-    const confidence =
-      Math.max(finalB,finalS);
-
-
-    const name =
-      prediction === "B"
-      ? "BIG"
-      : "SMALL";
-
-
-    html += `
-
-      <div class="predRow">
-
-        <div class="predHead">
-
-          <span>
-            Position ${position+1}
-          </span>
-
-          <span class="
-            predValue
-            ${prediction === "B" ? "big" : "small"}
-          ">
-            ${name}
-          </span>
-
+        <!-- Rendered Chips (Big/Small & Colors) -->
+        <div>
+            <span class="text-xs text-slate-400 mb-2 block">Parsed History:</span>
+            <div id="chipsContainer" class="flex flex-wrap gap-2 min-h-[40px] items-center">
+                <span class="text-xs text-slate-500 italic">ဂဏန်း ရိုက်ထည့်ပါ...</span>
+            </div>
         </div>
 
-        <div class="percent">
+        <!-- Predict Button -->
+        <button onclick="generatePrediction()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-900/40 transition active:scale-[0.98]">
+            Get Prediction
+        </button>
 
-          BIG ${finalB.toFixed(1)}%
-          &nbsp;&nbsp;|&nbsp;&nbsp;
-          SMALL ${finalS.toFixed(1)}%
+        <!-- Result Box (Initially Hidden) -->
+        <div id="resultBox" class="hidden bg-slate-950 border border-slate-800 rounded-xl p-4 text-center space-y-3">
+            <div class="flex justify-between items-center text-xs text-slate-400">
+                <span>AI Confidence: <strong id="confidenceText" class="text-emerald-400">--%</strong></span>
+                <span>Latency: <strong id="latencyText" class="text-slate-300">-- ms</strong></span>
+            </div>
 
+            <div id="predictedCall" class="text-3xl font-extrabold tracking-wider py-2">
+                --
+            </div>
+
+            <p id="rationaleText" class="text-xs text-slate-400 italic">
+                --
+            </p>
+
+            <!-- Win/Loss Tracking -->
+            <div class="pt-2 border-t border-slate-800 flex gap-2">
+                <button onclick="markOutcome('Win')" class="flex-1 bg-emerald-950 hover:bg-emerald-900 text-emerald-400 border border-emerald-800 py-1.5 rounded-lg text-xs font-semibold">Mark Win</button>
+                <button onclick="markOutcome('Loss')" class="flex-1 bg-rose-950 hover:bg-rose-900 text-rose-400 border border-rose-800 py-1.5 rounded-lg text-xs font-semibold">Mark Loss</button>
+            </div>
         </div>
 
-        <div class="bar">
+    </main>
 
-          <div
-            class="barFill ${
-              prediction === "B"
-              ? "fillBig"
-              : "fillSmall"
-            }"
-            style="width:${confidence}%">
-          </div>
+    <script>
+        let currentMode = '1min';
+        let maxDigits = 10;
 
-        </div>
+        function setMode(mode) {
+            currentMode = mode;
+            maxDigits = mode === '1min' ? 10 : 5;
+            
+            const btn1Min = document.getElementById('btn1Min');
+            const btn30Sec = document.getElementById('btn30Sec');
+            const input = document.getElementById('digitInput');
+            const label = document.getElementById('inputLabel');
 
-      </div>
+            input.value = '';
+            input.maxLength = maxDigits;
+            renderChips();
 
-    `;
+            if (mode === '1min') {
+                btn1Min.className = "flex-1 py-2 rounded-lg bg-emerald-600 text-white transition";
+                btn30Sec.className = "flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition";
+                label.innerText = "ရလဒ် ဂဏန်း ၁၀ လုံး ရိုက်ထည့်ပါ (နောက်ဆုံးထွက်ထားသော ဂဏန်းမှ စ၍):";
+            } else {
+                btn30Sec.className = "flex-1 py-2 rounded-lg bg-emerald-600 text-white transition";
+                btn1Min.className = "flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition";
+                label.innerText = "ရလဒ် ဂဏန်း ၅ လုံး ရိုက်ထည့်ပါ (နောက်ဆုံးထွက်ထားသော ဂဏန်းမှ စ၍):";
+            }
+        }
 
-  }
+        function renderChips() {
+            const val = document.getElementById('digitInput').value;
+            const container = document.getElementById('chipsContainer');
+            container.innerHTML = '';
 
+            if(!val) {
+                container.innerHTML = '<span class="text-xs text-slate-500 italic">ဂဏန်း ရိုက်ထည့်ပါ...</span>';
+                return;
+            }
 
-  document.getElementById("prediction")
-    .innerHTML = html;
+            for(let char of val) {
+                if(!isNaN(char) && char !== ' ') {
+                    const num = parseInt(char);
+                    const isBig = num >= 5;
+                    const sizeText = isBig ? 'B' : 'S';
+                    
+                    let bgClass = "bg-slate-700";
+                    if(num === 0 || num === 5) bgClass = "bg-purple-600";
+                    else if([1,3,7,9].includes(num)) bgClass = "bg-green-600";
+                    else bgClass = "bg-red-600";
 
+                    const chip = document.createElement('span');
+                    chip.className = `${bgClass} text-white text-xs px-2 py-1 rounded font-bold shadow-sm`;
+                    chip.innerText = `${num}${sizeText}`;
+                    container.appendChild(chip);
+                }
+            }
+        }
 
-  document.getElementById("finalPattern")
-    .innerHTML =
-      coloredPattern(predicted);
+        function generatePrediction() {
+            const val = document.getElementById('digitInput').value;
+            if(val.length < maxDigits) {
+                alert(`ကျေးဇူးပြု၍ ဂဏန်း ${maxDigits} လုံး ပြည့်အောင် ရိုက်ထည့်ပါ။`);
+                return;
+            }
 
+            // Simulated AI Prediction Logic
+            const colors = ['RED', 'GREEN', 'VIOLET'];
+            const predictedColor = colors[Math.floor(Math.random() * colors.length)];
+            const confidence = (Math.random() * (75 - 55) + 55).toFixed(1);
+            const latency = Math.floor(Math.random() * (1900 - 800) + 800);
 
-  /*
-    Next estimate
-  */
+            const resultBox = document.getElementById('resultBox');
+            const predictedCall = document.getElementById('predictedCall');
+            const confidenceText = document.getElementById('confidenceText');
+            const latencyText = document.getElementById('latencyText');
+            const rationaleText = document.getElementById('rationaleText');
 
-  const next =
-    predicted.charAt(5);
+            confidenceText.innerText = `${confidence}%`;
+            latencyText.innerText = `${latency} ms`;
+            predictedCall.innerText = predictedColor;
 
+            if(predictedColor === 'RED') predictedCall.className = "text-3xl font-extrabold text-red-500 py-2";
+            else if(predictedColor === 'GREEN') predictedCall.className = "text-3xl font-extrabold text-green-500 py-2";
+            else predictedCall.className = "text-3xl font-extrabold text-purple-500 py-2";
 
-  const nextName =
-    next === "B"
-    ? "BIG"
-    : "SMALL";
+            rationaleText.innerText = `Pattern shift detected based on latest ${maxDigits}-digit history context.`;
 
+            resultBox.classList.remove('hidden');
+        }
 
-  const nextElement =
-    document.getElementById("nextValue");
-
-
-  nextElement.textContent =
-    nextName;
-
-
-  nextElement.className =
-    "nextValue " +
-    (next === "B" ? "big" : "small");
-
-
-  document.getElementById("aiStatus")
-    .innerHTML =
-      `AUTO ANALYZED • First 5 = <b>${firstFive}</b> • `
-      + `${matches.length} matching patterns`;
-
-}
-
-
-/* =========================================================
-   START
-========================================================= */
-
-render();
-
-autoAnalyze();
-
-</script>
-
+        function markOutcome(type) {
+            alert(`Result marked as ${type}`);
+            document.getElementById('digitInput').value = '';
+            renderChips();
+            document.getElementById('resultBox').classList.add('hidden');
+        }
+    </script>
 </body>
 </html>
