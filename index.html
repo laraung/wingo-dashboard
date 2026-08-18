@@ -41,7 +41,7 @@
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
             <div class="flex justify-between items-center">
                 <label id="inputLabel" class="text-xs font-semibold text-slate-300">
-                    ဂိမ်း History ထဲမှ နံပါတ် ၁၀ လုံး (နောက်ဆုံးရလဒ်မှစ၍ ရိုက်ထည့်ပါ):
+                    ဂိမ်း History ထဲမှ နံပါတ် ၁၀ လုံး (ဘယ်မှညာသို့ အစဉ်လိုက် ရိုက်ထည့်ပါ):
                 </label>
                 <button onclick="clearInput()" class="text-xs text-rose-400 hover:underline">Clear</button>
             </div>
@@ -180,11 +180,11 @@
             if (mode === '1min') {
                 btn1Min.className = "flex-1 py-2.5 rounded-xl font-bold text-sm bg-emerald-600 text-white shadow-md transition-all flex items-center justify-center gap-2";
                 btn30Sec.className = "flex-1 py-2.5 rounded-xl font-bold text-sm text-slate-400 hover:text-white transition-all flex items-center justify-center gap-2";
-                inputLabel.innerText = "ဂိမ်း History ထဲမှ နံပါတ် ၁၀ လုံး (နောက်ဆုံးရလဒ်မှစ၍ ရိုက်ထည့်ပါ):";
+                inputLabel.innerText = "ဂိမ်း History ထဲမှ နံပါတ် ၁၀ လုံး (ဘယ်မှညာသို့ အစဉ်လိုက် ရိုက်ထည့်ပါ):";
             } else {
                 btn30Sec.className = "flex-1 py-2.5 rounded-xl font-bold text-sm bg-emerald-600 text-white shadow-md transition-all flex items-center justify-center gap-2";
                 btn1Min.className = "flex-1 py-2.5 rounded-xl font-bold text-sm text-slate-400 hover:text-white transition-all flex items-center justify-center gap-2";
-                inputLabel.innerText = "ဂိမ်း History ထဲမှ နံပါတ် ၅ လုံး (နောက်ဆုံးရလဒ်မှစ၍ ရိုက်ထည့်ပါ):";
+                inputLabel.innerText = "ဂိမ်း History ထဲမှ နံပါတ် ၅ လုံး (ဘယ်မှညာသို့ အစဉ်လိုက် ရိုက်ထည့်ပါ):";
             }
         }
 
@@ -196,7 +196,7 @@
             document.getElementById('predictionCard').classList.add('hidden');
         }
 
-        // Auto-Shift FIFO Logic (Inserts at front, removes from back)
+        // Auto-Shift FIFO Logic (Inserts at back, removes from front)
         function handleDigitInput(event) {
             const input = document.getElementById('digitInput');
             let rawVal = input.value.replace(/[^0-9]/g, '');
@@ -208,11 +208,11 @@
                 return;
             }
 
-            // အကယ်၍ သတ်မှတ်ထားသော ဂဏန်းအရေအတွက်ထက် ပိုသွားပါက
+            // အကယ်၍ သတ်မှတ်ထားသော ဂဏန်းအရေအတွက် (၁၀ လုံး သို့မဟုတ် ၅ လုံး) ထက် ပိုသွားပါက
             if (rawVal.length > maxDigits) {
-                // အသစ်ထည့်လိုက်သော ဂဏန်းကို ရှေ့ဆုံးသို့ပို့ပြီး နောက်ဆုံးဂဏန်းကို ဖျက်လိုက်ခြင်း
+                // အနောက်ဆုံးမှ ရိုက်ထည့်လိုက်သော ဂဏန်းအသစ်ကို ယူပြီး ရှေ့ဆုံးမှ ဂဏန်းအဟောင်းကို ဖျက်လိုက်ခြင်း
                 const newestDigit = rawVal.slice(-1);
-                rawVal = newestDigit + previousVal.slice(0, maxDigits - 1);
+                rawVal = previousVal.slice(1, maxDigits) + newestDigit;
             }
 
             input.value = rawVal;
@@ -259,15 +259,15 @@
 
             const digits = val.split('').map(Number);
             const sum = digits.reduce((a, b) => a + b, 0);
-            const firstDigit = digits[0]; 
+            const lastDigit = digits[digits.length - 1]; // Latest input digit
 
             let callColor = "GREEN";
             let callBS = "BIG";
 
-            if ((sum + firstDigit) % 3 === 0) {
+            if ((sum + lastDigit) % 3 === 0) {
                 callColor = "VIOLET";
-                callBS = firstDigit >= 5 ? "SMALL" : "BIG";
-            } else if ((sum + firstDigit) % 2 === 0) {
+                callBS = lastDigit >= 5 ? "SMALL" : "BIG";
+            } else if ((sum + lastDigit) % 2 === 0) {
                 callColor = "RED";
                 callBS = "BIG";
             } else {
@@ -279,7 +279,7 @@
             const latency = Math.floor(Math.random() * (1500 - 600) + 600);
 
             const rationales = [
-                `Pattern shift detected at position 1 (${firstDigit}) — strong probability on ${callColor}.`,
+                `Latest pattern shift at position ${maxDigits} (${lastDigit}) — strong probability on ${callColor}.`,
                 `High sequence alignment calculated across ${maxDigits}-digit history.`,
                 `Trend analysis indicates ${callBS} breakout based on color weight.`,
                 `Statistical balance target aligned with ${callColor} / ${callBS}.`
