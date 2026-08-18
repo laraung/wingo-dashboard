@@ -47,7 +47,7 @@
             </div>
 
             <div class="relative">
-                <input type="text" id="digitInput" oninput="handleDigitInput()" placeholder="ဥပမာ: 9503459990"
+                <input type="text" id="digitInput" oninput="handleDigitInput(event)" placeholder="ဥပမာ: 4568797652"
                     class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3.5 text-xl font-mono text-emerald-400 tracking-wider focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
             </div>
 
@@ -68,9 +68,8 @@
             </button>
         </div>
 
-        <!-- 3. AI Prediction Result Card (Initially Hidden) -->
+        <!-- 3. AI Prediction Result Card -->
         <div id="predictionCard" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-2xl relative overflow-hidden">
-            <!-- Top Latency / Confidence Header -->
             <div class="flex justify-between items-center text-xs text-slate-400 border-b border-slate-800/80 pb-3">
                 <span class="flex items-center gap-1.5">
                     <i class="fa-solid fa-chart-line text-emerald-400"></i> AI Confidence: 
@@ -82,7 +81,6 @@
                 </span>
             </div>
 
-            <!-- Prediction Call Output -->
             <div class="text-center py-3">
                 <p class="text-xs uppercase tracking-widest text-slate-400 mb-1">Predicted Call</p>
                 <div id="predictedCallText" class="text-4xl font-black tracking-wider drop-shadow-md">
@@ -93,14 +91,12 @@
                 </div>
             </div>
 
-            <!-- AI Pattern Rationale -->
             <div class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-3 text-center">
                 <p class="text-[11px] text-slate-400 italic" id="rationaleText">
                     --
                 </p>
             </div>
 
-            <!-- Inline Win / Loss Logging -->
             <div class="pt-2 border-t border-slate-800/80 space-y-2">
                 <p class="text-center text-xs text-slate-400 font-medium">How did this round go?</p>
                 <div class="flex gap-3">
@@ -155,20 +151,18 @@
 
     <!-- JavaScript Logic -->
     <script>
-        // State Variables
         let currentMode = '1min';
         let maxDigits = 10;
+        let previousVal = '';
         let lastPrediction = null;
         let stats = JSON.parse(localStorage.getItem('wingo_stats')) || { total: 0, wins: 0, losses: 0 };
         let historyLedger = JSON.parse(localStorage.getItem('wingo_ledger')) || [];
 
-        // Initialize UI on load
         window.onload = function() {
             updateStatsUI();
             renderLedgerUI();
         };
 
-        // Switch Modes between 1 Min and 30 Sec
         function switchMode(mode) {
             currentMode = mode;
             maxDigits = mode === '1min' ? 10 : 5;
@@ -179,7 +173,8 @@
             const input = document.getElementById('digitInput');
 
             input.value = '';
-            handleDigitInput();
+            previousVal = '';
+            renderChips('');
             document.getElementById('predictionCard').classList.add('hidden');
 
             if (mode === '1min') {
@@ -194,27 +189,40 @@
         }
 
         function clearInput() {
-            document.getElementById('digitInput').value = '';
-            handleDigitInput();
+            const input = document.getElementById('digitInput');
+            input.value = '';
+            previousVal = '';
+            renderChips('');
             document.getElementById('predictionCard').classList.add('hidden');
         }
 
-        // Real-Time Digit Auto-Shift (FIFO Logic) & Chip Renderer
-        function handleDigitInput() {
+        // Auto-Shift FIFO Logic (Inserts at front, removes from back)
+        function handleDigitInput(event) {
             const input = document.getElementById('digitInput');
-            // Remove non-numeric characters
-            let val = input.value.replace(/[^0-9]/g, '');
+            let rawVal = input.value.replace(/[^0-9]/g, '');
 
-            // Auto-Shift Logic: If typed count exceeds limit, shift digits right and drop the oldest
-            if (val.length > maxDigits) {
-                const newestDigit = val.slice(-1);
-                const previousDigits = val.slice(0, -1);
-                val = newestDigit + previousDigits.slice(0, maxDigits - 1);
+            // Backspace/Delete ပြုလုပ်ပါက ပုံမှန်အတိုင်း ဖျက်ခွင့်ပေးမည်
+            if (event && event.inputType === 'deleteContentBackward') {
+                previousVal = rawVal;
+                renderChips(rawVal);
+                return;
             }
 
-            input.value = val;
+            // အကယ်၍ သတ်မှတ်ထားသော ဂဏန်းအရေအတွက်ထက် ပိုသွားပါက
+            if (rawVal.length > maxDigits) {
+                // အသစ်ထည့်လိုက်သော ဂဏန်းကို ရှေ့ဆုံးသို့ပို့ပြီး နောက်ဆုံးဂဏန်းကို ဖျက်လိုက်ခြင်း
+                const newestDigit = rawVal.slice(-1);
+                rawVal = newestDigit + previousVal.slice(0, maxDigits - 1);
+            }
+
+            input.value = rawVal;
+            previousVal = rawVal;
+            renderChips(rawVal);
+        }
+
+        // Render visual badges/chips
+        function renderChips(val) {
             const container = document.getElementById('chipsContainer');
-            
             document.getElementById('digitCountText').innerText = `${val.length} / ${maxDigits} digits`;
             container.innerHTML = '';
 
@@ -241,7 +249,6 @@
             }
         }
 
-        // Generate AI Prediction Logic
         function runPredictionEngine() {
             const val = document.getElementById('digitInput').value;
 
@@ -250,19 +257,17 @@
                 return;
             }
 
-            // Calculation Algorithm based on historical digits
             const digits = val.split('').map(Number);
             const sum = digits.reduce((a, b) => a + b, 0);
-            const lastDigit = digits[0]; // Newest digit
+            const firstDigit = digits[0]; 
 
-            // Deterministic weighted prediction calculation
             let callColor = "GREEN";
             let callBS = "BIG";
 
-            if ((sum + lastDigit) % 3 === 0) {
+            if ((sum + firstDigit) % 3 === 0) {
                 callColor = "VIOLET";
-                callBS = lastDigit >= 5 ? "SMALL" : "BIG";
-            } else if ((sum + lastDigit) % 2 === 0) {
+                callBS = firstDigit >= 5 ? "SMALL" : "BIG";
+            } else if ((sum + firstDigit) % 2 === 0) {
                 callColor = "RED";
                 callBS = "BIG";
             } else {
@@ -270,19 +275,17 @@
                 callBS = "SMALL";
             }
 
-            const confidence = (58.0 + (sum % 23) * 0.9).toFixed(1);
-            const latency = Math.floor(Math.random() * (1600 - 700) + 700);
+            const confidence = (60.0 + (sum % 25) * 0.8).toFixed(1);
+            const latency = Math.floor(Math.random() * (1500 - 600) + 600);
 
-            // Rationales Pool
             const rationales = [
-                `Pattern shift detected after latest digit ${lastDigit} — positive edge on ${callColor} context.`,
-                `High frequency cluster match across ${maxDigits}-digit history context.`,
-                `Trend reversal calculated following ${callColor === 'RED' ? 'Green' : 'Red'} streak exhaustion.`,
-                `Statistical equilibrium point aligned with ${callBS} outcome.`
+                `Pattern shift detected at position 1 (${firstDigit}) — strong probability on ${callColor}.`,
+                `High sequence alignment calculated across ${maxDigits}-digit history.`,
+                `Trend analysis indicates ${callBS} breakout based on color weight.`,
+                `Statistical balance target aligned with ${callColor} / ${callBS}.`
             ];
             const rationale = rationales[sum % rationales.length];
 
-            // Display Results
             const predictionCard = document.getElementById('predictionCard');
             const callText = document.getElementById('predictedCallText');
             const callBSDisplay = document.getElementById('predictedBS');
@@ -304,7 +307,6 @@
 
             predictionCard.classList.remove('hidden');
 
-            // Save last prediction state for outcome logging
             lastPrediction = {
                 mode: currentMode,
                 digits: val,
@@ -314,7 +316,6 @@
             };
         }
 
-        // Log Win / Loss Outcome
         function logOutcome(result) {
             if (!lastPrediction) return;
 
@@ -324,7 +325,6 @@
 
             localStorage.setItem('wingo_stats', JSON.stringify(stats));
 
-            // Log to Ledger
             const entry = {
                 id: Date.now(),
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -334,17 +334,11 @@
             };
 
             historyLedger.unshift(entry);
-            if (historyLedger.length > 20) historyLedger.pop(); // Keep last 20
+            if (historyLedger.length > 20) historyLedger.pop();
             localStorage.setItem('wingo_ledger', JSON.stringify(historyLedger));
 
-            // Update UI
             updateStatsUI();
             renderLedgerUI();
-
-            // Shift digits input for next round (removes oldest)
-            const input = document.getElementById('digitInput');
-            input.value = input.value.substring(0, maxDigits - 1);
-            handleDigitInput();
 
             document.getElementById('predictionCard').classList.add('hidden');
             lastPrediction = null;
