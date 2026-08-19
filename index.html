@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wingo Pro Analyzer - AI Prediction Tool</title>
+    <title>Wingo Pro Analyzer - VIP Access</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -17,152 +17,355 @@
             <h1 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300 flex items-center gap-2">
                 <i class="fa-solid fa-microchip text-emerald-400"></i> WINGO ANALYZER
             </h1>
-            <p class="text-xs text-slate-400 mt-0.5">Compatible with 91 CLUB, Tiranga, DiuWin & 10+ Games</p>
+            <p class="text-xs text-slate-400 mt-0.5">VIP Member Access Only</p>
         </div>
-        <span class="bg-emerald-950 border border-emerald-800 text-emerald-400 text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> LIVE AI
-        </span>
+        <div class="flex items-center gap-2">
+            <span id="accessBadge" class="bg-rose-950 border border-rose-800 text-rose-400 text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> LOCKED
+            </span>
+            <button onclick="openAdminModal()" class="text-slate-500 hover:text-emerald-400 text-xs p-1" title="Admin Login">
+                <i class="fa-solid fa-user-shield"></i>
+            </button>
+        </div>
     </header>
 
     <!-- Main Container -->
     <main class="w-full max-w-lg space-y-6">
 
-        <!-- 1. Mode Switcher (1 Min / 30 Sec) -->
-        <div class="bg-slate-900 border border-slate-800 p-1.5 rounded-2xl flex gap-2 shadow-lg">
-            <button id="btn1Min" onclick="switchMode('1min')" class="flex-1 py-2.5 rounded-xl font-bold text-sm bg-emerald-600 text-white shadow-md transition-all flex items-center justify-center gap-2">
-                <i class="fa-regular fa-clock"></i> Wingo 1 Min (10 Digits)
-            </button>
-            <button id="btn30Sec" onclick="switchMode('30sec')" class="flex-1 py-2.5 rounded-xl font-bold text-sm text-slate-400 hover:text-white transition-all flex items-center justify-center gap-2">
-                <i class="fa-solid fa-stopwatch"></i> Wingo 30 Sec (5 Digits)
-            </button>
-        </div>
-
-        <!-- 2. History Digits Input Section -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
-            <div class="flex justify-between items-center">
-                <label id="inputLabel" class="text-xs font-semibold text-slate-300">
-                    ဂိမ်း History ထဲမှ နံပါတ် ၁၀ လုံး (ဘယ်မှညာသို့ အစဉ်လိုက် ရိုက်ထည့်ပါ):
-                </label>
-                <button onclick="clearInput()" class="text-xs text-rose-400 hover:underline">Clear</button>
+        <!-- GAME ID VERIFICATION LOCK SCREEN (User မခွင့်ပြုရသေးပါက ဤအကွက်သာ ပေါ်မည်) -->
+        <div id="authCard" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center space-y-4 shadow-2xl">
+            <div class="w-16 h-16 bg-emerald-950/80 border border-emerald-800/80 rounded-full flex items-center justify-center mx-auto text-emerald-400 text-2xl">
+                <i class="fa-solid fa-id-card"></i>
             </div>
-
-            <div class="relative">
-                <input type="text" id="digitInput" oninput="handleDigitInput(event)" placeholder="ဥပမာ: 4568797652"
-                    class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3.5 text-xl font-mono text-emerald-400 tracking-wider focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
-            </div>
-
-            <!-- Parsed History Chips (Big/Small & Color Visualizer) -->
             <div>
-                <div class="text-[11px] text-slate-400 mb-2 flex justify-between">
-                    <span>Parsed History Pattern:</span>
-                    <span id="digitCountText">0 / 10 digits</span>
-                </div>
-                <div id="chipsContainer" class="flex flex-wrap gap-1.5 min-h-[44px] bg-slate-950/60 p-2 rounded-xl border border-slate-800/80 items-center">
-                    <span class="text-xs text-slate-500 italic px-2">နံပါတ်များ ရိုက်ထည့်ပါ...</span>
-                </div>
+                <h2 class="text-lg font-bold text-slate-100">Game ID အတည်ပြုပါ</h2>
+                <p class="text-xs text-slate-400 mt-1">Website အသုံးပြုရန် သင်၏ ဂိမ်း ID ကို ရိုက်ထည့်၍ စစ်ဆေးပါ။</p>
             </div>
 
-            <!-- Get Prediction Button -->
-            <button onclick="runPredictionEngine()" class="w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 hover:from-emerald-600 hover:to-cyan-700 text-white font-extrabold py-3.5 rounded-xl shadow-lg shadow-emerald-950/50 transition active:scale-[0.99] flex items-center justify-center gap-2 text-base">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> GET AI PREDICTION
-            </button>
-        </div>
-
-        <!-- 3. AI Prediction Result Card -->
-        <div id="predictionCard" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-2xl relative overflow-hidden">
-            <div class="flex justify-between items-center text-xs text-slate-400 border-b border-slate-800/80 pb-3">
-                <span class="flex items-center gap-1.5">
-                    <i class="fa-solid fa-chart-line text-emerald-400"></i> AI Confidence: 
-                    <strong id="confidenceVal" class="text-emerald-400 font-bold">--%</strong>
-                </span>
-                <span class="flex items-center gap-1.5">
-                    <i class="fa-solid fa-bolt text-amber-400"></i> Latency: 
-                    <strong id="latencyVal" class="text-slate-300">-- ms</strong>
-                </span>
+            <div class="space-y-3">
+                <input type="text" id="userGameIdInput" placeholder="ဥပမာ - 91 Club/DiuWin ID ထည့်ပါ"
+                    class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-center font-mono text-emerald-400 tracking-wider focus:outline-none focus:border-emerald-500">
+                
+                <button onclick="verifyUserGameID()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-lg transition text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-key"></i> VERIFY & ACCESS
+                </button>
             </div>
 
-            <div class="text-center py-3">
-                <p class="text-xs uppercase tracking-widest text-slate-400 mb-1">Predicted Call</p>
-                <div id="predictedCallText" class="text-4xl font-black tracking-wider drop-shadow-md">
-                    --
-                </div>
-                <div id="predictedBS" class="text-xs font-bold mt-2 inline-block px-3 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
-                    --
-                </div>
-            </div>
-
-            <div class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-3 text-center">
-                <p class="text-[11px] text-slate-400 italic" id="rationaleText">
-                    --
-                </p>
-            </div>
-
-            <div class="pt-2 border-t border-slate-800/80 space-y-2">
-                <p class="text-center text-xs text-slate-400 font-medium">How did this round go?</p>
-                <div class="flex gap-3">
-                    <button onclick="logOutcome('WIN')" class="flex-1 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-400 border border-emerald-800 font-bold py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-circle-check"></i> Mark Win
-                    </button>
-                    <button onclick="logOutcome('LOSS')" class="flex-1 bg-rose-950/80 hover:bg-rose-900 text-rose-400 border border-rose-800 font-bold py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-circle-xmark"></i> Mark Loss
-                    </button>
-                </div>
+            <!-- Lock Message / Contact Admin -->
+            <div id="lockAlert" class="hidden bg-rose-950/50 border border-rose-800/60 rounded-xl p-3 text-xs text-rose-300 space-y-2">
+                <p><i class="fa-solid fa-triangle-exclamation"></i> သင့် Game ID သည် အတည်မပြုရသေးပါ (သို့မဟုတ်) သက်တမ်းကုန်ဆုံးသွားပါပြီ။</p>
+                <p class="text-[11px] text-slate-400">Website အသုံးပြုခွင့် ဝယ်ယူရန် Admin ထံ Game ID ပို့ပေးပါ။</p>
+                <a href="https://t.me/your_telegram_username" target="_blank" class="inline-block bg-teal-600 hover:bg-teal-500 text-white font-bold px-4 py-2 rounded-lg text-xs mt-1 transition">
+                    <i class="fa-paper-plane fa-brands"></i> Admin သို့ Telegram မှ ဆက်သွယ်ရန်
+                </a>
             </div>
         </div>
 
-        <!-- 4. Session Intelligence Dashboard (Stats) -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
-                    <i class="fa-solid fa-chart-pie text-cyan-400"></i> Session Intelligence
-                </h3>
-                <button onclick="resetStats()" class="text-[11px] text-slate-500 hover:text-rose-400 transition">Reset Stats</button>
+
+        <!-- APP MAIN INTERFACE (Game ID အတည်ပြုပြီးမှသာ ပွင့်မည်) -->
+        <div id="appContent" class="hidden space-y-6">
+
+            <!-- Active Game ID Info -->
+            <div class="bg-slate-900 border border-slate-800 px-4 py-2.5 rounded-xl flex justify-between items-center text-xs">
+                <span class="text-slate-400">Active VIP Member: <strong id="activeMemberId" class="text-emerald-400 font-mono">--</strong></span>
+                <button onclick="logoutUser()" class="text-rose-400 hover:underline text-[11px]">Logout</button>
             </div>
 
-            <div class="grid grid-cols-3 gap-3 text-center">
-                <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-xl">
-                    <div class="text-[10px] text-slate-400 uppercase">Total Rounds</div>
-                    <div id="statTotal" class="text-lg font-bold text-slate-200 mt-1">0</div>
+            <!-- 1. Mode Switcher (1 Min / 30 Sec) -->
+            <div class="bg-slate-900 border border-slate-800 p-1.5 rounded-2xl flex gap-2 shadow-lg">
+                <button id="btn1Min" onclick="switchMode('1min')" class="flex-1 py-2.5 rounded-xl font-bold text-sm bg-emerald-600 text-white shadow-md transition-all flex items-center justify-center gap-2">
+                    <i class="fa-regular fa-clock"></i> Wingo 1 Min (10 Digits)
+                </button>
+                <button id="btn30Sec" onclick="switchMode('30sec')" class="flex-1 py-2.5 rounded-xl font-bold text-sm text-slate-400 hover:text-white transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-stopwatch"></i> Wingo 30 Sec (5 Digits)
+                </button>
+            </div>
+
+            <!-- 2. History Digits Input Section -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
+                <div class="flex justify-between items-center">
+                    <label id="inputLabel" class="text-xs font-semibold text-slate-300">
+                        ဂိမ်း History ထဲမှ နံပါတ် ၁၀ လုံး (ဘယ်မှညာသို့ ရိုက်ထည့်ပါ):
+                    </label>
+                    <button onclick="clearInput()" class="text-xs text-rose-400 hover:underline">Clear</button>
                 </div>
-                <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-xl">
-                    <div class="text-[10px] text-slate-400 uppercase">Win / Loss</div>
-                    <div class="text-lg font-bold mt-1">
-                        <span id="statWins" class="text-emerald-400">0</span> / <span id="statLosses" class="text-rose-400">0</span>
+
+                <div class="relative">
+                    <input type="text" id="digitInput" oninput="handleDigitInput(event)" placeholder="ဥပမာ: 4568797652"
+                        class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3.5 text-xl font-mono text-emerald-400 tracking-wider focus:outline-none focus:border-emerald-500">
+                </div>
+
+                <!-- Chips Visualizer -->
+                <div>
+                    <div class="text-[11px] text-slate-400 mb-2 flex justify-between">
+                        <span>Parsed History Pattern:</span>
+                        <span id="digitCountText">0 / 10 digits</span>
+                    </div>
+                    <div id="chipsContainer" class="flex flex-wrap gap-1.5 min-h-[44px] bg-slate-950/60 p-2 rounded-xl border border-slate-800/80 items-center">
+                        <span class="text-xs text-slate-500 italic px-2">နံပါတ်များ ရိုက်ထည့်ပါ...</span>
                     </div>
                 </div>
-                <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-xl">
-                    <div class="text-[10px] text-slate-400 uppercase">Win Rate</div>
-                    <div id="statWinRate" class="text-lg font-bold text-cyan-400 mt-1">0%</div>
+
+                <!-- Get Prediction Button -->
+                <button onclick="runPredictionEngine()" class="w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 hover:from-emerald-600 hover:to-cyan-700 text-white font-extrabold py-3.5 rounded-xl shadow-lg shadow-emerald-950/50 transition active:scale-[0.99] flex items-center justify-center gap-2 text-base">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> GET AI PREDICTION
+                </button>
+            </div>
+
+            <!-- 3. AI Prediction Result Card -->
+            <div id="predictionCard" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-2xl relative overflow-hidden">
+                <div class="flex justify-between items-center text-xs text-slate-400 border-b border-slate-800/80 pb-3">
+                    <span class="flex items-center gap-1.5">
+                        <i class="fa-solid fa-chart-line text-emerald-400"></i> AI Confidence: 
+                        <strong id="confidenceVal" class="text-emerald-400 font-bold">--%</strong>
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                        <i class="fa-solid fa-bolt text-amber-400"></i> Latency: 
+                        <strong id="latencyVal" class="text-slate-300">-- ms</strong>
+                    </span>
+                </div>
+
+                <div class="text-center py-3">
+                    <p class="text-xs uppercase tracking-widest text-slate-400 mb-1">Predicted Call</p>
+                    <div id="predictedCallText" class="text-4xl font-black tracking-wider drop-shadow-md">--</div>
+                    <div id="predictedBS" class="text-xs font-bold mt-2 inline-block px-3 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700">--</div>
+                </div>
+
+                <div class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-3 text-center">
+                    <p class="text-[11px] text-slate-400 italic" id="rationaleText">--</p>
+                </div>
+
+                <div class="pt-2 border-t border-slate-800/80 space-y-2">
+                    <p class="text-center text-xs text-slate-400 font-medium">How did this round go?</p>
+                    <div class="flex gap-3">
+                        <button onclick="logOutcome('WIN')" class="flex-1 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-400 border border-emerald-800 font-bold py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-circle-check"></i> Mark Win
+                        </button>
+                        <button onclick="logOutcome('LOSS')" class="flex-1 bg-rose-950/80 hover:bg-rose-900 text-rose-400 border border-rose-800 font-bold py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-circle-xmark"></i> Mark Loss
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- 5. Outcome Ledger / Recent History -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 shadow-xl">
-            <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
-                <i class="fa-solid fa-clock-rotate-left text-teal-400"></i> Outcome Ledger
-            </h3>
-            <div id="ledgerList" class="space-y-2 max-h-60 overflow-y-auto pr-1">
-                <p id="emptyLedgerText" class="text-xs text-slate-500 text-center py-4">မှတ်တမ်းများ မရှိသေးပါ။</p>
+            <!-- 4. Session Intelligence Dashboard (Stats) -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                    <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-cyan-400"></i> Session Intelligence
+                    </h3>
+                    <button onclick="resetStats()" class="text-[11px] text-slate-500 hover:text-rose-400 transition">Reset Stats</button>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3 text-center">
+                    <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-xl">
+                        <div class="text-[10px] text-slate-400 uppercase">Total Rounds</div>
+                        <div id="statTotal" class="text-lg font-bold text-slate-200 mt-1">0</div>
+                    </div>
+                    <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-xl">
+                        <div class="text-[10px] text-slate-400 uppercase">Win / Loss</div>
+                        <div class="text-lg font-bold mt-1">
+                            <span id="statWins" class="text-emerald-400">0</span> / <span id="statLosses" class="text-rose-400">0</span>
+                        </div>
+                    </div>
+                    <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-xl">
+                        <div class="text-[10px] text-slate-400 uppercase">Win Rate</div>
+                        <div id="statWinRate" class="text-lg font-bold text-cyan-400 mt-1">0%</div>
+                    </div>
+                </div>
             </div>
+
+            <!-- 5. Outcome Ledger -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 shadow-xl">
+                <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left text-teal-400"></i> Outcome Ledger
+                </h3>
+                <div id="ledgerList" class="space-y-2 max-h-60 overflow-y-auto pr-1">
+                    <p id="emptyLedgerText" class="text-xs text-slate-500 text-center py-4">မှတ်တမ်းများ မရှိသေးပါ။</p>
+                </div>
+            </div>
+
         </div>
 
     </main>
 
+    <!-- ADMIN PANEL MODAL (Admin သာ Password ဖြင့် ဝင်ရောက်နိုင်မည်) -->
+    <div id="adminModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
+            <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-slate-500 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <h3 class="text-base font-bold text-emerald-400 flex items-center gap-2">
+                <i class="fa-solid fa-user-shield"></i> Admin VIP Management
+            </h3>
+
+            <!-- Password Login Step -->
+            <div id="adminAuthStep" class="space-y-3">
+                <p class="text-xs text-slate-400">Admin Password ရိုက်ထည့်ပါ:</p>
+                <input type="password" id="adminPassInput" placeholder="Password"
+                    class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500">
+                <button onclick="loginAdmin()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs transition">
+                    Unlock Admin Panel
+                </button>
+            </div>
+
+            <!-- Admin Control Step -->
+            <div id="adminControlStep" class="hidden space-y-4">
+                <div class="space-y-2">
+                    <label class="text-xs text-slate-300">ဂိမ်း ID အသစ် ခွင့်ပြုပေးရန် ထည့်ပါ:</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="newGameIdInput" placeholder="User Game ID"
+                            class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm font-mono text-emerald-400 focus:outline-none">
+                        <button onclick="addAllowedGameID()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs">
+                            Add ID
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-xs text-slate-400 mb-2">ခွင့်ပြုထားသော Game ID စာရင်းများ:</p>
+                    <div id="allowedIdList" class="max-h-40 overflow-y-auto space-y-1.5 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800">
+                        <!-- Allowed IDs will render here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript Logic -->
     <script>
+        // Secret Admin Password (ဤနေရာတွင် မိမိကြိုက်နှစ်သက်ရာ Password ပြောင်းနိုင်ပါသည်)
+        const ADMIN_PASSWORD = "admin1234";
+
+        // Initial Pre-approved Game IDs
+        let allowedIDs = JSON.parse(localStorage.getItem('wingo_allowed_ids')) || ["123456", "987654"];
+
         let currentMode = '1min';
         let maxDigits = 10;
         let previousVal = '';
         let lastPrediction = null;
+        let activeUser = localStorage.getItem('wingo_active_user') || null;
+
         let stats = JSON.parse(localStorage.getItem('wingo_stats')) || { total: 0, wins: 0, losses: 0 };
         let historyLedger = JSON.parse(localStorage.getItem('wingo_ledger')) || [];
 
         window.onload = function() {
+            checkUserSession();
             updateStatsUI();
             renderLedgerUI();
         };
 
+        // User Verification & Auth
+        function verifyUserGameID() {
+            const inputId = document.getElementById('userGameIdInput').value.trim();
+            const lockAlert = document.getElementById('lockAlert');
+
+            if (!inputId) {
+                alert("ကျေးဇူးပြု၍ Game ID ထည့်သွင်းပေးပါ။");
+                return;
+            }
+
+            if (allowedIDs.includes(inputId)) {
+                activeUser = inputId;
+                localStorage.setItem('wingo_active_user', activeUser);
+                lockAlert.classList.add('hidden');
+                checkUserSession();
+            } else {
+                lockAlert.classList.remove('hidden');
+            }
+        }
+
+        function checkUserSession() {
+            const authCard = document.getElementById('authCard');
+            const appContent = document.getElementById('appContent');
+            const badge = document.getElementById('accessBadge');
+            const activeMemberId = document.getElementById('activeMemberId');
+
+            if (activeUser && allowedIDs.includes(activeUser)) {
+                authCard.classList.add('hidden');
+                appContent.classList.remove('hidden');
+                activeMemberId.innerText = activeUser;
+
+                badge.className = "bg-emerald-950 border border-emerald-800 text-emerald-400 text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1";
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> VIP ACTIVE`;
+            } else {
+                authCard.classList.remove('hidden');
+                appContent.classList.add('hidden');
+
+                badge.className = "bg-rose-950 border border-rose-800 text-rose-400 text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1";
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> LOCKED`;
+            }
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('wingo_active_user');
+            activeUser = null;
+            document.getElementById('userGameIdInput').value = '';
+            checkUserSession();
+        }
+
+        // Admin Modal & Management Logic
+        function openAdminModal() {
+            document.getElementById('adminModal').classList.remove('hidden');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.add('hidden');
+        }
+
+        function loginAdmin() {
+            const pass = document.getElementById('adminPassInput').value;
+            if (pass === ADMIN_PASSWORD) {
+                document.getElementById('adminAuthStep').classList.add('hidden');
+                document.getElementById('adminControlStep').classList.remove('hidden');
+                renderAllowedIDsUI();
+            } else {
+                alert("Incorrect Admin Password!");
+            }
+        }
+
+        function addAllowedGameID() {
+            const newId = document.getElementById('newGameIdInput').value.trim();
+            if (newId && !allowedIDs.includes(newId)) {
+                allowedIDs.push(newId);
+                localStorage.setItem('wingo_allowed_ids', JSON.stringify(allowedIDs));
+                document.getElementById('newGameIdInput').value = '';
+                renderAllowedIDsUI();
+                alert(`Game ID: ${newId} ကို အောင်မြင်စွာ ခွင့်ပြုပေးလိုက်ပါပြီ။`);
+            }
+        }
+
+        function removeAllowedGameID(id) {
+            allowedIDs = allowedIDs.filter(item => item !== id);
+            localStorage.setItem('wingo_allowed_ids', JSON.stringify(allowedIDs));
+            renderAllowedIDsUI();
+            if (activeUser === id) logoutUser();
+        }
+
+        function renderAllowedIDsUI() {
+            const listContainer = document.getElementById('allowedIdList');
+            listContainer.innerHTML = '';
+
+            if (allowedIDs.length === 0) {
+                listContainer.innerHTML = '<p class="text-xs text-slate-500 text-center">ခွင့်ပြုထားသော ID မရှိသေးပါ။</p>';
+                return;
+            }
+
+            allowedIDs.forEach(id => {
+                const item = document.createElement('div');
+                item.className = "flex justify-between items-center text-xs font-mono bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800";
+                item.innerHTML = `
+                    <span class="text-emerald-400">${id}</span>
+                    <button onclick="removeAllowedGameID('${id}')" class="text-rose-400 hover:text-rose-300">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+
+        // App Core Features (Mode Switch, Input, Prediction Engine)
         function switchMode(mode) {
             currentMode = mode;
             maxDigits = mode === '1min' ? 10 : 5;
@@ -180,11 +383,11 @@
             if (mode === '1min') {
                 btn1Min.className = "flex-1 py-2.5 rounded-xl font-bold text-sm bg-emerald-600 text-white shadow-md transition-all flex items-center justify-center gap-2";
                 btn30Sec.className = "flex-1 py-2.5 rounded-xl font-bold text-sm text-slate-400 hover:text-white transition-all flex items-center justify-center gap-2";
-                inputLabel.innerText = "ဂိမ်း History ထဲမှ နံပါတ် ၁၀ လုံး (ဘယ်မှညာသို့ အစဉ်လိုက် ရိုက်ထည့်ပါ):";
+                inputLabel.innerText = "ဂိမ်း History ထဲမှ နံပါတ် ၁၀ လုံး (ဘယ်မှညာသို့ ရိုက်ထည့်ပါ):";
             } else {
                 btn30Sec.className = "flex-1 py-2.5 rounded-xl font-bold text-sm bg-emerald-600 text-white shadow-md transition-all flex items-center justify-center gap-2";
                 btn1Min.className = "flex-1 py-2.5 rounded-xl font-bold text-sm text-slate-400 hover:text-white transition-all flex items-center justify-center gap-2";
-                inputLabel.innerText = "ဂိမ်း History ထဲမှ နံပါတ် ၅ လုံး (ဘယ်မှညာသို့ အစဉ်လိုက် ရိုက်ထည့်ပါ):";
+                inputLabel.innerText = "ဂိမ်း History ထဲမှ နံပါတ် ၅ လုံး (ဘယ်မှညာသို့ ရိုက်ထည့်ပါ):";
             }
         }
 
@@ -196,21 +399,17 @@
             document.getElementById('predictionCard').classList.add('hidden');
         }
 
-        // Auto-Shift FIFO Logic (Inserts at back, removes from front)
         function handleDigitInput(event) {
             const input = document.getElementById('digitInput');
             let rawVal = input.value.replace(/[^0-9]/g, '');
 
-            // Backspace/Delete ပြုလုပ်ပါက ပုံမှန်အတိုင်း ဖျက်ခွင့်ပေးမည်
             if (event && event.inputType === 'deleteContentBackward') {
                 previousVal = rawVal;
                 renderChips(rawVal);
                 return;
             }
 
-            // အကယ်၍ သတ်မှတ်ထားသော ဂဏန်းအရေအတွက် (၁၀ လုံး သို့မဟုတ် ၅ လုံး) ထက် ပိုသွားပါက
             if (rawVal.length > maxDigits) {
-                // အနောက်ဆုံးမှ ရိုက်ထည့်လိုက်သော ဂဏန်းအသစ်ကို ယူပြီး ရှေ့ဆုံးမှ ဂဏန်းအဟောင်းကို ဖျက်လိုက်ခြင်း
                 const newestDigit = rawVal.slice(-1);
                 rawVal = previousVal.slice(1, maxDigits) + newestDigit;
             }
@@ -220,7 +419,6 @@
             renderChips(rawVal);
         }
 
-        // Render visual badges/chips
         function renderChips(val) {
             const container = document.getElementById('chipsContainer');
             document.getElementById('digitCountText').innerText = `${val.length} / ${maxDigits} digits`;
@@ -259,7 +457,7 @@
 
             const digits = val.split('').map(Number);
             const sum = digits.reduce((a, b) => a + b, 0);
-            const lastDigit = digits[digits.length - 1]; // Latest input digit
+            const lastDigit = digits[digits.length - 1];
 
             let callColor = "GREEN";
             let callBS = "BIG";
